@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Licenta</string>
+    <string name="nume_utilizator_login">Nume utilizator</string>
+    <string name="parola_login">Parola</string>
+    <string name="conectare_login">Conectare</string>
+    <string name="autentificare_login">Autentificare</string>
+    <string name="creeaza_cont_login">Creeaza cont</string>
+    <string name="inregistrare_signup">Inregistrare</string>
+    <string name="nume_utilizator_signup">Nume utilizator</string>
+    <string name="nume_de_familie_signup">Nume de familie</string>
+    <string name="prenume_signup">Prenume</string>
+    <string name="email_signup">Email</string>
+    <string name="parola_signup">Parola</string>
+    <string name="confirmare_parola_signup">Confirmare parola</string>
+    <string name="creeare_cont_signup">Creeare cont</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.example.licenta.database;
 
 import android.os.StrictMode;
-import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,15 +13,17 @@ public class ConexiuneBD {
     private String parola;
     private Connection conexiune;
 
+    // Instanta unica
     private static ConexiuneBD conexiuneBD = null;
 
+    // Constructir
     private ConexiuneBD()  {
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
+        // Thread Policy
+        this.threadPolicy();
+
         // Preluare data fisier
         this.url = "jdbc:oracle:thin:@192.168.0.139:1522:XE";
+        //this.url = "jdbc:oracle:thin:@192.168.100.30:1521:XE";
         this.driver = "oracle.jdbc.driver.OracleDriver";
         this.nume = "SYSTEM";
         this.parola = "ALLU1234";
@@ -39,6 +40,7 @@ public class ConexiuneBD {
         }
     }
 
+    // Get instance
     public synchronized static ConexiuneBD getInstance() {
         if (conexiuneBD == null) {
             conexiuneBD = new ConexiuneBD();
@@ -47,6 +49,8 @@ public class ConexiuneBD {
         return conexiuneBD;
     }
 
+
+    // Getteri si setteri
     public String getUrl() {
         return url;
     }
@@ -92,5 +96,12 @@ public class ConexiuneBD {
     private Connection createConnection(String driver, String url, String nume, String parola) throws ClassNotFoundException, SQLException {
         Class.forName(driver);
         return DriverManager.getConnection(url, nume, parola);
+    }
+
+    private void threadPolicy(){
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
     }
 }
