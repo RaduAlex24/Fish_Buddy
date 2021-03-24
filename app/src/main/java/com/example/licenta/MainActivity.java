@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private FragmentManager fragmentManager;
+    private ConexiuneBD conexiuneBD = ConexiuneBD.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
