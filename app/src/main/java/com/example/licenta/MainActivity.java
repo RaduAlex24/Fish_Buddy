@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
             tv.setText(stringBuffer.toString());
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        // Este null conexiunea => nu s-a putut realiza conexiunea
+        } catch (Exception ex) {
+            Toast.makeText(getApplicationContext(), ex.toString(), Toast.LENGTH_LONG).show();
         }
 
     }

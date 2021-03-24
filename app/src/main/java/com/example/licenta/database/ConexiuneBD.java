@@ -32,11 +32,11 @@ public class ConexiuneBD {
         }
         catch (SQLException ex){
             ex.printStackTrace();
-            this.conexiune = null;
+            //this.conexiune = null;
         }
         catch (ClassNotFoundException ex){
             ex.printStackTrace();
-            this.conexiune = null;
+            //this.conexiune = null;
         }
     }
 
