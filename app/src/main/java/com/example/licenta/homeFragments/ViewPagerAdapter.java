@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    private static final int NUM_INTEMS = 2;
+    private static final int NUM_INTEMS = 3;
 
     public ViewPagerAdapter(@NonNull FragmentManager fm) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
@@ -23,6 +23,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         switch (position){
             case 0: return new VirtualAssistantFragment();
             case 1: return new ForumFragment();
+            case 2: return new MapsFragment();
             default: return  new VirtualAssistantFragment();
         }
     }

@@ -26,8 +26,8 @@ public class ConexiuneBD {
         this.threadPolicy();
 
         // Preluare data fisier
-        this.url = "jdbc:oracle:thin:@192.168.0.139:1522:XE";
-        //this.url = "jdbc:oracle:thin:@192.168.100.30:1521:XE";
+        //this.url = "jdbc:oracle:thin:@192.168.0.139:1522:XE";
+        this.url = "jdbc:oracle:thin:@192.168.100.30:1521:XE";
         this.driver = "oracle.jdbc.driver.OracleDriver";
         this.nume = "SYSTEM";
         this.parola = "ALLU1234";
