@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.example.licenta.config.Config;
+
 public class ConexiuneBD {
     private String url;
     private String driver;
@@ -27,10 +29,10 @@ public class ConexiuneBD {
 
         // Preluare data fisier
         //this.url = "jdbc:oracle:thin:@192.168.0.139:1522:XE";
-        this.url = "jdbc:oracle:thin:@192.168.100.30:1521:XE";
-        this.driver = "oracle.jdbc.driver.OracleDriver";
-        this.nume = "SYSTEM";
-        this.parola = "ALLU1234";
+        this.url = Config.url;
+        this.driver = Config.driver;
+        this.nume = Config.nume;
+        this.parola = Config.parola;
         try {
             this.conexiune = createConnection(this.driver, this.url, this.nume, this.parola);
             Log.d(tagLog, "Conexiune unica baza de date");
