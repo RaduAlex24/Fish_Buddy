@@ -1,6 +1,7 @@
 package com.example.licenta.database;
 
 import android.os.StrictMode;
+import android.util.Log;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,8 +17,11 @@ public class ConexiuneBD {
     // Instanta unica
     private static ConexiuneBD conexiuneBD = null;
 
+    // Log unic pentru debug
+    private static final String tagLog = "ClasaConexiuBD";
+
     // Constructir
-    private ConexiuneBD()  {
+    private ConexiuneBD() {
         // Thread Policy
         this.threadPolicy();
 
@@ -29,19 +33,19 @@ public class ConexiuneBD {
         this.parola = "ALLU1234";
         try {
             this.conexiune = createConnection(this.driver, this.url, this.nume, this.parola);
-        }
-        catch (SQLException ex){
+            Log.d(tagLog, "Conexiune unica baza de date");
+        } catch (SQLException ex) {
             ex.printStackTrace();
-            //this.conexiune = null;
-        }
-        catch (ClassNotFoundException ex){
+            Log.e(tagLog, "Eroare conectare baza de date");
+        } catch (ClassNotFoundException ex) {
             ex.printStackTrace();
-            //this.conexiune = null;
+            Log.e(tagLog, "Eroare conectare baza de date");
         }
     }
 
     // Get instance
     public synchronized static ConexiuneBD getInstance() {
+        Log.d(tagLog, "Folosire getInstance()");
         if (conexiuneBD == null) {
             conexiuneBD = new ConexiuneBD();
         }
@@ -98,7 +102,7 @@ public class ConexiuneBD {
         return DriverManager.getConnection(url, nume, parola);
     }
 
-    private void threadPolicy(){
+    private void threadPolicy() {
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
