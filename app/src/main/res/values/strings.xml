@@ -13,4 +13,6 @@
     <string name="parola_signup">Parola</string>
     <string name="confirmare_parola_signup">Confirmare parola</string>
     <string name="creeare_cont_signup">Creeare cont</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

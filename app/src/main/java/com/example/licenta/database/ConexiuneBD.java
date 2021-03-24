@@ -45,7 +45,6 @@ public class ConexiuneBD {
 
     // Get instance
     public synchronized static ConexiuneBD getInstance() {
-        Log.d(tagLog, "Folosire getInstance()");
         if (conexiuneBD == null) {
             conexiuneBD = new ConexiuneBD();
         }
