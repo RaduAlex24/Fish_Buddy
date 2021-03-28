@@ -16,7 +16,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.example.licenta.R;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -100,9 +101,16 @@ public class MapsFragment extends Fragment {
                     }
                 }
             });
-            if (ActivityCompat.checkSelfPermission(getContext(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
+            ImageView btnMyLocation = ((View) Objects.requireNonNull(mapFragment.getView()).findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+            btnMyLocation.setImageResource(R.drawable.navigation);
+
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
+                    btnMyLocation.getLayoutParams();
+
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            layoutParams.setMargins(0, 0, 30, 30);
+            btnMyLocation.setLayoutParams(layoutParams);
         }
     };
 
@@ -172,5 +180,6 @@ public class MapsFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+
     }
 }
