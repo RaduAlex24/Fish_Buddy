@@ -15,4 +15,11 @@
     <string name="creeare_cont_signup">Creeare cont</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="toast_autentificare_esuata_logIn">Nume sau parola gresita</string>
+    <string name="error_invalid_username">Numele de utilizator trebuie sa aiba cel putin 6 caractere</string>
+    <string name="error_invalid_password">Parola trebuie sa aiba cel putin 6 caractere</string>
+    <string name="error_username_over_max_char">Numele de utilizator trebuie sa abia maxim 15 caractere</string>
+    <string name="error_password_over_max_char">Parola poate sa aiba maxim 20 de caractere</string>
+    <string name="toast_criterii_neindeplinite">Unele criternii nu sunt indeplinite</string>
+    <string name="toast_crietrii_autentificare_neindeplinite">Crieteii de autentificare neindeplinite</string>
 </resources>

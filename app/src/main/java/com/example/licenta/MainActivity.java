@@ -9,6 +9,7 @@ import android.os.StrictMode;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.database.ConexiuneBD;
 import com.example.licenta.homeFragments.ViewPagerAdapter;
 
@@ -22,7 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private FragmentManager fragmentManager;
-    private ConexiuneBD conexiuneBD = ConexiuneBD.getInstance();
+
+    private CurrentUser currentUser = CurrentUser.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // Initializare componente
         initComponents();
+
+        Toast.makeText(this, currentUser.toString(), Toast.LENGTH_LONG).show();
 
         // Initializare pager adapter
         initViewPagerAdapter();
