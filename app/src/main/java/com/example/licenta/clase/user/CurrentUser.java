@@ -46,6 +46,14 @@ public class CurrentUser {
         return currentUser;
     }
 
+    // Pentru a sterge instanta curent
+    public static void delelteInstance(){
+        if(currentUser != null){
+            currentUser = null;
+        }
+    }
+
+
 
     // Setteri si getteri
     public int getId() {

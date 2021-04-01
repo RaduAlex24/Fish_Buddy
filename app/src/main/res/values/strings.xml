@@ -35,4 +35,5 @@
     <string name="error_surname_maxChar">Numele trebuie sa aiba maxim 20 de caractere</string>
     <string name="error_surname_minChar">Numele trebuie sa aiba cel putin 2 caractere</string>
     <string name="error_username_existentDeja">Numele de utilizator este deja folosit</string>
+    <string name="toast_press_back_toQuit">Apsati din nou pentru a inchide aplicatia</string>
 </resources>

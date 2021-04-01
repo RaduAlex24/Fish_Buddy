@@ -24,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private FragmentManager fragmentManager;
 
+    private static final int TIME_INTERVAL = 2000;
+    private long mBackPressed;
+
     private CurrentUser currentUser = CurrentUser.getInstance();
 
     @Override
@@ -51,5 +54,21 @@ public class MainActivity extends AppCompatActivity {
     private void initViewPagerAdapter() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(fragmentManager);
         viewPager.setAdapter(adapter);
+    }
+
+
+    // Rescriere back pt parasire aplicatie
+    @Override
+    public void onBackPressed() {
+        if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
+            super.onBackPressed();
+            finishAffinity();
+        } else {
+            Toast.makeText(getBaseContext(),
+                    getString(R.string.toast_press_back_toQuit),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        mBackPressed = System.currentTimeMillis();
     }
 }
