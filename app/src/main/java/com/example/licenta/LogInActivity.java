@@ -1,13 +1,17 @@
 package com.example.licenta;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,10 +24,18 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class LogInActivity extends AppCompatActivity {
 
+    public static final int REQUEST_CODE_SIGN_UP = 200;
+    public static final String USERNAME_SP = "USERNAME_SP";
+    public static final String PASSWORD_SP = "PASSWORD_SP";
+    public static final String REMEMBER_CHECKED = "REMEMBER_CHECKED";
     private TextInputEditText tietUsername;
     private TextInputEditText tietPassword;
     private Button btnLogin;
     private TextView tvSignup;
+    private CheckBox checkBoxRemember;
+
+    private SharedPreferences preferences;
+    public static final String SHARED_PREF_FILE_NAME = "LicentaPesteSharedPreferences";
 
     private UserService userService = new UserService();
 
@@ -41,9 +53,15 @@ public class LogInActivity extends AppCompatActivity {
         // Atasare functie textview signup
         tvSignup.setOnClickListener(onClickSignUp());
 
+        // Preluare shared preferences
+        getLogInInfoFromSharedPreference();
+
         // Verificare username si password
         tietUsername.addTextChangedListener(watcherVerificareUsername());
         tietPassword.addTextChangedListener(watcherVerificarePassword());
+
+        // Adaugare functie pentru schimbare remember me
+        checkBoxRemember.setOnCheckedChangeListener(onCheckedChangeRememberMeListener());
     }
 
 
@@ -54,6 +72,10 @@ public class LogInActivity extends AppCompatActivity {
         tietPassword = findViewById(R.id.tiet_password_login);
         btnLogin = findViewById(R.id.btn_login);
         tvSignup = findViewById(R.id.tv_signup_login);
+        checkBoxRemember = findViewById(R.id.checkbox_rememberMe_login);
+
+        // Initializare shared preferences
+        preferences = getSharedPreferences(SHARED_PREF_FILE_NAME, MODE_PRIVATE);
     }
 
 
@@ -84,6 +106,13 @@ public class LogInActivity extends AppCompatActivity {
                 if (result != null) {
                     // Initializare instanta unica de current user
                     CurrentUser.initInstance(result);
+
+                    // Verificare check box remember me
+                    if(checkBoxRemember.isChecked()){
+                        saveLogInInfoToSharedPreference();
+                    }
+
+                    // Deschidere noua activitate
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                 } else {
@@ -102,7 +131,7 @@ public class LogInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_SIGN_UP);
             }
         };
     }
@@ -122,7 +151,75 @@ public class LogInActivity extends AppCompatActivity {
     }
 
 
+    // Checked listener pt remember me
+    private CompoundButton.OnCheckedChangeListener onCheckedChangeRememberMeListener() {
+        return new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // Scriere in SP
+                    saveLogInInfoToSharedPreference();
+                } else {
+                    // Stergere din SP
+                    deleteLogInInfoToSharedPreference();
+                }
+            }
+        };
+    }
 
+    // Scriere date log in in SP
+    private void saveLogInInfoToSharedPreference() {
+        String username = tietUsername.getText().toString().replace(" ", "");
+        String password = tietPassword.getText().toString().replace(" ", "");
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(USERNAME_SP, username);
+        editor.putString(PASSWORD_SP, password);
+        editor.putBoolean(REMEMBER_CHECKED, true);
+        editor.apply();
+    }
+
+    // Stergere date log in din SP
+    private void deleteLogInInfoToSharedPreference() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(USERNAME_SP, "");
+        editor.putString(PASSWORD_SP, "");
+        editor.putBoolean(REMEMBER_CHECKED, false);
+        editor.apply();
+    }
+
+    // Incarcare date log in din SP
+    private void getLogInInfoFromSharedPreference() {
+        String username = preferences.getString(USERNAME_SP, "");
+        String password = preferences.getString(PASSWORD_SP, "");
+        boolean rememberChecked = preferences.getBoolean(REMEMBER_CHECKED, false);
+
+        tietUsername.setText(username);
+        tietPassword.setText(password);
+        if (rememberChecked) {
+            checkBoxRemember.setChecked(true);
+        }
+    }
+
+
+    // On activity result
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Creare cont nou
+        if (requestCode == REQUEST_CODE_SIGN_UP && resultCode == RESULT_OK && data != null) {
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.toast_cont_creat_succes),
+                    Toast.LENGTH_LONG).show();
+
+            String username = (String) data.getSerializableExtra(SignUpActivity.USERNAME_KEY);
+            String password = (String) data.getSerializableExtra(SignUpActivity.PASSWORD_KEY);
+
+            tietUsername.setText(username);
+            tietPassword.setText(password);
+        }
+    }
 
 
     // Functie verificare username si password
@@ -138,9 +235,11 @@ public class LogInActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (tietUsername.getText().toString().replace(" ", "").length() < 6) {
+                String tietUsernameText = tietUsername.getText().toString().replace(" ", "");
+
+                if (tietUsernameText.length() < 6) {
                     tietUsername.setError(getString(R.string.error_invalid_username));
-                } else if (tietUsername.getText().toString().replace(" ", "").length() > 15) {
+                } else if (tietUsernameText.length() > 15) {
                     tietUsername.setError(getString(R.string.error_username_over_max_char));
                 }
             }
@@ -159,9 +258,11 @@ public class LogInActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (tietPassword.getText().toString().replace(" ", "").length() < 6) {
+                String tietPasswordText = tietPassword.getText().toString().replace(" ", "");
+
+                if (tietPasswordText.length() < 6) {
                     tietPassword.setError(getString(R.string.error_invalid_password));
-                } else if (tietPassword.getText().toString().replace(" ", "").length() > 20) {
+                } else if (tietPasswordText.length() > 20) {
                     tietPassword.setError(getString(R.string.error_password_over_max_char));
                 }
             }

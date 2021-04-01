@@ -22,4 +22,17 @@
     <string name="error_password_over_max_char">Parola poate sa aiba maxim 20 de caractere</string>
     <string name="toast_criterii_neindeplinite">Unele criternii nu sunt indeplinite</string>
     <string name="toast_crietrii_autentificare_neindeplinite">Crieteii de autentificare neindeplinite</string>
+    <string name="toast_criterii_neindeplinite_signUp">Criterii de creare cont neindeplinite</string>
+    <string name="toast_cont_creat_succes">Contul a fost creat cu succes!</string>
+    <string name="log_eroare_sign_up">Mai multi utilizatori cu aceelasi credentiale creati sau niciunul!</string>
+    <string name="error_parole_nu_coincid">Parolele nu coincid</string>
+    <string name="error_email_underMinChar">Emailul trebuie sa aiba cel putin 5 caractere</string>
+    <string name="email_excedesMaxChar">Emailul trebuie sa aiba maxim 40 de caractere</string>
+    <string name="error_email_format">Emailul trebuie sa fie de forma xxxx@xxx.xx</string>
+    <string name="error_email_dejaInregistrat">Emailul este deja inregistrat</string>
+    <string name="error_name_pesteMaxChar">Prenumele trebuie sa aiba maxim 40 de caractere</string>
+    <string name="error_nume_subMinChar">Prenumele trebuie sa aiba cel putin 2 caractere</string>
+    <string name="error_surname_maxChar">Numele trebuie sa aiba maxim 20 de caractere</string>
+    <string name="error_surname_minChar">Numele trebuie sa aiba cel putin 2 caractere</string>
+    <string name="error_username_existentDeja">Numele de utilizator este deja folosit</string>
 </resources>
