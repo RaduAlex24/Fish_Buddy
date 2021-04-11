@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.example.licenta.MapsUtils.GetNearbyPlacesData;
+import com.example.licenta.util.MapsUtils.GetNearbyPlacesData;
 import com.example.licenta.R;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;

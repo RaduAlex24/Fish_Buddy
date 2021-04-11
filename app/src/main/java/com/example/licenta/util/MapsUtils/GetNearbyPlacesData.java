@@ -1,4 +1,4 @@
-package com.example.licenta.MapsUtils;
+package com.example.licenta.util.MapsUtils;
 
 import android.os.AsyncTask;
 import android.util.Log;

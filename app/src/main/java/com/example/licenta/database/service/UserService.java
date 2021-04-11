@@ -21,6 +21,7 @@ public class UserService {
     public static final String numeBDuser = "USERS";
 
 
+    // Constructor
     public UserService() {
         conexiuneBD = ConexiuneBD.getInstance();
         asyncTaskRunner = new AsyncTaskRunner();

@@ -1,6 +1,4 @@
-package com.example.licenta.MapsUtils;
-
-import android.util.Log;
+package com.example.licenta.util.MapsUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.example.licenta.MapsUtils;
+package com.example.licenta.util.MapsUtils;
 
 import android.util.Log;
 

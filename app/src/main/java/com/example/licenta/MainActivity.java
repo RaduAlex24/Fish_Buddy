@@ -9,11 +9,15 @@ import android.os.StrictMode;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.licenta.clase.forum.CategoryForum;
+import com.example.licenta.clase.forum.ForumPost;
 import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.database.ConexiuneBD;
 import com.example.licenta.homeFragments.ViewPagerAdapter;
+import com.example.licenta.util.dateUtils.DateConverter;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(this, currentUser.toString(), Toast.LENGTH_LONG).show();
 
-        // Initializare pager adapter TEST******************
+        // Initializare pager adapter
         initViewPagerAdapter();
     }
 
