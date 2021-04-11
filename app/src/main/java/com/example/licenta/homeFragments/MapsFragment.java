@@ -3,7 +3,6 @@ package com.example.licenta.homeFragments;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
@@ -13,12 +12,15 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.example.licenta.MapsUtils.GetNearbyPlacesData;
 import com.example.licenta.R;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -34,7 +36,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,6 +51,8 @@ public class MapsFragment extends Fragment {
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
     private Location mLastKnownLocation;
+    int PROXIMITY_RADIUS = 100000;
+    double latitude,longitude;
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
@@ -85,6 +88,7 @@ public class MapsFragment extends Fragment {
                 @Override
                 public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                     getDeviceLocation();
+
                 }
             });
 
@@ -111,6 +115,21 @@ public class MapsFragment extends Fragment {
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             layoutParams.setMargins(0, 0, 30, 30);
             btnMyLocation.setLayoutParams(layoutParams);
+
+        }
+        private String getUrl(double latitude , double longitude , String nearbyPlace)
+        {
+
+            StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+            googlePlaceUrl.append("location="+latitude+","+longitude);
+            googlePlaceUrl.append("&radius="+PROXIMITY_RADIUS);
+            googlePlaceUrl.append("&type="+nearbyPlace);
+            googlePlaceUrl.append("&sensor=true");
+            googlePlaceUrl.append("&key=AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk");
+
+            Log.d("MapsActivity", "url = "+googlePlaceUrl.toString());
+
+            return googlePlaceUrl.toString();
         }
     };
 
@@ -119,9 +138,22 @@ public class MapsFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 51) {
             getDeviceLocation();
+
         }
     }
+    private String getUrl(double latitude , double longitude , String nearbyPlace) {
 
+        StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlaceUrl.append("location=" + latitude + "," + longitude);
+        googlePlaceUrl.append("&radius=" + PROXIMITY_RADIUS);
+        googlePlaceUrl.append("&type=" + nearbyPlace);
+        googlePlaceUrl.append("&sensor=true");
+        googlePlaceUrl.append("&key=AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk");
+
+        Log.d("MapsActivity", "url = " + googlePlaceUrl.toString());
+
+        return googlePlaceUrl.toString();
+    }
     @SuppressLint("MissingPermission")
     private void getDeviceLocation() {
         fusedLocationClient.getLastLocation()
@@ -132,6 +164,16 @@ public class MapsFragment extends Fragment {
                             mLastKnownLocation = task.getResult();
                             if (mLastKnownLocation != null) {
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), 10));
+                                latitude = mLastKnownLocation.getLatitude();
+                                longitude = mLastKnownLocation.getLongitude();
+                                String fishingspots = "hospital";
+                                String url = getUrl(latitude, longitude, fishingspots);
+                                Object dataTransfer[] = new Object[2];
+                                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+                                dataTransfer[0] = mMap;
+                                dataTransfer[1] = url;
+                                getNearbyPlacesData.execute(dataTransfer);
+                                Toast.makeText(getContext(), "Showing Nearby Fishing spots", Toast.LENGTH_SHORT).show();
                             } else {
                                 final LocationRequest locationRequest = LocationRequest.create();
                                 locationRequest.setInterval(1000);
@@ -146,11 +188,20 @@ public class MapsFragment extends Fragment {
                                         }
                                         mLastKnownLocation = locationResult.getLastLocation();
                                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), 10));
+                                        latitude = mLastKnownLocation.getLatitude();
+                                        longitude = mLastKnownLocation.getLongitude();
+                                        String fishingspots = "fishing charter";
+                                        String url = getUrl(latitude, longitude, fishingspots);
+                                        Object dataTransfer[] = new Object[2];
+                                        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+                                        dataTransfer[0] = mMap;
+                                        dataTransfer[1] = url;
+                                        getNearbyPlacesData.execute(dataTransfer);
+                                        Toast.makeText(getContext(), "Showing Nearby Fishing spots", Toast.LENGTH_SHORT).show();
                                         fusedLocationClient.removeLocationUpdates(locationCallback);
                                     }
                                 };
                                 fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
-
                             }
                         }
                     }
