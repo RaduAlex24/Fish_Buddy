@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -68,7 +69,10 @@ public class ForumFragment extends Fragment {
         initSpinnerCategory();
 
         // Preluare initiala de posturi
-        initialGetAllForumPosts();
+        //initialGetAllForumPosts();
+
+        // Evenimentru pentru schimbarea categoriei
+        spinnerCategory.setOnItemSelectedListener(onItemSelectedListenerSpinner());
 
         return view;
     }
@@ -77,6 +81,7 @@ public class ForumFragment extends Fragment {
     // Metode
     // Init components
     private void initComponents(View view) {
+        // Initializare controale vizuale
         spinnerCategory = view.findViewById(R.id.spinner_category_forumPost);
         fabAddPost = view.findViewById(R.id.fab_createPost_forumFragment);
         lvForum = view.findViewById(R.id.lv_forumFragment);
@@ -122,6 +127,67 @@ public class ForumFragment extends Fragment {
         return new Callback<List<ForumPost>>() {
             @Override
             public void runResultOnUiThread(List<ForumPost> result) {
+                forumPostList.clear();
+                forumPostList.addAll(result);
+                notifyInternalAdapter();
+            }
+        };
+    }
+
+
+    // Spinner on item selected
+    private AdapterView.OnItemSelectedListener onItemSelectedListenerSpinner() {
+        return new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                // Switch pe enum
+                String category = "";
+                switch (position){
+                    case 0:
+                        category = "";
+                        break;
+                    case 1:
+                        category = "SFATURI";
+                        break;
+                    case 2:
+                        category = "PESTI";
+                        break;
+                    case 3:
+                        category = "ECHIPAMENTE";
+                        break;
+                    case 4:
+                        category = "INCEPATORI";
+                        break;
+                    case 5:
+                        category = "GLUME";
+                        break;
+                    default:
+                        category = "";
+                }
+
+                if(!category.equals("")) {
+                    forumPostService.getAllForumPostsByCategory(category, callbackGetAllByCategory());
+                }
+                else{
+                    initialGetAllForumPosts();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+    }
+
+    // Callback get all by category
+    private Callback<List<ForumPost>> callbackGetAllByCategory() {
+        return new Callback<List<ForumPost>>() {
+            @Override
+            public void runResultOnUiThread(List<ForumPost> result) {
+                forumPostList.clear();
                 forumPostList.addAll(result);
                 notifyInternalAdapter();
             }

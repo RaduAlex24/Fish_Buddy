@@ -173,7 +173,7 @@ public class MapsFragment extends Fragment {
                                 dataTransfer[0] = mMap;
                                 dataTransfer[1] = url;
                                 getNearbyPlacesData.execute(dataTransfer);
-                                Toast.makeText(getContext(), "Showing Nearby Fishing spots", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getContext(), "Showing Nearby Fishing spots", Toast.LENGTH_SHORT).show();
                             } else {
                                 final LocationRequest locationRequest = LocationRequest.create();
                                 locationRequest.setInterval(1000);
@@ -197,7 +197,7 @@ public class MapsFragment extends Fragment {
                                         dataTransfer[0] = mMap;
                                         dataTransfer[1] = url;
                                         getNearbyPlacesData.execute(dataTransfer);
-                                        Toast.makeText(getContext(), "Showing Nearby Fishing spots", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(getContext(), "Showing Nearby Fishing spots", Toast.LENGTH_SHORT).show();
                                         fusedLocationClient.removeLocationUpdates(locationCallback);
                                     }
                                 };

@@ -3,7 +3,7 @@ package com.example.licenta.clase.forum;
 public enum CategoryForum {
     SFATURI("Sfaturi"),
     PESTI("Pesti"),
-    ECHIPAMENT("Echipamente"),
+    ECHIPAMENTE("Echipamente"),
     INCEPATORI("Incepatori"),
     GLUME("Glume");
 
