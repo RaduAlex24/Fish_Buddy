@@ -3,6 +3,7 @@ package com.example.licenta.homeFragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -16,25 +17,31 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.licenta.CreateForumPostActivity;
 import com.example.licenta.R;
 import com.example.licenta.SignUpActivity;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.forum.CategoryForum;
 import com.example.licenta.clase.forum.ForumPost;
+import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.database.service.ForumPostService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class ForumFragment extends Fragment {
 
+    public static final int REQUEST_CODE_CREATE_FORUM_POST = 201;
     private Spinner spinnerCategory;
     private FloatingActionButton fabAddPost;
     private ListView lvForum;
 
     private static final String tagLog = "FragmentForum";
+    private CurrentUser currentUser = CurrentUser.getInstance();
 
     private ForumPostService forumPostService = new ForumPostService();
     private List<ForumPost> forumPostList = new ArrayList<>();
@@ -74,6 +81,9 @@ public class ForumFragment extends Fragment {
         // Evenimentru pentru schimbarea categoriei
         spinnerCategory.setOnItemSelectedListener(onItemSelectedListenerSpinner());
 
+        // Eveniment pt click pe butonul de creare interventie forum
+        fabAddPost.setOnClickListener(onClickCreateForumPost());
+
         return view;
     }
 
@@ -96,6 +106,8 @@ public class ForumFragment extends Fragment {
         for (CategoryForum category : CategoryForum.values()) {
             categoryList.add(category.getLabel());
         }
+
+        categoryList.add("Postarile mele");
 
         ArrayAdapter adapter = new ArrayAdapter(getContext(),
                 android.R.layout.simple_dropdown_item_1line, categoryList);
@@ -135,6 +147,18 @@ public class ForumFragment extends Fragment {
     }
 
 
+    // On clcikpt fab add new forum post
+    private View.OnClickListener onClickCreateForumPost() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CreateForumPostActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_CREATE_FORUM_POST);
+            }
+        };
+    }
+
+
     // Spinner on item selected
     private AdapterView.OnItemSelectedListener onItemSelectedListenerSpinner() {
         return new AdapterView.OnItemSelectedListener() {
@@ -143,9 +167,9 @@ public class ForumFragment extends Fragment {
 
                 // Switch pe enum
                 String category = "";
-                switch (position){
+                switch (position) {
                     case 0:
-                        category = "";
+                        category = "GENERAL";
                         break;
                     case 1:
                         category = "SFATURI";
@@ -162,15 +186,19 @@ public class ForumFragment extends Fragment {
                     case 5:
                         category = "GLUME";
                         break;
+                    case 6:
+                        category = "POSTARILE_MELE";
+                        break;
                     default:
                         category = "";
                 }
 
-                if(!category.equals("")) {
+                if (!(category.equals("GENERAL") || category.equals("POSTARILE_MELE"))) {
                     forumPostService.getAllForumPostsByCategory(category, callbackGetAllByCategory());
-                }
-                else{
+                } else if(category.equals("GENERAL")) {
                     initialGetAllForumPosts();
+                } else if(category.equals("POSTARILE_MELE")){
+                    forumPostService.getAllForumPostsByUserId(currentUser.getId(), callbackGetForumPostsByUserId());
                 }
 
             }
@@ -178,6 +206,18 @@ public class ForumFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        };
+    }
+
+    // Callback pt get all post by currentuser id
+    private Callback<List<ForumPost>> callbackGetForumPostsByUserId() {
+        return new Callback<List<ForumPost>>() {
+            @Override
+            public void runResultOnUiThread(List<ForumPost> result) {
+                forumPostList.clear();
+                forumPostList.addAll(result);
+                notifyInternalAdapter();
             }
         };
     }
@@ -194,4 +234,19 @@ public class ForumFragment extends Fragment {
         };
     }
 
+
+
+    // On activity result
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Post forum nou
+        if (requestCode == REQUEST_CODE_CREATE_FORUM_POST && resultCode == RESULT_OK && data != null) {
+            ForumPost forumPost = (ForumPost) data.getSerializableExtra(CreateForumPostActivity.NEW_FORUM_POST_KEY);
+            spinnerCategory.setSelection(0);
+            forumPostList.add(forumPost);
+            notifyInternalAdapter();
+        }
+    }
 }

@@ -2,9 +2,10 @@ package com.example.licenta.clase.forum;
 
 import com.example.licenta.util.dateUtils.DateConverter;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ForumPost {
+public class ForumPost implements Serializable {
     private int id;
     private int userId;
     private String creatorUsername;
@@ -48,6 +49,18 @@ public class ForumPost {
         this.postDate = DateConverter.toDateFromLong(System.currentTimeMillis());
     }
 
+    public ForumPost(int userId, String creatorUsername, String title, String content, CategoryForum category) {
+        this.userId = userId;
+        this.creatorUsername = creatorUsername;
+        this.title = title;
+        this.content = content;
+        this.category = category;
+
+        this.nrLikes = 0;
+        this.nrDislikes = 0;
+        this.nrComments = 0;
+        this.postDate = DateConverter.toDateFromLong(System.currentTimeMillis());
+    }
 
     // Getteri si setteri
     public int getId() {

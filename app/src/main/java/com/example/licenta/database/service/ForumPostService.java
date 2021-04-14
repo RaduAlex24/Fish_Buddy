@@ -114,4 +114,105 @@ public class ForumPostService {
     }
 
 
+    // Get all forum post by user id
+    public void getAllForumPostsByUserId(int id, Callback<List<ForumPost>> callback) {
+        Callable<List<ForumPost>> callable = new Callable<List<ForumPost>>() {
+            @Override
+            public List<ForumPost> call() throws Exception {
+                List<ForumPost> forumPostList = new ArrayList<>();
+
+                String sql = "SELECT * FROM " + numeBDforum + " WHERE userId LIKE ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, id);
+                ResultSet resultSet = statement.executeQuery();
+
+                while (resultSet.next()) {
+                    int id = resultSet.getInt(1);
+                    int userId = resultSet.getInt(2);
+                    String creatorUsername = resultSet.getString(3);
+                    String title = resultSet.getString(4);
+                    String content = resultSet.getString(5);
+                    int nrLikes = resultSet.getInt(6);
+                    int nrDislikes = resultSet.getInt(7);
+                    int nrComments = resultSet.getInt(8);
+
+                    String category = resultSet.getString(9);
+                    CategoryForum categoryForum = CategoryForum.valueOf(category);
+
+                    String postDate = resultSet.getString(10);
+                    Date date = DateConverter.toDate(postDate);
+
+                    ForumPost forumPost = new ForumPost(id, userId, creatorUsername, title, content,
+                            nrLikes, nrDislikes, nrComments, categoryForum, date);
+                    forumPostList.add(forumPost);
+                }
+
+
+                statement.close();
+                resultSet.close();
+                return forumPostList;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Get next id
+    public void getNextForumPostId(Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int id = -1;
+
+                String sql = "SELECT forum_post_id.nextval FROM DUAL";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    id = resultSet.getInt(1);
+                }
+
+                statement.close();
+                resultSet.close();
+                return id;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Insert new forum post
+    public void insertNewForumPost(ForumPost forumPost, int id, Callback<ForumPost> callback) {
+        Callable<ForumPost> callable = new Callable<ForumPost>() {
+            @Override
+            public ForumPost call() throws Exception {
+                forumPost.setId(id);
+
+                String sql = "INSERT INTO " + numeBDforum + "(id, userId, creatorUsername, title, content, " +
+                        "nrLikes, nrDislikes, nrComments, category, postDate)" +
+                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, forumPost.getId());
+                statement.setInt(2, forumPost.getUserId());
+                statement.setString(3, forumPost.getCreatorUsername());
+                statement.setString(4, forumPost.getTitle());
+                statement.setString(5, forumPost.getContent());
+                statement.setInt(6, forumPost.getNrLikes());
+                statement.setInt(7, forumPost.getNrDislikes());
+                statement.setInt(8, forumPost.getNrComments());
+                statement.setString(9, forumPost.getCategory().toString());
+                statement.setString(10, DateConverter.toString(forumPost.getPostDate()));
+                statement.executeUpdate();
+
+
+                statement.close();
+                return forumPost;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
 }

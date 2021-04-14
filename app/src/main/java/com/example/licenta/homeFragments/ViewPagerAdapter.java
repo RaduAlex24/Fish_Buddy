@@ -21,8 +21,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position){
-            case 0: return new VirtualAssistantFragment();
-            case 1: return new ForumFragment();
+            case 1: return new VirtualAssistantFragment();
+            case 0: return new ForumFragment();
             case 2: return new MapsFragment();
             default: return  new VirtualAssistantFragment();
         }

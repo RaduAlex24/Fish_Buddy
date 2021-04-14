@@ -36,4 +36,15 @@
     <string name="error_surname_minChar">Numele trebuie sa aiba cel putin 2 caractere</string>
     <string name="error_username_existentDeja">Numele de utilizator este deja folosit</string>
     <string name="toast_press_back_toQuit">Apsati din nou pentru a inchide aplicatia</string>
+    <string name="criterii_neindeplinite_postForumNou">Criterii de creare interventie forum neindeplinite</string>
+    <string name="eroare_nextId_postForum">Eroare baza de date reporniti aplicatia</string>
+    <string name="toast_creare_interventirForum_reusita">Interventie forum noua creata cu succes!</string>
+    <string name="error_title_below3char">Titlul trebuie sa aiba cel putin 3 caractere</string>
+    <string name="error_title_aboce100char">Titlul trebuie sa aiba maxim 100 caractere</string>
+    <string name="error_content_below5char">Continutul trebuie sa aiba cel putin 5 caractere</string>
+    <string name="error_content_above500char">Continutul trebuie sa aiba maxim 500 caractere</string>
+    <string name="log_nextForumPostId">Eroare next id pt creare interventie forum</string>
+    <string name="title_createForumPost">Titlu</string>
+    <string name="content_crearePostForum">Continut</string>
+    <string name="creare_interventie_crearePostForum">Creare interventie</string>
 </resources>
