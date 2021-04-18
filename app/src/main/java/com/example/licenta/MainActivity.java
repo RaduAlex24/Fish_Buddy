@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         // Initializare componente
         initComponents();
 
-        Toast.makeText(this, currentUser.toString(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, currentUser.toString(), Toast.LENGTH_LONG).show();
 
         // Initializare pager adapter
         initViewPagerAdapter();

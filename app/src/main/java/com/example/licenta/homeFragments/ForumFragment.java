@@ -23,6 +23,7 @@ import com.example.licenta.SignUpActivity;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.forum.CategoryForum;
 import com.example.licenta.clase.forum.ForumPost;
+import com.example.licenta.clase.forum.ForumPostLvAdapter;
 import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.database.service.ForumPostService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -84,6 +85,16 @@ public class ForumFragment extends Fragment {
         // Eveniment pt click pe butonul de creare interventie forum
         fabAddPost.setOnClickListener(onClickCreateForumPost());
 
+        // Adaugare eveniment click pe obiectele din listview
+        lvForum.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getContext(),
+                        "Click pe forum postul " + forumPostList.get(position).getId(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return view;
     }
 
@@ -117,8 +128,8 @@ public class ForumFragment extends Fragment {
 
     // Initializare listview adapter
     private void initListViewAdapter() {
-        ArrayAdapter adapter = new ArrayAdapter(getContext(),
-                android.R.layout.simple_list_item_1, forumPostList);
+        ForumPostLvAdapter adapter = new ForumPostLvAdapter(getContext(),
+                R.layout.listview_row_forum_post, forumPostList, getLayoutInflater());
         lvForum.setAdapter(adapter);
     }
 
@@ -195,9 +206,9 @@ public class ForumFragment extends Fragment {
 
                 if (!(category.equals("GENERAL") || category.equals("POSTARILE_MELE"))) {
                     forumPostService.getAllForumPostsByCategory(category, callbackGetAllByCategory());
-                } else if(category.equals("GENERAL")) {
+                } else if (category.equals("GENERAL")) {
                     initialGetAllForumPosts();
-                } else if(category.equals("POSTARILE_MELE")){
+                } else if (category.equals("POSTARILE_MELE")) {
                     forumPostService.getAllForumPostsByUserId(currentUser.getId(), callbackGetForumPostsByUserId());
                 }
 
@@ -233,7 +244,6 @@ public class ForumFragment extends Fragment {
             }
         };
     }
-
 
 
     // On activity result

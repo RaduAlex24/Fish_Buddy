@@ -66,6 +66,8 @@ public class CreateForumPostActivity extends AppCompatActivity {
         tiet_content = findViewById(R.id.tiet_content_createForumPost);
         btn_createForumPost = findViewById(R.id.btn_createForumPost);
 
+        tiet_content.setText(" ");
+
         // Preluare intent
         intent = getIntent();
     }
