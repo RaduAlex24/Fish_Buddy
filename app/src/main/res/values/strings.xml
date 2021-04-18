@@ -60,4 +60,10 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="username">Username</string>
     <string name="email_ul_utilizatorului">Email ul utilizatorului</string>
+    <string name="dummy_user_rowAdapterForumPost">Blex24</string>
+    <string name="dummy_date_rowAdapterForumPost">11-12-2020</string>
+    <string name="dummy_title_rowAdapterForumPost">Cum se da la peste?</string>
+    <string name="dummy_content_rowAdapterForumPost">Donec eget massa id urna varius condimentum. Cras vitae ultrices dui, a imperdiet ex. Curabitur vehicula bibendum erat, et cursus massa. Phasellus quis porttitor nulla, tempor consequat sem. Aenean dictum leo et laoreet lacinia. In hac habitasse platea dictumst. Sed sodales est et metus luctus, eu gravida felis vestibulum.</string>
+    <string name="dummy_nrLikes_rowAdapterForumPost">320</string>
+    <string name="dummy_nrComments_rowAdapterForumPost">120</string>
 </resources>

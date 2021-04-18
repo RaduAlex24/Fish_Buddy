@@ -86,17 +86,11 @@ public class ForumFragment extends Fragment {
         fabAddPost.setOnClickListener(onClickCreateForumPost());
 
         // Adaugare eveniment click pe obiectele din listview
-        lvForum.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(),
-                        "Click pe forum postul " + forumPostList.get(position).getId(),
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        lvForum.setOnItemClickListener(onClickListViewItem());
 
         return view;
     }
+
 
 
     // Metode
@@ -170,6 +164,19 @@ public class ForumFragment extends Fragment {
     }
 
 
+    // On click list view item - forum posts
+    private AdapterView.OnItemClickListener onClickListViewItem() {
+        return new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getContext(),
+                        "Click pe forum postul " + forumPostList.get(position).getId(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
+    }
+
+
     // Spinner on item selected
     private AdapterView.OnItemSelectedListener onItemSelectedListenerSpinner() {
         return new AdapterView.OnItemSelectedListener() {
@@ -212,6 +219,7 @@ public class ForumFragment extends Fragment {
                     forumPostService.getAllForumPostsByUserId(currentUser.getId(), callbackGetForumPostsByUserId());
                 }
 
+                lvForum.setSelection(0);
             }
 
             @Override

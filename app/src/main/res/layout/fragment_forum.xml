@@ -53,6 +53,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title_forumFragment" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_forumFragment"
+        android:dividerHeight="15dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
