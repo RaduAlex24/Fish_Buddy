@@ -70,4 +70,13 @@
     <string name="menu_profil">Profil</string>
     <string name="menu_setari">Setari</string>
     <string name="menu_adauga_un_peste">Adauga un peste</string>
+    <string name="dummy_points_NavHeader">Puncte: 125</string>
+    <string name="log_update_dislike2like_forumPostLvAdapter">Updateul dislike to like a modificat mai mult de un rand</string>
+    <string name="log_delete_like_forumPostLvAdapter">Deletul de like a sters mai mult de un rand</string>
+    <string name="log_insertLike_forumPostLvAdapter">Insertual de nou like a inserat mai mult de un rand</string>
+    <string name="log_update_like2dislike_forumPostLvAdapter">Updateul de like to dislike a modificat mai mult de un rand</string>
+    <string name="log_delete_dislike_forumPostLvAdapter">Deletul de dislike a sters mai mult de un rand</string>
+    <string name="log_insertDislike_forumPostLvAdapter">Insertual de dislike a inserat mai mult de un rand</string>
+    <string name="log_updateNrLikesDislikes_forum_forumPostLvAdapter">Updateul de nrlike nrdislike de la forum post a schimbat mai mult de un rand</string>
+    <string name="log_updatePoints_user_forumPostLvAdapter">Updateul de points la useri a actualizat mai mult de un rand</string>
 </resources>

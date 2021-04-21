@@ -102,8 +102,10 @@ public class MainActivity extends AppCompatActivity {
         View headerView = navigationView.getHeaderView(0);
         TextView tvUsername = headerView.findViewById(R.id.tv_main_username);
         TextView tvEmail = headerView.findViewById(R.id.tv_main_email);
+        TextView tvPoints = headerView.findViewById(R.id.tv_points_mainNavHeader);
         tvEmail.setText(currentUser.getEmail());
         tvUsername.setText(currentUser.getUsername());
+        tvPoints.setText("Puncte: " + currentUser.getPoints());
     }
 
     private void configNavigation() {

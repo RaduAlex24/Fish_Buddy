@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.licenta.asyncTask.AsyncTaskRunner;
 import com.example.licenta.asyncTask.Callback;
+import com.example.licenta.clase.forum.LikeForum;
 import com.example.licenta.clase.user.User;
 import com.example.licenta.database.ConexiuneBD;
 
@@ -152,4 +153,29 @@ public class UserService {
 
         asyncTaskRunner.executeAsync(callable, callback);
     }
+
+
+    // Update points by user id and points
+    public void updatePointsByUserIdAndPoints(int id, int points, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "UPDATE " +  numeBDuser + " SET points = points + ? " +
+                        "WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, points);
+                statement.setInt(2, id);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
 }

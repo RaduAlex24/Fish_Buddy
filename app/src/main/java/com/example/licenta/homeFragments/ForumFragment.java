@@ -24,18 +24,23 @@ import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.forum.CategoryForum;
 import com.example.licenta.clase.forum.ForumPost;
 import com.example.licenta.clase.forum.ForumPostLvAdapter;
+import com.example.licenta.clase.forum.LikeForum;
 import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.database.service.ForumPostService;
+import com.example.licenta.database.service.LikeForumService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
 
 public class ForumFragment extends Fragment {
 
+    // TO DO ORDINEA FORUMURILOR SI LIKEURILOR
     public static final int REQUEST_CODE_CREATE_FORUM_POST = 201;
     private Spinner spinnerCategory;
     private FloatingActionButton fabAddPost;
@@ -46,6 +51,9 @@ public class ForumFragment extends Fragment {
 
     private ForumPostService forumPostService = new ForumPostService();
     private List<ForumPost> forumPostList = new ArrayList<>();
+
+    private LikeForumService likeForumService = new LikeForumService();
+    private Map<Integer, LikeForum> likeForumMap = new HashMap<>();
 
 
     public ForumFragment() {
@@ -67,17 +75,18 @@ public class ForumFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_forum, container, false);
 
+        // Preluare like forum posts
+        initLikForumMap();
+
         // Initializare componente
         initComponents(view);
-
-        // Initializare listview adapter
-        initListViewAdapter();
 
         // Initializare adapter spinner category
         initSpinnerCategory();
 
         // Preluare initiala de posturi
         //initialGetAllForumPosts();
+
 
         // Evenimentru pentru schimbarea categoriei
         spinnerCategory.setOnItemSelectedListener(onItemSelectedListenerSpinner());
@@ -92,7 +101,6 @@ public class ForumFragment extends Fragment {
     }
 
 
-
     // Metode
     // Init components
     private void initComponents(View view) {
@@ -100,6 +108,25 @@ public class ForumFragment extends Fragment {
         spinnerCategory = view.findViewById(R.id.spinner_category_forumPost);
         fabAddPost = view.findViewById(R.id.fab_createPost_forumFragment);
         lvForum = view.findViewById(R.id.lv_forumFragment);
+    }
+
+
+    // Preluare like forum posts si initializare likeForumMap
+    private void initLikForumMap() {
+        likeForumService.getLikeForumByUserId(currentUser.getId(), callbackGetLikeFroumByUserId());
+    }
+
+    // Callback preluare like forum posts si initializare likeForumMap
+    private Callback<Map<Integer, LikeForum>> callbackGetLikeFroumByUserId() {
+        return new Callback<Map<Integer, LikeForum>>() {
+            @Override
+            public void runResultOnUiThread(Map<Integer, LikeForum> result) {
+                // Primire like forum
+                likeForumMap = result;
+                // Initializare listview adapter
+                initListViewAdapter();
+            }
+        };
     }
 
 
@@ -123,7 +150,8 @@ public class ForumFragment extends Fragment {
     // Initializare listview adapter
     private void initListViewAdapter() {
         ForumPostLvAdapter adapter = new ForumPostLvAdapter(getContext(),
-                R.layout.listview_row_forum_post, forumPostList, getLayoutInflater());
+                R.layout.listview_row_forum_post, forumPostList,
+                getLayoutInflater(), likeForumMap, currentUser);
         lvForum.setAdapter(adapter);
     }
 

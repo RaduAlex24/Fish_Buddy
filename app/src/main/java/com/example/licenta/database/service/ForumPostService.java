@@ -4,6 +4,7 @@ import com.example.licenta.asyncTask.AsyncTaskRunner;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.forum.CategoryForum;
 import com.example.licenta.clase.forum.ForumPost;
+import com.example.licenta.clase.forum.LikeForum;
 import com.example.licenta.database.ConexiuneBD;
 import com.example.licenta.util.dateUtils.DateConverter;
 
@@ -215,4 +216,30 @@ public class ForumPostService {
 
         asyncTaskRunner.executeAsync(callable, callback);
     }
+
+
+    // Update nrLikes nrDislikes by Forum Post
+    public void updatenrLikesnrDislikesByForumPost(ForumPost forumPost, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "UPDATE " +  numeBDforum + " SET nrLikes = ? , nrDislikes= ? " +
+                        "WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setString(1, String.valueOf(forumPost.getNrLikes()));
+                statement.setString(2, String.valueOf(forumPost.getNrDislikes()));
+                statement.setInt(3, forumPost.getId());
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
 }
