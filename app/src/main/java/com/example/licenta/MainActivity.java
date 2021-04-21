@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         configNavigation();
-        setareCredintentiale();
         navigationView = findViewById(R.id.nav_view);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         navigationView.setNavigationItemSelectedListener(itemSelectedListener);
@@ -120,6 +119,27 @@ public class MainActivity extends AppCompatActivity {
                 R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+                setareCredintentiale();
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
     }
 
 
