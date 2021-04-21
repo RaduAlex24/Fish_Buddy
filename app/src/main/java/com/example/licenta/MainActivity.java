@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.licenta.clase.user.CurrentUser;
@@ -27,9 +28,6 @@ import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ViewPager viewPager;
-    private FragmentManager fragmentManager;
-
     private static final int TIME_INTERVAL = 2000;
     private long mBackPressed;
 
@@ -37,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private BottomNavigationView bottomNavigationView;
+    private NavigationView navigationView;
 
 
     @Override
@@ -45,34 +44,60 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         configNavigation();
         setareCredintentiale();
+        navigationView = findViewById(R.id.nav_view);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment selectedFragment = null;
-                switch (item.getItemId()) {
-                    case R.id.nav_home:
-                        selectedFragment = new ForumFragment();
-                        break;
-                    case R.id.nav_forum:
-                        selectedFragment = new VirtualAssistantFragment();
-                        break;
-                    case R.id.nav_map:
-                        selectedFragment = new MapsFragment();
-                        break;
-                    default: selectedFragment= new ForumFragment();
-                }
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        selectedFragment).commit();
-                return true;
-            }
-        });
+        navigationView.setNavigationItemSelectedListener(itemSelectedListener);
+        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new ForumFragment()).commit();
         }
     }
-    private void setareCredintentiale(){
+
+    private NavigationView.OnNavigationItemSelectedListener itemSelectedListener =
+            new NavigationView.OnNavigationItemSelectedListener() {
+
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    if(item.getItemId()== R.id.nav_profile){
+                        Toast.makeText(MainActivity.this, "Optiunea profil a fost apasata", Toast.LENGTH_SHORT).show();
+                    }
+                    if(item.getItemId()==R.id.nav_setari){
+                        Toast.makeText(MainActivity.this, "Optiunea setari a fost apasata", Toast.LENGTH_SHORT).show();
+                    }
+                    if(item.getItemId()==R.id.nav_adauga_peste){
+                        Toast.makeText(MainActivity.this, "Optiunea adauga un peste a fost apasata", Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+
+            };
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selectedFragment = null;
+                    switch (item.getItemId()) {
+                        case R.id.nav_forum:
+                            selectedFragment = new ForumFragment();
+                            break;
+                        case R.id.nav_asistent:
+                            selectedFragment = new VirtualAssistantFragment();
+                            break;
+                        case R.id.nav_map:
+                            selectedFragment = new MapsFragment();
+                            break;
+                        default:
+                            selectedFragment = new ForumFragment();
+                    }
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            selectedFragment).commit();
+                    return true;
+                }
+            };
+
+    private void setareCredintentiale() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         TextView tvUsername = headerView.findViewById(R.id.tv_main_username);
@@ -97,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Rescriere back pt parasire aplicatie
+    //Trebuie inchisa aplicatia de tot
     @Override
     public void onBackPressed() {
         if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {

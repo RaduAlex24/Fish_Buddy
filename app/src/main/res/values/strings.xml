@@ -67,4 +67,7 @@
     <string name="dummy_nrLikes_rowAdapterForumPost">320</string>
     <string name="dummy_nrComments_rowAdapterForumPost">120</string>
     <string name="aminteste_ma">Aminteste-ma</string>
+    <string name="menu_profil">Profil</string>
+    <string name="menu_setari">Setari</string>
+    <string name="menu_adauga_un_peste">Adauga un peste</string>
 </resources>
