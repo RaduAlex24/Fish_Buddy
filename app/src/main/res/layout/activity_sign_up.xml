@@ -121,12 +121,14 @@
             app:layout_constraintBottom_toTopOf="@+id/til_confirm_password_signup"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:passwordToggleEnabled="true"
             app:layout_constraintTop_toBottomOf="@+id/til_email_signup">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tiet_password_signup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textPassword"
                 android:hint="@string/parola_signup" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -140,6 +142,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:passwordToggleEnabled="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/til_password_signup">
 
@@ -147,6 +150,7 @@
                 android:id="@+id/tiet_confirm_password_signup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textPassword"
                 android:hint="@string/confirmare_parola_signup" />
         </com.google.android.material.textfield.TextInputLayout>
 

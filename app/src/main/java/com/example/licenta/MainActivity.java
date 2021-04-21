@@ -11,6 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
@@ -21,6 +22,7 @@ import com.example.licenta.homeFragments.MapsFragment;
 import com.example.licenta.homeFragments.ViewPagerAdapter;
 import com.example.licenta.homeFragments.VirtualAssistantFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -36,11 +38,13 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private BottomNavigationView bottomNavigationView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         configNavigation();
+        setareCredintentiale();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -68,6 +72,14 @@ public class MainActivity extends AppCompatActivity {
                     new ForumFragment()).commit();
         }
     }
+    private void setareCredintentiale(){
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView tvUsername = headerView.findViewById(R.id.tv_main_username);
+        TextView tvEmail = headerView.findViewById(R.id.tv_main_email);
+        tvEmail.setText(currentUser.getEmail());
+        tvUsername.setText(currentUser.getUsername());
+    }
 
     private void configNavigation() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -82,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
     }
+
 
     // Rescriere back pt parasire aplicatie
     @Override
