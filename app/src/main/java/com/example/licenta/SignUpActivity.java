@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.database.service.UserService;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -25,6 +26,12 @@ public class SignUpActivity extends AppCompatActivity {
     private TextInputEditText tietEmail;
     private TextInputEditText tietPassword;
     private TextInputEditText tietConfirmPassword;
+    private TextInputLayout tilUsername;
+    private TextInputLayout tilSurname;
+    private TextInputLayout tilName;
+    private TextInputLayout tilEmail;
+    private TextInputLayout tilPassword;
+    private TextInputLayout tilConfirmPassword;
     private Button btnSignup;
 
     private UserService userService = new UserService();
@@ -64,7 +71,12 @@ public class SignUpActivity extends AppCompatActivity {
         tietPassword = findViewById(R.id.tiet_password_signup);
         tietConfirmPassword = findViewById(R.id.tiet_confirm_password_signup);
         btnSignup = findViewById(R.id.btn_signup);
-
+        tilUsername = findViewById(R.id.til_username_signup);
+        tilSurname = findViewById(R.id.til_surname_signup);
+        tilName = findViewById(R.id.til_name_signup);
+        tilEmail = findViewById(R.id.til_email_signup);
+        tilPassword = findViewById(R.id.til_password_signup);
+        tilConfirmPassword = findViewById(R.id.til_confirm_password_signup);
         intent = getIntent();
     }
 
@@ -174,18 +186,12 @@ public class SignUpActivity extends AppCompatActivity {
                 stringTietPassword = tietPassword.getText().toString().replace(" ", "");
 
                 if (stringTietPassword.length() < 6) {
-                    tietPassword.setError(getString(R.string.error_invalid_password));
+                    tilPassword.setError("Parola trebuie sa aiba cel putin 6 caractere");
                 } else if (stringTietPassword.length() > 20) {
-                    tietPassword.setError(getString(R.string.error_password_over_max_char));
-
-                } else if (tietConfirmPassword.length() != 0) {
-                    if (!stringTietPassword.equals(stringTietConfirmaPassword)) {
-                        tietPassword.setError(getString(R.string.error_parole_nu_coincid));
-                        tietConfirmPassword.setError(getString(R.string.error_parole_nu_coincid));
-                    } else {
-                        tietPassword.setError(null);
-                        tietConfirmPassword.setError(null);
-                    }
+                    tilPassword.setError("Parola trebuie sa aiba maximul 20 de caractere");
+                } else {
+                    tilPassword.setError(null);
+                    tilConfirmPassword.setError(null);
                 }
             }
         };
@@ -208,17 +214,16 @@ public class SignUpActivity extends AppCompatActivity {
                 stringTietPassword = tietPassword.getText().toString().replace(" ", "");
 
                 if (stringTietConfirmaPassword.length() < 6) {
-                    tietConfirmPassword.setError(getString(R.string.error_invalid_password));
+                    tilConfirmPassword.setError("Parola trebuie sa aiba cel putin 6 caractere");
                 } else if (stringTietConfirmaPassword.length() > 20) {
-                    tietConfirmPassword.setError(getString(R.string.error_password_over_max_char));
-
+                    tilConfirmPassword.setError("Parola trebuie sa aiba maximul 20 de caractere");
                 } else if (tietPassword.length() != 0) {
                     if (!stringTietPassword.equals(stringTietConfirmaPassword)) {
-                        tietPassword.setError(getString(R.string.error_parole_nu_coincid));
-                        tietConfirmPassword.setError(getString(R.string.error_parole_nu_coincid));
+                        tilPassword.setError("Parolele nu coincid");
+                        tilConfirmPassword.setError("Parolele nu coincid");
                     } else {
-                        tietPassword.setError(null);
-                        tietConfirmPassword.setError(null);
+                        tilPassword.setError(null);
+                        tilConfirmPassword.setError(null);
                     }
                 }
             }
@@ -241,12 +246,13 @@ public class SignUpActivity extends AppCompatActivity {
                 String stringTietEmail = tietEmail.getText().toString().replace(" ", "");
 
                 if (stringTietEmail.length() < 5) {
-                    tietEmail.setError(getString(R.string.error_email_underMinChar));
+                    tilEmail.setError("Emailul trebuie sa aiba cel putin 5 caractere");
                 } else if (stringTietEmail.length() > 40) {
-                    tietEmail.setError(getString(R.string.email_excedesMaxChar));
+                    tilEmail.setError("Emailul trebuie sa aiba maximum 40 de caractere");
                 } else if (!(stringTietEmail.contains("@") && stringTietEmail.contains("."))) {
-                    tietEmail.setError(getString(R.string.error_email_format));
+                    tilEmail.setError("Emailul trebuie sa fie de forma xxxx@xxxx.xx");
                 } else {
+                    tilEmail.setError(null);
                     userService.getCountByEmail(stringTietEmail, callbackGetCountByEmail());
                 }
             }
@@ -259,7 +265,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void runResultOnUiThread(Integer result) {
                 if (result != 0) {
-                    tietEmail.setError(getString(R.string.error_email_dejaInregistrat));
+                    tilEmail.setError("Emailul este deja inregistrat");
                 }
             }
         };
@@ -281,9 +287,11 @@ public class SignUpActivity extends AppCompatActivity {
                 String stringTietName = tietName.getText().toString().replace(" ", "");
 
                 if (stringTietName.length() < 2) {
-                    tietName.setError(getString(R.string.error_nume_subMinChar));
+                    tilName.setError("Prenumele trebuie sa aiba cel putin 2 caractere");
                 } else if (stringTietName.length() > 40) {
-                    tietName.setError(getString(R.string.error_name_pesteMaxChar));
+                    tilName.setError("Prenumele trebuie sa aiba maximum 40 de caractere");
+                } else {
+                    tilName.setError(null);
                 }
             }
         };
@@ -305,9 +313,11 @@ public class SignUpActivity extends AppCompatActivity {
                 String stringTietSurname = tietSurname.getText().toString().replace(" ", "");
 
                 if (stringTietSurname.length() < 2) {
-                    tietSurname.setError(getString(R.string.error_surname_minChar));
+                    tilSurname.setError("Numele de familie trebuie sa aiba cel putin 2 caractere");
                 } else if (stringTietSurname.length() > 20) {
-                    tietSurname.setError(getString(R.string.error_surname_maxChar));
+                    tilSurname.setError("Numele de familie trebuie sa aiba maximum 20 caractere");
+                } else {
+                    tilSurname.setError(null);
                 }
             }
         };
@@ -329,10 +339,11 @@ public class SignUpActivity extends AppCompatActivity {
                 String stringTietUsername = tietUsername.getText().toString().replace(" ", "");
 
                 if (stringTietUsername.length() < 6) {
-                    tietUsername.setError(getString(R.string.error_invalid_username));
+                    tilUsername.setError("Numele de utilizator trebuie sa aiba cel putin 6 caractere");
                 } else if (stringTietUsername.length() > 15) {
-                    tietUsername.setError(getString(R.string.error_username_over_max_char));
+                    tilUsername.setError("Numele de utilizator trebuie sa aiba maximum 6 caractere");
                 } else {
+                    tilUsername.setError(null);
                     userService.getCountByUsername(stringTietUsername, callbackCountByUsername());
                 }
             }
@@ -345,7 +356,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void runResultOnUiThread(Integer result) {
                 if (result != 0) {
-                    tietUsername.setError(getString(R.string.error_username_existentDeja));
+                    tilUsername.setError("Numele de utilizator este deja folosit");
                 }
             }
         };

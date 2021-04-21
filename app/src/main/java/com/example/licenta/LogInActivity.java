@@ -21,6 +21,7 @@ import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.clase.user.User;
 import com.example.licenta.database.service.UserService;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -30,6 +31,8 @@ public class LogInActivity extends AppCompatActivity {
     public static final String REMEMBER_CHECKED = "REMEMBER_CHECKED";
     private TextInputEditText tietUsername;
     private TextInputEditText tietPassword;
+    private TextInputLayout tilPassword;
+    private TextInputLayout tilUsername;
     private Button btnLogin;
     private TextView tvSignup;
     private CheckBox checkBoxRemember;
@@ -70,6 +73,8 @@ public class LogInActivity extends AppCompatActivity {
     private void initComponents() {
         tietUsername = findViewById(R.id.tiet_username_login);
         tietPassword = findViewById(R.id.tiet_password_login);
+        tilPassword=findViewById(R.id.til_password_login);
+        tilUsername=findViewById(R.id.til_username_login);
         btnLogin = findViewById(R.id.btn_login);
         tvSignup = findViewById(R.id.tv_signup_login);
         checkBoxRemember = findViewById(R.id.checkbox_rememberMe_login);
@@ -238,9 +243,12 @@ public class LogInActivity extends AppCompatActivity {
                 String tietUsernameText = tietUsername.getText().toString().replace(" ", "");
 
                 if (tietUsernameText.length() < 6) {
-                    tietUsername.setError(getString(R.string.error_invalid_username));
+                    tilUsername.setError("Numele de utilizator trebuie sa aiba cel putin 6 caractere");
                 } else if (tietUsernameText.length() > 15) {
-                    tietUsername.setError(getString(R.string.error_username_over_max_char));
+                    tilUsername.setError("Numele de utilizator trebuie sa aiba maximum 15 caractere");
+                }
+                else{
+                    tilUsername.setError(null);
                 }
             }
         };
@@ -261,9 +269,12 @@ public class LogInActivity extends AppCompatActivity {
                 String tietPasswordText = tietPassword.getText().toString().replace(" ", "");
 
                 if (tietPasswordText.length() < 6) {
-                    tietPassword.setError(getString(R.string.error_invalid_password));
+                    tilPassword.setError("Parola trebuie sa aiba minim 6 caractere");
                 } else if (tietPasswordText.length() > 20) {
-                    tietPassword.setError(getString(R.string.error_password_over_max_char));
+                    tilPassword.setError("Parola trebuie sa aiba maximum 20 caractere");
+                }
+                else{
+                    tilPassword.setError(null);
                 }
             }
         };
