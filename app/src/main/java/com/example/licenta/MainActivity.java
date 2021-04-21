@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
@@ -15,7 +16,11 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.licenta.clase.user.CurrentUser;
+import com.example.licenta.homeFragments.ForumFragment;
+import com.example.licenta.homeFragments.MapsFragment;
 import com.example.licenta.homeFragments.ViewPagerAdapter;
+import com.example.licenta.homeFragments.VirtualAssistantFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -29,19 +34,39 @@ public class MainActivity extends AppCompatActivity {
     private CurrentUser currentUser = CurrentUser.getInstance();
 
     private DrawerLayout drawerLayout;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Initializare componente
-        initComponents();
-
-        //Toast.makeText(this, currentUser.toString(), Toast.LENGTH_LONG).show();
-
-        // Initializare pager adapter
-        initViewPagerAdapter();
         configNavigation();
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+                switch (item.getItemId()) {
+                    case R.id.nav_home:
+                        selectedFragment = new ForumFragment();
+                        break;
+                    case R.id.nav_forum:
+                        selectedFragment = new VirtualAssistantFragment();
+                        break;
+                    case R.id.nav_map:
+                        selectedFragment = new MapsFragment();
+                        break;
+                    default: selectedFragment= new ForumFragment();
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        selectedFragment).commit();
+                return true;
+            }
+        });
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new ForumFragment()).commit();
+        }
     }
 
     private void configNavigation() {
@@ -56,24 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
-        TextView tvUsername = findViewById(R.id.tv_main_username);
-        TextView tvEmail = findViewById(R.id.tv_main_email);
     }
-
-    // Functii
-    // Initializare componente
-    private void initComponents() {
-        viewPager = findViewById(R.id.viewPager_main);
-        fragmentManager = getSupportFragmentManager();
-
-    }
-
-    // Setare adapter
-    private void initViewPagerAdapter() {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(fragmentManager);
-        viewPager.setAdapter(adapter);
-    }
-
 
     // Rescriere back pt parasire aplicatie
     @Override

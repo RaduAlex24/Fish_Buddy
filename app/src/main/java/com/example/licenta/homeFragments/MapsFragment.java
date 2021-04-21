@@ -105,7 +105,7 @@ public class MapsFragment extends Fragment {
                     }
                 }
             });
-            ImageView btnMyLocation = ((View) Objects.requireNonNull(mapFragment.getView()).findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+            ImageView btnMyLocation = ((View) mapFragment.requireView().findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
             btnMyLocation.setImageResource(R.drawable.navigation);
 
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
@@ -217,7 +217,7 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getContext()));
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
         requestPermision();
         return inflater.inflate(R.layout.fragment_maps, container, false);
     }
