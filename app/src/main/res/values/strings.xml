@@ -79,4 +79,25 @@
     <string name="log_insertDislike_forumPostLvAdapter">Insertual de dislike a inserat mai mult de un rand</string>
     <string name="log_updateNrLikesDislikes_forum_forumPostLvAdapter">Updateul de nrlike nrdislike de la forum post a schimbat mai mult de un rand</string>
     <string name="log_updatePoints_user_forumPostLvAdapter">Updateul de points la useri a actualizat mai mult de un rand</string>
+    <string name="enable_dark_mode">enable Dark mode</string>
+    <string name="introduceti_greutatea_pestelui">Introduceti greutatea pestelui</string>
+    <string name="introduceti_lungimea_pestelui">Introduceti lungimea pestelui</string>
+    <string name="selectati_specia_pestelui">Selectati Specia Pestelui:</string>
+    <string name="adaugati_un_peste">Adaugati un peste</string>
+    <string name="profil">Profil</string>
+    <string name="nume_de_utilizator">Nume de utilizator</string>
+    <string name="email">Email</string>
+
+    <string-array name="SpeciiPesti">
+        <item>Somn</item>
+        <item>Crap</item>
+        <item>Stiuca</item>
+        <item>Pastrav</item>
+        <item>Caras</item>
+        <item>Avat</item>
+        <item>Biban</item>
+        <item>Clean</item>
+        <item>Platica</item>
+        <item>Salau</item>
+    </string-array>
 </resources>

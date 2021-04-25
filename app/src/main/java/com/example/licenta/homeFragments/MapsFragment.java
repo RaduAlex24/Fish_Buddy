@@ -51,19 +51,9 @@ public class MapsFragment extends Fragment {
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
     private Location mLastKnownLocation;
-    int PROXIMITY_RADIUS = 100000;
+    int PROXIMITY_RADIUS = 3000000;
     double latitude,longitude;
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
-
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
 
         @Override
         public void onMapReady(GoogleMap googleMap) {
@@ -117,20 +107,6 @@ public class MapsFragment extends Fragment {
             btnMyLocation.setLayoutParams(layoutParams);
 
         }
-        private String getUrl(double latitude , double longitude , String nearbyPlace)
-        {
-
-            StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-            googlePlaceUrl.append("location="+latitude+","+longitude);
-            googlePlaceUrl.append("&radius="+PROXIMITY_RADIUS);
-            googlePlaceUrl.append("&type="+nearbyPlace);
-            googlePlaceUrl.append("&sensor=true");
-            googlePlaceUrl.append("&key=AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk");
-
-            Log.d("MapsActivity", "url = "+googlePlaceUrl.toString());
-
-            return googlePlaceUrl.toString();
-        }
     };
 
     @Override
@@ -146,7 +122,7 @@ public class MapsFragment extends Fragment {
         StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlaceUrl.append("location=" + latitude + "," + longitude);
         googlePlaceUrl.append("&radius=" + PROXIMITY_RADIUS);
-        googlePlaceUrl.append("&type=" + nearbyPlace);
+        googlePlaceUrl.append("&keyword=" + nearbyPlace);
         googlePlaceUrl.append("&sensor=true");
         googlePlaceUrl.append("&key=AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk");
 
@@ -166,7 +142,7 @@ public class MapsFragment extends Fragment {
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), 10));
                                 latitude = mLastKnownLocation.getLatitude();
                                 longitude = mLastKnownLocation.getLongitude();
-                                String fishingspots = "hospital";
+                                String fishingspots = "lake";
                                 String url = getUrl(latitude, longitude, fishingspots);
                                 Object dataTransfer[] = new Object[2];
                                 GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
@@ -188,16 +164,6 @@ public class MapsFragment extends Fragment {
                                         }
                                         mLastKnownLocation = locationResult.getLastLocation();
                                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), 10));
-                                        latitude = mLastKnownLocation.getLatitude();
-                                        longitude = mLastKnownLocation.getLongitude();
-                                        String fishingspots = "fishing charter";
-                                        String url = getUrl(latitude, longitude, fishingspots);
-                                        Object dataTransfer[] = new Object[2];
-                                        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                                        dataTransfer[0] = mMap;
-                                        dataTransfer[1] = url;
-                                        getNearbyPlacesData.execute(dataTransfer);
-                                        //Toast.makeText(getContext(), "Showing Nearby Fishing spots", Toast.LENGTH_SHORT).show();
                                         fusedLocationClient.removeLocationUpdates(locationCallback);
                                     }
                                 };

@@ -1,6 +1,7 @@
 package com.example.licenta;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -8,10 +9,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private BottomNavigationView bottomNavigationView;
     private NavigationView navigationView;
-
+    private ImageView imagineUtilizator;
+    private static int RESULT_LOAD_IMAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,19 +60,41 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            Cursor cursor = getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            // String picturePath contains the path of selected Image
+        }
+    }
+
     private NavigationView.OnNavigationItemSelectedListener itemSelectedListener =
             new NavigationView.OnNavigationItemSelectedListener() {
 
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    if(item.getItemId()== R.id.nav_profile){
+                    if (item.getItemId() == R.id.nav_profile) {
                         Toast.makeText(MainActivity.this, "Optiunea profil a fost apasata", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), Profil.class);
+                        startActivity(intent);
                     }
-                    if(item.getItemId()==R.id.nav_setari){
+                    if (item.getItemId() == R.id.nav_setari) {
                         Toast.makeText(MainActivity.this, "Optiunea setari a fost apasata", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), Setari.class);
+                        startActivity(intent);
                     }
-                    if(item.getItemId()==R.id.nav_adauga_peste){
+                    if (item.getItemId() == R.id.nav_adauga_peste) {
                         Toast.makeText(MainActivity.this, "Optiunea adauga un peste a fost apasata", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), AdaugaPeste.class);
+                        startActivity(intent);
                     }
                     return true;
                 }
@@ -128,6 +157,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(@NonNull View drawerView) {
                 setareCredintentiale();
+                imagineUtilizator= findViewById(R.id.imagineUtilizator);
+                imagineUtilizator.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(
+                                Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(i, RESULT_LOAD_IMAGE);
+                    }
+                });
             }
 
             @Override
