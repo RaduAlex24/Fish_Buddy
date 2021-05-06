@@ -167,10 +167,10 @@ public class ForumPostService {
                 List<ForumPost> forumPostList = new ArrayList<>();
 
                 String sql = "SELECT * FROM " + numeBDforum + " WHERE id IN (?";
-                for (int i = 1; i < idList.size() - 1; i++) {
+                for (int i = 1; i < idList.size(); i++) {
                     sql += ", ?";
                 }
-                sql += ", ?)";
+                sql += ")";
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
                 for (int i = 0; i < idList.size(); i++) {
                     statement.setInt(i + 1, idList.get(i));
