@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,10 +15,13 @@ import androidx.annotation.Nullable;
 import com.example.licenta.R;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.user.CurrentUser;
+import com.example.licenta.database.service.FavouriteForumPostService;
 import com.example.licenta.database.service.ForumPostService;
 import com.example.licenta.database.service.LikeForumService;
 import com.example.licenta.database.service.UserService;
 import com.example.licenta.util.dateUtils.DateConverter;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,8 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     private LayoutInflater inflater;
     private int resource;
     private static Map<Integer, LikeForum> likeForumMap;
-    CurrentUser currentUser;
+    private static List<Integer> favouritePostsIdList;
+    private static CurrentUser currentUser;
 
     // Controale vizuale
     private TextView tvUser;
@@ -42,20 +45,23 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     private TextView tvContent;
     private TextView tvNrLikes;
     private TextView tvNrComments;
+    private ImageButton btnFavourite;
     private ImageButton btnLike;
     private ImageButton btnDislike;
 
     // Utile
     private LikeForumService likeForumService = new LikeForumService();
     private ForumPostService forumPostService = new ForumPostService();
+    private FavouriteForumPostService favouriteForumPostService = new FavouriteForumPostService();
     private UserService userService = new UserService();
     private String LogTag = "ForumPostLvAdapter";
+    private static final int MaxContentCharacters = 230;
 
 
     // Constructor
     public ForumPostLvAdapter(@NonNull Context context, int resource, @NonNull List<ForumPost> objects,
                               LayoutInflater layoutInflater, Map<Integer, LikeForum> likeForumMap,
-                              CurrentUser currentUser) {
+                              CurrentUser currentUser, List<Integer> favouritePostsIdList) {
         super(context, resource, objects);
 
         this.context = context;
@@ -63,6 +69,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
         this.inflater = layoutInflater;
         this.resource = resource;
         this.likeForumMap = likeForumMap;
+        this.favouritePostsIdList = favouritePostsIdList;
         this.currentUser = currentUser;
     }
 
@@ -83,9 +90,13 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
             initLikeForum(likeForumMap.get(forumPost.getId()));
         }
 
+        // Initializare favorite
+        initFavouritePosts(forumPost.getId());
+
         // Functii butoane
         btnLike.setOnClickListener(onClickLikeForumPost(forumPost));
         btnDislike.setOnClickListener(onClickDislikeForumPost(forumPost));
+        btnFavourite.setOnClickListener(onClickAddFavouriteForumPost(forumPost));
 
         return view;
     }
@@ -108,7 +119,8 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
 
         // content
         tvContent = view.findViewById(R.id.tv_content_forumPostRowAdapter);
-        tvContent.setText(forumPost.getContent());
+        String smallContent = fitContent(forumPost.getContent(), MaxContentCharacters);
+        tvContent.setText(smallContent);
 
         // nr likes
         tvNrLikes = view.findViewById(R.id.tv_nrLikes_forumPostRowAdapter);
@@ -125,6 +137,21 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
         // buton dislike
         btnDislike = view.findViewById(R.id.imgBtn_dislike_forumPostRowAdapter);
         btnDislike.setFocusable(false);
+
+        // buton favourite
+        btnFavourite = view.findViewById(R.id.imgBtn_favourite_forumPostRowAdapter);
+        btnFavourite.setFocusable(false);
+    }
+
+
+    // Taiere continut
+    private String fitContent(String content, int maxCharacters) {
+        if (content.length() > maxCharacters) {
+            String smallContent = content.substring(0, maxCharacters) + "...";
+            return smallContent;
+        } else {
+            return content;
+        }
     }
 
 
@@ -136,6 +163,72 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
             btnDislike.setImageResource(R.drawable.ic_baseline_arrow_downward_24_red);
         }
     }
+
+
+    // Initializare favorite
+    private void initFavouritePosts(Integer id) {
+        if (favouritePostsIdList.contains(id)) {
+            btnFavourite.setImageResource(R.drawable.full_heart);
+        } else {
+            btnFavourite.setImageResource(R.drawable.empty_heart);
+        }
+    }
+
+
+    // Click pe butonul post favorit
+    @NotNull
+    private View.OnClickListener onClickAddFavouriteForumPost(ForumPost forumPost) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FavouriteForum favouriteForum = new FavouriteForum(currentUser.getId(), forumPost.getId());
+
+                if (!favouritePostsIdList.contains(forumPost.getId())) {
+                    // Adaugare in baza de date
+                    favouriteForumPostService.insertNewFavouriteForum(favouriteForum,
+                            callbackInsertNewFavouritePost(forumPost));
+                } else {
+                    // Stergere din baza de date
+                    favouriteForumPostService.deleteFavouriteForumByFavouriteForum(favouriteForum,
+                            callbackStergerePostForumFavorit(forumPost));
+                }
+            }
+        };
+    }
+
+
+    // Callback inserare nou post favorit
+    @NotNull
+    private Callback<Integer> callbackInsertNewFavouritePost(ForumPost forumPost) {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                if(result == 1){
+                    favouritePostsIdList.add(forumPost.getId());
+                    notifyDataSetChanged();
+                } else {
+                    Log.e(LogTag, context.getString(R.string.log_bad_insert_favourite_forumPostLvAdapter));
+                }
+            }
+        };
+    }
+
+    // Callback stergere post forum favorit
+    @NotNull
+    private Callback<Integer> callbackStergerePostForumFavorit(ForumPost forumPost) {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                if(result == 1){
+                    favouritePostsIdList.remove((Integer) forumPost.getId());
+                    notifyDataSetChanged();
+                } else {
+                    Log.e(LogTag, context.getString(R.string.log_bad_delete_favourite_forumPostLvAdapter));
+                }
+            }
+        };
+    }
+
 
 
     // LIKE
@@ -190,7 +283,6 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
             }
         };
     }
-
 
 
     // Callback editare dislike to like forum
@@ -349,8 +441,8 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
         return new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
-                if(result != 1){
-                    Log.e(LogTag,context.getString(R.string.log_updateNrLikesDislikes_forum_forumPostLvAdapter));
+                if (result != 1) {
+                    Log.e(LogTag, context.getString(R.string.log_updateNrLikesDislikes_forum_forumPostLvAdapter));
                 }
             }
         };
@@ -361,8 +453,8 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
         return new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
-                if(result != 1){
-                    Log.e(LogTag,context.getString(R.string.log_updatePoints_user_forumPostLvAdapter));
+                if (result != 1) {
+                    Log.e(LogTag, context.getString(R.string.log_updatePoints_user_forumPostLvAdapter));
                 }
             }
         };

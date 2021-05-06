@@ -159,6 +159,56 @@ public class ForumPostService {
     }
 
 
+    // Get all forum post by favourite list
+    public void getFavouriteForumPostsByIdList(List<Integer> idList, Callback<List<ForumPost>> callback) {
+        Callable<List<ForumPost>> callable = new Callable<List<ForumPost>>() {
+            @Override
+            public List<ForumPost> call() throws Exception {
+                List<ForumPost> forumPostList = new ArrayList<>();
+
+                String sql = "SELECT * FROM " + numeBDforum + " WHERE id IN (?";
+                for (int i = 1; i < idList.size() - 1; i++) {
+                    sql += ", ?";
+                }
+                sql += ", ?)";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                for (int i = 0; i < idList.size(); i++) {
+                    statement.setInt(i + 1, idList.get(i));
+                }
+                ResultSet resultSet = statement.executeQuery();
+
+                while (resultSet.next()) {
+                    int id = resultSet.getInt(1);
+                    int userId = resultSet.getInt(2);
+                    String creatorUsername = resultSet.getString(3);
+                    String title = resultSet.getString(4);
+                    String content = resultSet.getString(5);
+                    int nrLikes = resultSet.getInt(6);
+                    int nrDislikes = resultSet.getInt(7);
+                    int nrComments = resultSet.getInt(8);
+
+                    String category = resultSet.getString(9);
+                    CategoryForum categoryForum = CategoryForum.valueOf(category);
+
+                    String postDate = resultSet.getString(10);
+                    Date date = DateConverter.toDate(postDate);
+
+                    ForumPost forumPost = new ForumPost(id, userId, creatorUsername, title, content,
+                            nrLikes, nrDislikes, nrComments, categoryForum, date);
+                    forumPostList.add(forumPost);
+                }
+
+
+                statement.close();
+                resultSet.close();
+                return forumPostList;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
     // Get next id
     public void getNextForumPostId(Callback<Integer> callback) {
         Callable<Integer> callable = new Callable<Integer>() {
@@ -225,7 +275,7 @@ public class ForumPostService {
             public Integer call() throws Exception {
                 int nrRanduriAfectate = -1;
 
-                String sql = "UPDATE " +  numeBDforum + " SET nrLikes = ? , nrDislikes= ? " +
+                String sql = "UPDATE " + numeBDforum + " SET nrLikes = ? , nrDislikes= ? " +
                         "WHERE id = ?";
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
                 statement.setString(1, String.valueOf(forumPost.getNrLikes()));

@@ -26,9 +26,12 @@ import com.example.licenta.clase.forum.ForumPost;
 import com.example.licenta.clase.forum.ForumPostLvAdapter;
 import com.example.licenta.clase.forum.LikeForum;
 import com.example.licenta.clase.user.CurrentUser;
+import com.example.licenta.database.service.FavouriteForumPostService;
 import com.example.licenta.database.service.ForumPostService;
 import com.example.licenta.database.service.LikeForumService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +58,9 @@ public class ForumFragment extends Fragment {
     private LikeForumService likeForumService = new LikeForumService();
     private Map<Integer, LikeForum> likeForumMap = new HashMap<>();
 
+    private FavouriteForumPostService favouriteForumPostService = new FavouriteForumPostService();
+    private List<Integer> favouritePostsIdList = new ArrayList<>();
+
 
     public ForumFragment() {
         // Required empty public constructor
@@ -77,6 +83,9 @@ public class ForumFragment extends Fragment {
 
         // Preluare like forum posts
         initLikForumMap();
+
+        // Preluare favourite forum posts
+        initFavouritePostsList();
 
         // Initializare componente
         initComponents(view);
@@ -130,6 +139,24 @@ public class ForumFragment extends Fragment {
     }
 
 
+    // Preluare favourite forum posts
+    private void initFavouritePostsList() {
+        favouriteForumPostService.getFavouritePostsIdListByUserId(currentUser.getId(), callbackGetFavouritePostsId());
+    }
+
+    // Callback pentru preluarea listei de id uri ale posturilor favorite
+    @NotNull
+    private Callback<List<Integer>> callbackGetFavouritePostsId() {
+        return new Callback<List<Integer>>() {
+            @Override
+            public void runResultOnUiThread(List<Integer> result) {
+                favouritePostsIdList.clear();
+                favouritePostsIdList.addAll(result);
+            }
+        };
+    }
+
+
     // Init spinner cu enumerare
     private void initSpinnerCategory() {
         List<String> categoryList = new ArrayList<>();
@@ -140,6 +167,7 @@ public class ForumFragment extends Fragment {
         }
 
         categoryList.add("Postarile mele");
+        categoryList.add("Postari Favorite");
 
         ArrayAdapter adapter = new ArrayAdapter(getContext(),
                 android.R.layout.simple_dropdown_item_1line, categoryList);
@@ -151,7 +179,7 @@ public class ForumFragment extends Fragment {
     private void initListViewAdapter() {
         ForumPostLvAdapter adapter = new ForumPostLvAdapter(getContext(),
                 R.layout.listview_row_forum_post, forumPostList,
-                getLayoutInflater(), likeForumMap, currentUser);
+                getLayoutInflater(), likeForumMap, currentUser, favouritePostsIdList);
         lvForum.setAdapter(adapter);
     }
 
@@ -235,16 +263,27 @@ public class ForumFragment extends Fragment {
                     case 6:
                         category = "POSTARILE_MELE";
                         break;
+                    case 7:
+                        category = "POSTARILE_FAVORITE";
+                        break;
                     default:
                         category = "";
                 }
 
-                if (!(category.equals("GENERAL") || category.equals("POSTARILE_MELE"))) {
+                if (!(category.equals("GENERAL") || category.equals("POSTARILE_MELE") || category.equals("POSTARILE_FAVORITE"))) {
                     forumPostService.getAllForumPostsByCategory(category, callbackGetAllByCategory());
                 } else if (category.equals("GENERAL")) {
                     initialGetAllForumPosts();
                 } else if (category.equals("POSTARILE_MELE")) {
                     forumPostService.getAllForumPostsByUserId(currentUser.getId(), callbackGetForumPostsByUserId());
+
+                } else if (category.equals("POSTARILE_FAVORITE")) {
+                    if (favouritePostsIdList.size() == 0) {
+                        Toast.makeText(getContext(), "Nimic aici", Toast.LENGTH_SHORT).show();
+                        forumPostList.clear();
+                    } else {
+                        forumPostService.getFavouriteForumPostsByIdList(favouritePostsIdList, callbackGetFavouriteForumPosts());
+                    }
                 }
 
                 lvForum.setSelection(0);
@@ -253,6 +292,20 @@ public class ForumFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        };
+    }
+
+
+    // Callback pt get all favourite posts
+    @NotNull
+    private Callback<List<ForumPost>> callbackGetFavouriteForumPosts() {
+        return new Callback<List<ForumPost>>() {
+            @Override
+            public void runResultOnUiThread(List<ForumPost> result) {
+                forumPostList.clear();
+                forumPostList.addAll(result);
+                notifyInternalAdapter();
             }
         };
     }
