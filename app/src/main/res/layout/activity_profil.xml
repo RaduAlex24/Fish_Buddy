@@ -22,13 +22,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_username"
+        android:id="@+id/til_profil_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_profil">
+        app:layout_constraintTop_toBottomOf="@+id/tv_profil"
+        app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tiet_profil_username"
@@ -38,13 +39,14 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_email"
+        android:id="@+id/til_profil_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_username">
+        app:errorEnabled="true"
+        app:layout_constraintTop_toBottomOf="@+id/til_profil_username">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tiet_profil_email"
@@ -60,7 +62,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
-        android:text="Salvati modificari"
+        android:text="@string/salvati_modificari"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -73,8 +75,8 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
-        android:text="Doriti sa modificati parola?"
+        android:text="@string/doriti_sa_modificati_parola"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_email" />
+        app:layout_constraintTop_toBottomOf="@+id/til_profil_email" />
 </androidx.constraintlayout.widget.ConstraintLayout>

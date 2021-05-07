@@ -91,6 +91,11 @@
     <string name="log_bad_delete_favourite_forumPostLvAdapter">Stergerea de post favorit a afectat mai mult de un rand!</string>
     <string name="postari_favorite">Postari favorite</string>
     <string name="logout">Logout</string>
+    <string name="salvati_modificari">Salvati modificari</string>
+    <string name="doriti_sa_modificati_parola">Doriti sa modificati parola?</string>
+    <string name="introduceti_noua_parola">Introduceti noua parola</string>
+    <string name="confirmati_parola">Confirmati parola</string>
+    <string name="anulati">Anulati</string>
 
     <string-array name="SpeciiPesti">
         <item>Somn</item>

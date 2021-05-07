@@ -108,6 +108,10 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                     }if (item.getItemId() == R.id.nav_logout) {
                         Toast.makeText(MainActivity.this, "Optiunea Logout a fost apasata", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), LogInActivity.class);
+                        startActivity(intent);
+                        currentUser.delelteInstance();
+                        finish();
                     }
                     return true;
                 }
@@ -200,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
             super.onBackPressed();
+            currentUser.delelteInstance();
             finishAffinity();
         } else {
             Toast.makeText(getBaseContext(),

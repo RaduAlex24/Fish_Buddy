@@ -36,6 +36,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -106,6 +107,13 @@ public class MapsFragment extends Fragment {
             layoutParams.setMargins(0, 0, 30, 30);
             btnMyLocation.setLayoutParams(layoutParams);
 
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    Toast.makeText(getContext(), "marker "+marker.getTitle()+" clicked", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
         }
     };
 
@@ -149,7 +157,6 @@ public class MapsFragment extends Fragment {
                                 dataTransfer[0] = mMap;
                                 dataTransfer[1] = url;
                                 getNearbyPlacesData.execute(dataTransfer);
-                                //Toast.makeText(getContext(), "Showing Nearby Fishing spots", Toast.LENGTH_SHORT).show();
                             } else {
                                 final LocationRequest locationRequest = LocationRequest.create();
                                 locationRequest.setInterval(1000);
