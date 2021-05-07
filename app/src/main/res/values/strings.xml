@@ -89,6 +89,8 @@
     <string name="email">Email</string>
     <string name="log_bad_insert_favourite_forumPostLvAdapter">Inserarea de post favorit a afectat mai mult de un rand!</string>
     <string name="log_bad_delete_favourite_forumPostLvAdapter">Stergerea de post favorit a afectat mai mult de un rand!</string>
+    <string name="postari_favorite">Postari favorite</string>
+    <string name="logout">Logout</string>
 
     <string-array name="SpeciiPesti">
         <item>Somn</item>
