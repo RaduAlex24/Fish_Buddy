@@ -96,13 +96,19 @@
     <string name="introduceti_noua_parola">Introduceti noua parola</string>
     <string name="confirmati_parola">Confirmati parola</string>
     <string name="anulati">Anulati</string>
-    <string name="log_nextId_comment">Eroare pe next id pentru comentariu</string>
-    <string name="toast_comentariu_incorect">Comentariul nu indeplineste criteriile specificate</string>
-    <string name="toast_comentariu_adaugat_succes">Comentariu adaugat cu succes!</string>
-    <string name="toast_eroare_bd">Eroare baza de date</string>
-    <string name="tagLog_insertNewComment_MoreThanOneRow">Insertul a adaugat mai mult de un comentariu!</string>
-    <string name="error_comment_sub2Char">Comentariul trebuie sa aiba cel putin 2 caractere</string>
-    <string name="error_comment_peste20Char">Comentariul trebuie sa aiba maximum 200 de caractere</string>
+    <string name="adaugati_o_poza_cu_pestele">Adaugati o poza cu pestele:</string>
+    <string name="adaugare_imagine_peste">Adaugare imagine peste</string>
+    <string name="lungime_peste">Lungime Peste :</string>
+    <string name="ints">int</string>
+    <string name="data_la_care_a_fost_prins">Data la care a fost prins</string>
+    <string name="greutatea_pestelui">Greutatea Pestelui</string>
+    <string name="poza_pestelui">poza pestelui</string>
+    <string name="specie">Specie:</string>
+    <string name="locatia_pestelui_prins">Locatia pestelui prins</string>
+    <string name="locatia">Locatia</string>
+    <string name="specia_pestelui">Specia Pestelui</string>
+    <string name="vizualizati_lista_de_pesti_prinsi">Vizualizati lista de pesti prinsi</string>
+    <string name="alegeti_data_cand_peste_a_fost_prins">Alegeti data cand peste a fost prins</string>
 
     <string-array name="SpeciiPesti">
         <item>Somn</item>
