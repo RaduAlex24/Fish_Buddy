@@ -188,7 +188,7 @@ public class ForumFragment extends Fragment {
     private void initListViewAdapter() {
         ForumPostLvAdapter adapter = new ForumPostLvAdapter(getContext(),
                 R.layout.listview_row_forum_post, forumPostList,
-                getLayoutInflater(), likeForumMap, currentUser, favouritePostsIdList);
+                getLayoutInflater(), likeForumMap, currentUser, favouritePostsIdList, false);
         lvForum.setAdapter(adapter);
     }
 

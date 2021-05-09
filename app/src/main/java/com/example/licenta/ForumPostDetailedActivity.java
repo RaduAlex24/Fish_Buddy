@@ -105,7 +105,7 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
     private void initLvAdapterForumPost() {
         ForumPostLvAdapter adapter = new ForumPostLvAdapter(getApplicationContext(),
                 R.layout.listview_row_forum_post, forumPostListSingular, getLayoutInflater(),
-                likeForumMap, currentUser, favouritePostsIdList);
+                likeForumMap, currentUser, favouritePostsIdList, true);
         lvForumPostDetalied.setAdapter(adapter);
     }
 
