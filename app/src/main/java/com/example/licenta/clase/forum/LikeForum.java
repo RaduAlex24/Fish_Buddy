@@ -1,6 +1,8 @@
 package com.example.licenta.clase.forum;
 
-public class LikeForum {
+import java.io.Serializable;
+
+public class LikeForum implements Serializable {
     private int userId;
     private int forumPostId;
     private boolean isLiked;

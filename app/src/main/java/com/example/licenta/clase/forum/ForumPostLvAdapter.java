@@ -28,15 +28,14 @@ import java.util.Map;
 
 public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
 
-    // STATICE ????????????????????
     // Atribute
     private Context context;
-    private static List<ForumPost> forumPostList;
+    private List<ForumPost> forumPostList;
     private LayoutInflater inflater;
     private int resource;
-    private static Map<Integer, LikeForum> likeForumMap;
-    private static List<Integer> favouritePostsIdList;
-    private static CurrentUser currentUser;
+    private Map<Integer, LikeForum> likeForumMap;
+    private List<Integer> favouritePostsIdList;
+    private CurrentUser currentUser;
 
     // Controale vizuale
     private TextView tvUser;

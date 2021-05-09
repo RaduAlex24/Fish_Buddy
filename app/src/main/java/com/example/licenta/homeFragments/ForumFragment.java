@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.licenta.CreateForumPostActivity;
+import com.example.licenta.ForumPostDetailedActivity;
 import com.example.licenta.R;
 import com.example.licenta.SignUpActivity;
 import com.example.licenta.asyncTask.Callback;
@@ -33,11 +34,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 
@@ -45,6 +48,10 @@ public class ForumFragment extends Fragment {
 
     // TO DO ORDINEA FORUMURILOR SI LIKEURILOR
     public static final int REQUEST_CODE_CREATE_FORUM_POST = 201;
+    public static final int REQUEST_CODE_FORUM_POST_DETAILED = 202;
+    public static final String FORUM_POST_KEY = "FORUM_POST_KEY";
+    public static final String LIKE_FORUM_MAP_KEY = "LIKE_FORUM_MAP_KEY";
+    public static final String FAVOURITE_POSTS_ID_LIST_KEY = "FAVOURITE_POSTS_ID_LIST_KEY";
     private Spinner spinnerCategory;
     private FloatingActionButton fabAddPost;
     private ListView lvForum;
@@ -59,7 +66,7 @@ public class ForumFragment extends Fragment {
     private Map<Integer, LikeForum> likeForumMap = new HashMap<>();
 
     private FavouriteForumPostService favouriteForumPostService = new FavouriteForumPostService();
-    private List<Integer> favouritePostsIdList = new ArrayList<>();
+    public List<Integer> favouritePostsIdList = new ArrayList<>();
 
 
     public ForumFragment() {
@@ -82,7 +89,7 @@ public class ForumFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_forum, container, false);
 
         // Preluare like forum posts
-        initLikForumMap();
+        initLikForumMap(0);
 
         // Preluare favourite forum posts
         initFavouritePostsList();
@@ -121,12 +128,12 @@ public class ForumFragment extends Fragment {
 
 
     // Preluare like forum posts si initializare likeForumMap
-    private void initLikForumMap() {
-        likeForumService.getLikeForumByUserId(currentUser.getId(), callbackGetLikeFroumByUserId());
+    private void initLikForumMap(int selection) {
+        likeForumService.getLikeForumByUserId(currentUser.getId(), callbackGetLikeFroumByUserId(selection));
     }
 
     // Callback preluare like forum posts si initializare likeForumMap
-    private Callback<Map<Integer, LikeForum>> callbackGetLikeFroumByUserId() {
+    private Callback<Map<Integer, LikeForum>> callbackGetLikeFroumByUserId(int selection) {
         return new Callback<Map<Integer, LikeForum>>() {
             @Override
             public void runResultOnUiThread(Map<Integer, LikeForum> result) {
@@ -134,6 +141,8 @@ public class ForumFragment extends Fragment {
                 likeForumMap = result;
                 // Initializare listview adapter
                 initListViewAdapter();
+                // Saritura la postarea curenta
+                lvForum.setSelection(selection);
             }
         };
     }
@@ -228,6 +237,13 @@ public class ForumFragment extends Fragment {
                 Toast.makeText(getContext(),
                         "Click pe forum postul " + forumPostList.get(position).getId(),
                         Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getContext(), ForumPostDetailedActivity.class);
+                intent.putExtra(FORUM_POST_KEY, forumPostList.get(position));
+                intent.putExtra(LIKE_FORUM_MAP_KEY, (Serializable) likeForumMap);
+                intent.putExtra(FAVOURITE_POSTS_ID_LIST_KEY, (Serializable) favouritePostsIdList);
+
+                startActivityForResult(intent, REQUEST_CODE_FORUM_POST_DETAILED);
             }
         };
     }
@@ -347,5 +363,33 @@ public class ForumFragment extends Fragment {
             forumPostList.add(forumPost);
             notifyInternalAdapter();
         }
+
+        // Intoarcere de la vizitarea unui post detaliat
+        if (requestCode == REQUEST_CODE_FORUM_POST_DETAILED && resultCode == RESULT_CANCELED && data != null) {
+            List<ForumPost> forumPostListSingular = (List<ForumPost>) data.
+                    getSerializableExtra(ForumPostDetailedActivity.FORUM_POST_MODIFICAT_LIKE_DISLIKE_KEY);
+
+            // Modificare puncte forum post si set selection pentru acesta
+            ForumPost forumPostNou = forumPostListSingular.get(0);
+            int nrSelection = -2;
+            boolean notFound = true;
+            for (ForumPost forumPost : forumPostList) {
+                if (notFound) {
+                    nrSelection++;
+                }
+                if (forumPost.getId() == forumPostNou.getId()) {
+                    forumPost.setNrLikes(forumPostNou.getNrLikes());
+                    forumPost.setNrDislikes(forumPostNou.getNrDislikes());
+                    notFound = false;
+                }
+            }
+
+            // Preluare din noi din BD a postarilor favorite si a like-urilor
+            initFavouritePostsList();
+            initLikForumMap(nrSelection);
+
+        }
+
+
     }
 }
