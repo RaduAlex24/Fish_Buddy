@@ -36,6 +36,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     private Map<Integer, LikeForum> likeForumMap;
     private List<Integer> favouritePostsIdList;
     private CurrentUser currentUser;
+    private Boolean isDetalied;
 
     // Controale vizuale
     private TextView tvUser;
@@ -54,13 +55,13 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     private FavouriteForumPostService favouriteForumPostService = new FavouriteForumPostService();
     private UserService userService = new UserService();
     private String LogTag = "ForumPostLvAdapter";
-    private static final int MaxContentCharacters = 230;
+    private static final int MaxContentCharacters = 200;
 
 
     // Constructor
     public ForumPostLvAdapter(@NonNull Context context, int resource, @NonNull List<ForumPost> objects,
                               LayoutInflater layoutInflater, Map<Integer, LikeForum> likeForumMap,
-                              CurrentUser currentUser, List<Integer> favouritePostsIdList) {
+                              CurrentUser currentUser, List<Integer> favouritePostsIdList, Boolean isDetalied) {
         super(context, resource, objects);
 
         this.context = context;
@@ -70,6 +71,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
         this.likeForumMap = likeForumMap;
         this.favouritePostsIdList = favouritePostsIdList;
         this.currentUser = currentUser;
+        this.isDetalied = isDetalied;
     }
 
 
@@ -118,8 +120,12 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
 
         // content
         tvContent = view.findViewById(R.id.tv_content_forumPostRowAdapter);
-        String smallContent = fitContent(forumPost.getContent(), MaxContentCharacters);
-        tvContent.setText(smallContent);
+        if(isDetalied == true){
+            tvContent.setText(forumPost.getContent());
+        } else {
+            String smallContent = fitContent(forumPost.getContent(), MaxContentCharacters);
+            tvContent.setText(smallContent);
+        }
 
         // nr likes
         tvNrLikes = view.findViewById(R.id.tv_nrLikes_forumPostRowAdapter);
@@ -140,6 +146,13 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
         // buton favourite
         btnFavourite = view.findViewById(R.id.imgBtn_favourite_forumPostRowAdapter);
         btnFavourite.setFocusable(false);
+
+        // Anulare click cand este pe pagina de detalii forum post
+        if(isDetalied){
+            btnLike.setFocusable(true);
+            btnDislike.setFocusable(true);
+            btnFavourite.setFocusable(true);
+        }
     }
 
 
