@@ -2,6 +2,7 @@ package com.example.licenta.homeFragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,9 +55,10 @@ public class MapsFragment extends Fragment {
     private LocationCallback locationCallback;
     private Location mLastKnownLocation;
     int PROXIMITY_RADIUS = 3000000;
-    double latitude,longitude;
+    double latitude, longitude;
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
@@ -102,15 +105,18 @@ public class MapsFragment extends Fragment {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
                     btnMyLocation.getLayoutParams();
 
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+           // layoutParams.addRule(RelativeLayout.ALIGN_END, 0);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-            layoutParams.setMargins(0, 0, 30, 30);
+            layoutParams.setMargins(40, 0, 0, 90);
             btnMyLocation.setLayoutParams(layoutParams);
 
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-                    Toast.makeText(getContext(), "marker "+marker.getTitle()+" clicked", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "marker " + marker.getTitle() + " clicked", Toast.LENGTH_SHORT).show();
                     return false;
                 }
             });
@@ -125,7 +131,8 @@ public class MapsFragment extends Fragment {
 
         }
     }
-    private String getUrl(double latitude , double longitude , String nearbyPlace) {
+
+    private String getUrl(double latitude, double longitude, String nearbyPlace) {
 
         StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlaceUrl.append("location=" + latitude + "," + longitude);
@@ -138,6 +145,7 @@ public class MapsFragment extends Fragment {
 
         return googlePlaceUrl.toString();
     }
+
     @SuppressLint("MissingPermission")
     private void getDeviceLocation() {
         fusedLocationClient.getLastLocation()

@@ -15,7 +15,7 @@
         <item
             android:id="@+id/nav_adauga_peste"
             android:icon="@drawable/menu_fish"
-            android:title="@string/menu_adauga_un_peste" />
+            android:title="@string/vizualizati_lista_de_pesti_prinsi" />
 
         <item
             android:id="@+id/nav_logout"
