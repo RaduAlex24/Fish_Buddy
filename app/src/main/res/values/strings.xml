@@ -110,6 +110,15 @@
     <string name="vizualizati_lista_de_pesti_prinsi">Vizualizati lista de pesti prinsi</string>
     <string name="alegeti_data_cand_peste_a_fost_prins">Alegeti data cand peste a fost prins</string>
 
+    <string name="log_nextId_comment">Eroare pe next id pentru comentariu</string>
+    <string name="toast_comentariu_incorect">Comentariul nu indeplineste criteriile specificate</string>
+    <string name="toast_comentariu_adaugat_succes">Comentariu adaugat cu succes!</string>
+    <string name="toast_eroare_bd">Eroare baza de date</string>
+    <string name="tagLog_insertNewComment_MoreThanOneRow">Insertul a adaugat mai mult de un comentariu!</string>
+    <string name="error_comment_sub2Char">Comentariul trebuie sa aiba cel putin 2 caractere</string>
+    <string name="error_comment_peste20Char">Comentariul trebuie sa aiba maximum 200 de caractere</string>
+
+
     <string-array name="SpeciiPesti">
         <item>Somn</item>
         <item>Crap</item>
