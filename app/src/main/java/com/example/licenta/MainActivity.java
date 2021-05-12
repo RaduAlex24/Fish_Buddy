@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } else {
-            Toast.makeText(MainActivity.this, "You haven't picked Image", Toast.LENGTH_LONG).show();
+            //Toast.makeText(MainActivity.this, "You haven't picked Image", Toast.LENGTH_LONG).show();
         }
     }
 

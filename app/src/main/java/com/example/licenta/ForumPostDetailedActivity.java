@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.forum.CommentForum;
+import com.example.licenta.clase.forum.CommentLvAdapter;
 import com.example.licenta.clase.forum.ForumPost;
 import com.example.licenta.clase.forum.ForumPostLvAdapter;
 import com.example.licenta.clase.forum.LikeForum;
@@ -74,9 +75,6 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
 
         // Initializare adapter listview forum post
         initLvAdapterForumPost();
-
-        // Initializare listview adapter pentru forum comments
-        initLvAdapterCommentsForum();
 
         // Preluare comentarii
         initCommentsByForumPostId();
@@ -149,8 +147,8 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
 
     // Initializare listview adapter pentru forum comments
     private void initLvAdapterCommentsForum() {
-        ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(),
-                android.R.layout.simple_list_item_1, commentForumList);
+        CommentLvAdapter adapter = new CommentLvAdapter(getApplicationContext(),
+                R.layout.listview_row_comment_forum, commentForumList, getLayoutInflater());
         lvComments.setAdapter(adapter);
     }
 
@@ -175,6 +173,10 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
             @Override
             public void runResultOnUiThread(List<CommentForum> result) {
                 commentForumList.addAll(result);
+
+                // Initializare listview adapter pentru forum comments
+                initLvAdapterCommentsForum();
+
                 notifyInternalAdapter();
             }
         };
