@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -32,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +62,7 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
     private LikeCommentService likeCommentService = new LikeCommentService();
     private List<CommentForum> commentForumList = new ArrayList<>();
     private Map<Integer, LikeComment> likeCommentMap = new HashMap<>();
+    public static String commentsOrder = "ORDER BY nrLikes-nrDislikes DESC";
 
     // Utile generale
     private CurrentUser currentUser = CurrentUser.getInstance();
@@ -91,6 +95,9 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
 
         // Text watcher pentru tiet add comment
         tietAddComment.addTextChangedListener(textWatcherAddComment());
+
+        // Adaugare eveniment pentru sortare comentarii
+        spinnerSortComments.setOnItemSelectedListener(onItemClickSpinnerSortComments());
     }
 
 
@@ -193,7 +200,9 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
 
     // Preluare initiala a comentariilor
     private void initCommentsByForumPostId() {
-        commentForumService.getCommentsByForumPostId(forumPost.getId(), callbackGetCommentsByForumPostId());
+        commentForumService.getCommentsByForumPostId(forumPost.getId(),
+                callbackGetCommentsByForumPostId(),
+                commentsOrder);
     }
 
 
@@ -203,6 +212,7 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
         return new Callback<List<CommentForum>>() {
             @Override
             public void runResultOnUiThread(List<CommentForum> result) {
+                commentForumList.clear();
                 commentForumList.addAll(result);
 
                 // Preluare a like pentru comments
@@ -269,7 +279,8 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
             public void runResultOnUiThread(Integer result) {
                 if (result == 1) {
                     commentForumList.add(commentForum);
-                    notifyInternalAdapter();
+                    initCommentsByForumPostId();
+
                     tietAddComment.setText("");
                     tietAddComment.setError(null);
                     closeKeyboard();
@@ -283,6 +294,41 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
                             getString(R.string.toast_eroare_bd),
                             Toast.LENGTH_SHORT).show();
                 }
+            }
+        };
+    }
+
+
+    // On click pe spinner pentru sortare de comentarii
+    @NotNull
+    private AdapterView.OnItemSelectedListener onItemClickSpinnerSortComments() {
+        return new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Schimbare comments order
+                switch (position) {
+                    case 0:
+                        commentsOrder = "ORDER BY nrLikes-nrDislikes DESC";
+                        break;
+                    case 1:
+                        commentsOrder = "ORDER BY nrLikes-nrDislikes";
+                        break;
+                    case 2:
+                        commentsOrder = "ORDER BY postDate DESC";
+                        break;
+                    case 3:
+                        commentsOrder = "ORDER BY postDate";
+                        break;
+                    default:
+                        commentsOrder = "ORDER BY nrLikes-nrDislikes DESC";
+                }
+
+                initCommentsByForumPostId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         };
     }

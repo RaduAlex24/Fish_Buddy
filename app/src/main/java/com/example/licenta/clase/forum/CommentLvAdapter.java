@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.licenta.ForumPostDetailedActivity;
 import com.example.licenta.R;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.user.CurrentUser;
@@ -23,6 +24,8 @@ import com.example.licenta.util.dateUtils.DateConverter;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +53,9 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
     private CommentForumService commentForumService = new CommentForumService();
     private UserService userService = new UserService();
     private String LogTag = "ForumCommentLvAdapter";
+
+    // Sortari
+    Comparator<CommentForum> comparatorPointsDesc;
 
 
     // Constructor
@@ -84,6 +90,9 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
         if (likeCommentMap.containsKey(commentForum.getId())) {
             initLikeComment(likeCommentMap.get(commentForum.getId()));
         }
+
+        // Initializare comparatori
+        initCommentsComparator();
 
         // Adaugare functii butoane
         btnLike.setOnClickListener(onClickLikeComment(commentForum));
@@ -123,6 +132,39 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
         btnLike.setFocusable(false);
         btnDislike.setFocusable(false);
 
+    }
+
+
+    // Initializare comparator
+    private void initCommentsComparator() {
+        comparatorPointsDesc = new Comparator<CommentForum>() {
+            @Override
+            public int compare(CommentForum o1, CommentForum o2) {
+                int points1 = o1.getNrLikes() - o1.getNrDislikes();
+                int points2 = o2.getNrLikes() - o2.getNrDislikes();
+
+                if (points1 > points2) {
+                    return -1;
+                } else if (points1 < points2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        };
+    }
+
+
+    // Ordonare dinaminca dupa apasare like dislike
+    private void ordonareCommentsDupaApasareLikeDislike(){
+        if(ForumPostDetailedActivity.commentsOrder.equals("ORDER BY nrLikes-nrDislikes DESC")){
+            Collections.sort(commentList, comparatorPointsDesc);
+            notifyDataSetChanged();
+        } else if (ForumPostDetailedActivity.commentsOrder.equals("ORDER BY nrLikes-nrDislikes")){
+            Collections.sort(commentList, comparatorPointsDesc);
+            Collections.reverse(commentList);
+            notifyDataSetChanged();
+        }
     }
 
 
@@ -188,6 +230,9 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
                 // Schimbare puncte utilizator apreciat
                 userService.updatePointsByUserIdAndPoints(commentForum.getUserId(),
                         nrLikeuriSchimbate, callbackUpdatePointsUser());
+
+                // Ordonare
+                ordonareCommentsDupaApasareLikeDislike();
             }
         };
     }
@@ -293,6 +338,9 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
                 // Schimbare puncte utilizator apreciat
                 userService.updatePointsByUserIdAndPoints(commentForum.getUserId(),
                         nrLikeuriSchimbate, callbackUpdatePointsUser());
+
+                // Ordonare
+                ordonareCommentsDupaApasareLikeDislike();
             }
         };
     }

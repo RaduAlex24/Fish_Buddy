@@ -123,6 +123,10 @@
     <string name="log_update_like2dislike_commentLvAdapter">S-a modificat mai mult de un rand de la update like  to dislike comment</string>
     <string name="log_deleteDislike_commentLvAdapter">Stergerea de like comment a modificat mai mult de un rand</string>
     <string name="log_insertDislike_commentLvAdapter">Inserarea de dislike comment a inserat mai mult de un rand</string>
+    <string name="dummy_tvPoints_commentRowAdapter">3233</string>
+    <string name="dummy_tvUser_commentRowAdapter">Blex24</string>
+    <string name="dummy_tvPostDate_commentRowAdapter">12-05-2021</string>
+    <string name="dummy_tvContent_commentRowAdapter">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ultrices, erat id scelerisque facilisis, massa felis lobortis nisi, et vulputate massa ligula ac dolor. Etiam laoreet eros lorem, in,!</string>
 
 
     <string-array name="SpeciiPesti">

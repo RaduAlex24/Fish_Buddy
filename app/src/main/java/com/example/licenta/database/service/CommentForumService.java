@@ -30,13 +30,15 @@ public class CommentForumService {
 
     // Metode
     // Get all comments by post id
-    public void getCommentsByForumPostId(int forumPostId, Callback<List<CommentForum>> callback) {
+    public void getCommentsByForumPostId(int forumPostId, Callback<List<CommentForum>> callback,
+                                         String commentsOrder) {
         Callable<List<CommentForum>> callable = new Callable<List<CommentForum>>() {
             @Override
             public List<CommentForum> call() throws Exception {
                 List<CommentForum> commentForumList = new ArrayList<>();
 
-                String sql = "SELECT * FROM " + numeBDcommentsForum + " WHERE forumPostId LIKE ?";
+                String sql = "SELECT * FROM " + numeBDcommentsForum + " WHERE forumPostId LIKE ? "
+                        + commentsOrder;
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
                 statement.setInt(1, forumPostId);
                 ResultSet resultSet = statement.executeQuery();
