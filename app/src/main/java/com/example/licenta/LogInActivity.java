@@ -2,6 +2,7 @@ package com.example.licenta;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +37,8 @@ public class LogInActivity extends AppCompatActivity {
     private TextView tvSignup;
     private CheckBox checkBoxRemember;
 
-    private SharedPreferences preferences;
+
+    SharedPreferences preferences;
     public static final String SHARED_PREF_FILE_NAME = "LicentaPesteSharedPreferences";
 
     private UserService userService = new UserService();
@@ -46,6 +47,7 @@ public class LogInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+
 
         // Initializare componente
         initComponents();
@@ -73,14 +75,22 @@ public class LogInActivity extends AppCompatActivity {
     private void initComponents() {
         tietUsername = findViewById(R.id.tiet_username_login);
         tietPassword = findViewById(R.id.tiet_password_login);
-        tilPassword=findViewById(R.id.til_password_login);
-        tilUsername=findViewById(R.id.til_username_login);
+        tilPassword = findViewById(R.id.til_password_login);
+        tilUsername = findViewById(R.id.til_username_login);
         btnLogin = findViewById(R.id.btn_login);
         tvSignup = findViewById(R.id.tv_signup_login);
         checkBoxRemember = findViewById(R.id.checkbox_rememberMe_login);
 
         // Initializare shared preferences
         preferences = getSharedPreferences(SHARED_PREF_FILE_NAME, MODE_PRIVATE);
+        preferences = getSharedPreferences("night", 0);
+        boolean booleanValue = preferences.getBoolean("night_mode", true);;
+        if (booleanValue) {
+
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 
 
@@ -113,7 +123,7 @@ public class LogInActivity extends AppCompatActivity {
                     CurrentUser.initInstance(result);
 
                     // Verificare check box remember me
-                    if(checkBoxRemember.isChecked()){
+                    if (checkBoxRemember.isChecked()) {
                         saveLogInInfoToSharedPreference();
                     }
 
@@ -246,8 +256,7 @@ public class LogInActivity extends AppCompatActivity {
                     tilUsername.setError("Numele de utilizator trebuie sa aiba cel putin 6 caractere");
                 } else if (tietUsernameText.length() > 15) {
                     tilUsername.setError("Numele de utilizator trebuie sa aiba maximum 15 caractere");
-                }
-                else{
+                } else {
                     tilUsername.setError(null);
                 }
             }
@@ -272,8 +281,7 @@ public class LogInActivity extends AppCompatActivity {
                     tilPassword.setError("Parola trebuie sa aiba minim 6 caractere");
                 } else if (tietPasswordText.length() > 20) {
                     tilPassword.setError("Parola trebuie sa aiba maximum 20 caractere");
-                }
-                else{
+                } else {
                     tilPassword.setError(null);
                 }
             }

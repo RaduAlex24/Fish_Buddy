@@ -44,6 +44,7 @@ public class AdaugaPeste extends AppCompatActivity {
     private Button adaugarePeste;
     private ImageView poza_peste;
     private TextInputEditText dataPeste;
+    private Date date2;
     final Calendar myCalendar = Calendar.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +137,7 @@ public class AdaugaPeste extends AppCompatActivity {
         String species = specie.getSelectedItem().toString();
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
-        Date date2 = null;
+
         try {
             date2 = formatter.parse(dataPeste.getText().toString());
         } catch (ParseException e) {
@@ -154,7 +155,6 @@ public class AdaugaPeste extends AppCompatActivity {
         adaugarePeste = findViewById(R.id.button_adauga_peste);
         poza_peste = findViewById(R.id.adaugare_poza_peste);
         dataPeste=findViewById(R.id.tietDatePeste);
-
     }
     private void updateLabel() {
         String myFormat = "dd/MM/yyyy"; //In which you need put here
