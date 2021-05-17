@@ -124,4 +124,30 @@ public class CommentForumService {
         asyncTaskRunner.executeAsync(callable, callback);
     }
 
+
+    // Update nrLikes nrDislikes by comment forum
+    public void updatenrLikesnrDislikesByCommentForum(CommentForum commentForum, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "UPDATE " + numeBDcommentsForum + " SET nrLikes = ? , nrDislikes= ? " +
+                        "WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setString(1, String.valueOf(commentForum.getNrLikes()));
+                statement.setString(2, String.valueOf(commentForum.getNrDislikes()));
+                statement.setInt(3, commentForum.getId());
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
 }

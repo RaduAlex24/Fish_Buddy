@@ -20,9 +20,11 @@ import com.example.licenta.clase.forum.CommentForum;
 import com.example.licenta.clase.forum.CommentLvAdapter;
 import com.example.licenta.clase.forum.ForumPost;
 import com.example.licenta.clase.forum.ForumPostLvAdapter;
+import com.example.licenta.clase.forum.LikeComment;
 import com.example.licenta.clase.forum.LikeForum;
 import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.database.service.CommentForumService;
+import com.example.licenta.database.service.LikeCommentService;
 import com.example.licenta.homeFragments.ForumFragment;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -30,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +40,6 @@ import static android.widget.ArrayAdapter.createFromResource;
 
 public class ForumPostDetailedActivity extends AppCompatActivity {
 
-    public static final String FORUM_POST_MODIFICAT_LIKE_DISLIKE_KEY = "FORUM_POST_MODIFICAT_LIKE/DISLIKE_KEY";
     // Componente vizuale
     private ListView lvForumPostDetalied;
     private Spinner spinnerSortComments;
@@ -46,7 +48,6 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
     private ImageButton imgBtnAddComment;
 
     // Utile post
-    private CurrentUser currentUser = CurrentUser.getInstance();
     private Intent intentPrimit;
     private List<ForumPost> forumPostListSingular = new ArrayList<>();
     private ForumPost forumPost;
@@ -55,8 +56,14 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
 
     // Utile comments
     private CommentForumService commentForumService = new CommentForumService();
+    private LikeCommentService likeCommentService = new LikeCommentService();
     private List<CommentForum> commentForumList = new ArrayList<>();
+    private Map<Integer, LikeComment> likeCommentMap = new HashMap<>();
+
+    // Utile generale
+    private CurrentUser currentUser = CurrentUser.getInstance();
     private static final String tagLog = "ForumPostDetaliedAct";
+    public static final String FORUM_POST_MODIFICAT_LIKE_DISLIKE_KEY = "FORUM_POST_MODIFICAT_LIKE/DISLIKE_KEY";
 
 
     @Override
@@ -148,7 +155,8 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
     // Initializare listview adapter pentru forum comments
     private void initLvAdapterCommentsForum() {
         CommentLvAdapter adapter = new CommentLvAdapter(getApplicationContext(),
-                R.layout.listview_row_comment_forum, commentForumList, getLayoutInflater());
+                R.layout.listview_row_comment_forum, commentForumList, getLayoutInflater(),
+                likeCommentMap, currentUser, forumPost);
         lvComments.setAdapter(adapter);
     }
 
@@ -157,6 +165,29 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
     private void notifyInternalAdapter() {
         ArrayAdapter adapter = (ArrayAdapter) lvComments.getAdapter();
         adapter.notifyDataSetChanged();
+    }
+
+
+    // Preluare initiala a like comment
+    private void getCommentLikes() {
+        likeCommentService.getLikeCommentMapByUserIdAndForumPostId(currentUser.getId(),
+                forumPost.getId(),
+                callbackGetCommentsLike());
+    }
+
+    // Callback preluare likeuri pentru commentarii
+    @NotNull
+    private Callback<Map<Integer, LikeComment>> callbackGetCommentsLike() {
+        return new Callback<Map<Integer, LikeComment>>() {
+            @Override
+            public void runResultOnUiThread(Map<Integer, LikeComment> result) {
+                likeCommentMap = result;
+
+                // Initializare listview adapter pentru forum comments
+                initLvAdapterCommentsForum();
+                notifyInternalAdapter();
+            }
+        };
     }
 
 
@@ -174,10 +205,8 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
             public void runResultOnUiThread(List<CommentForum> result) {
                 commentForumList.addAll(result);
 
-                // Initializare listview adapter pentru forum comments
-                initLvAdapterCommentsForum();
-
-                notifyInternalAdapter();
+                // Preluare a like pentru comments
+                getCommentLikes();
             }
         };
     }

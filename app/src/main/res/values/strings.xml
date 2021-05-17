@@ -117,6 +117,12 @@
     <string name="tagLog_insertNewComment_MoreThanOneRow">Insertul a adaugat mai mult de un comentariu!</string>
     <string name="error_comment_sub2Char">Comentariul trebuie sa aiba cel putin 2 caractere</string>
     <string name="error_comment_peste20Char">Comentariul trebuie sa aiba maximum 200 de caractere</string>
+    <string name="log_update_dislike2like_commentLvAdapter">S-a modoficat mai mult de un rand la editarea dislike to like comment</string>
+    <string name="log_deleteLike_commentLvAdapter">Stergerea like comment a modificat mai mult de un rand</string>
+    <string name="log_insert_likeComment_commentLvAdapter">Inserarea de like comment a adaugat mai mult de un rand</string>
+    <string name="log_update_like2dislike_commentLvAdapter">S-a modificat mai mult de un rand de la update like  to dislike comment</string>
+    <string name="log_deleteDislike_commentLvAdapter">Stergerea de like comment a modificat mai mult de un rand</string>
+    <string name="log_insertDislike_commentLvAdapter">Inserarea de dislike comment a inserat mai mult de un rand</string>
 
 
     <string-array name="SpeciiPesti">
