@@ -11,20 +11,27 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.licenta.util.MapsUtils.GetNearbyPlacesData;
 import com.example.licenta.R;
 import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -37,14 +44,27 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -56,6 +76,7 @@ public class MapsFragment extends Fragment {
     private Location mLastKnownLocation;
     int PROXIMITY_RADIUS = 3000000;
     double latitude, longitude;
+    AutocompleteSupportFragment autocompleteFragment;
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -67,12 +88,21 @@ public class MapsFragment extends Fragment {
             }
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
-
+            mMap.getUiSettings().setMapToolbarEnabled(false);
             LocationRequest locationRequest = LocationRequest.create();
             locationRequest.setInterval(1000);
             locationRequest.setFastestInterval(500);
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+//
+                    String uri = "http://maps.google.com/maps?daddr=" + marker.getPosition().latitude + "," + marker.getPosition().longitude;
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    intent.setPackage("com.google.android.apps.maps");
+                    startActivity(intent);
+                }
+            });
             LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
 
             SettingsClient settingsClient = LocationServices.getSettingsClient(getContext());
@@ -107,7 +137,7 @@ public class MapsFragment extends Fragment {
 
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-           // layoutParams.addRule(RelativeLayout.ALIGN_END, 0);
+            // layoutParams.addRule(RelativeLayout.ALIGN_END, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             layoutParams.setMargins(40, 0, 0, 90);
@@ -116,8 +146,37 @@ public class MapsFragment extends Fragment {
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-                    Toast.makeText(getContext(), "marker " + marker.getTitle() + " clicked", Toast.LENGTH_SHORT).show();
+                    float[] results = new float[3];
+                    Location.distanceBetween(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(),
+                            marker.getPosition().latitude, marker.getPosition().longitude, results);
+                    Toast.makeText(getContext(), "Distanta dintre cele doua puncte este de " + Math.round(results[0] / 1000) + " kilometri", Toast.LENGTH_LONG).show();
                     return false;
+                }
+            });
+            Places.initialize(getContext(), "AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk");
+            autocompleteFragment = (AutocompleteSupportFragment)
+                    getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+            assert autocompleteFragment != null;
+            autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.LAT_LNG, Place.Field.NAME));
+            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                @Override
+                public void onPlaceSelected(@NonNull Place place) {
+                    String name = (String) place.getName();
+                    LatLng latLng = place.getLatLng();
+
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
+                    markerOptions.title(name);
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                    mMap.addMarker(markerOptions);
+
+                    //move map camera
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
+                }
+
+                @Override
+                public void onError(@NonNull Status status) {
+                    Toast.makeText(getContext(), "Eroare", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -200,6 +259,7 @@ public class MapsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
         requestPermision();
+
         return inflater.inflate(R.layout.fragment_maps, container, false);
     }
 

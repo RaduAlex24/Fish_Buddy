@@ -195,32 +195,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (requestCode ==PICK_IMAGE && resultCode == RESULT_OK) {
             try {
 
                 final Uri imageUri = data.getData();
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+
                 int currentBitmapWidth = selectedImage.getWidth();
                 int currentBitmapHeight = selectedImage.getHeight();
-
                 int ivWidth = imagineUtilizator.getWidth();
                 int ivHeight = imagineUtilizator.getHeight();
-                int newWidth = ivWidth;
-                int newHeight = (int) Math.floor((double) currentBitmapHeight *( (double) newWidth / (double) currentBitmapWidth));
+                int newHeight = (int) Math.floor((double) currentBitmapHeight *( (double) ivWidth / (double) currentBitmapWidth));
 
-                Bitmap newbitMap = Bitmap.createScaledBitmap(selectedImage, newWidth, newHeight, true);
-
+                Bitmap newbitMap = Bitmap.createScaledBitmap(selectedImage, ivWidth, newHeight, true);
                 imagineUtilizator.setImageBitmap(newbitMap);
-              //  imagineUtilizator.setImageBitmap(selectedImage);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
             }
 
-        } else {
-            //Toast.makeText(MainActivity.this, "You haven't picked Image", Toast.LENGTH_LONG).show();
         }
+
     }
 
     // Rescriere back pt parasire aplicatie
