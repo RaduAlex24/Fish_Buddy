@@ -39,6 +39,7 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
     private Map<Integer, LikeComment> likeCommentMap;
     private CurrentUser currentUser;
     private ForumPost forumPostParinte;
+    private String commentsOrder = "";
 
     // Controale vizuale
     private ImageButton btnLike;
@@ -61,7 +62,7 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
     // Constructor
     public CommentLvAdapter(@NonNull Context context, int resource, @NonNull List<CommentForum> objects,
                             LayoutInflater layoutInflater, Map<Integer, LikeComment> likeCommentMap,
-                            CurrentUser currentUser, ForumPost forumPostParinte) {
+                            CurrentUser currentUser, ForumPost forumPostParinte, String commentsOrder) {
         super(context, resource, objects);
 
         this.context = context;
@@ -71,6 +72,7 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
         this.likeCommentMap = likeCommentMap;
         this.currentUser = currentUser;
         this.forumPostParinte = forumPostParinte;
+        this.commentsOrder = commentsOrder;
     }
 
 
@@ -157,10 +159,10 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
 
     // Ordonare dinaminca dupa apasare like dislike
     private void ordonareCommentsDupaApasareLikeDislike(){
-        if(ForumPostDetailedActivity.commentsOrder.equals("ORDER BY nrLikes-nrDislikes DESC")){
+        if(commentsOrder.equals("ORDER BY nrLikes-nrDislikes DESC")){
             Collections.sort(commentList, comparatorPointsDesc);
             notifyDataSetChanged();
-        } else if (ForumPostDetailedActivity.commentsOrder.equals("ORDER BY nrLikes-nrDislikes")){
+        } else if (commentsOrder.equals("ORDER BY nrLikes-nrDislikes")){
             Collections.sort(commentList, comparatorPointsDesc);
             Collections.reverse(commentList);
             notifyDataSetChanged();

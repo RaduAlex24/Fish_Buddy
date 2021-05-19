@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 import com.example.licenta.CreateForumPostActivity;
 import com.example.licenta.ForumPostDetailedActivity;
 import com.example.licenta.R;
-import com.example.licenta.SignUpActivity;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.forum.CategoryForum;
 import com.example.licenta.clase.forum.ForumPost;
@@ -42,17 +40,24 @@ import java.util.Map;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static android.widget.ArrayAdapter.createFromResource;
 
 
 public class ForumFragment extends Fragment {
 
-    // TO DO ORDINEA FORUMURILOR SI LIKEURILOR
+    // Utile
     public static final int REQUEST_CODE_CREATE_FORUM_POST = 201;
     public static final int REQUEST_CODE_FORUM_POST_DETAILED = 202;
     public static final String FORUM_POST_KEY = "FORUM_POST_KEY";
     public static final String LIKE_FORUM_MAP_KEY = "LIKE_FORUM_MAP_KEY";
     public static final String FAVOURITE_POSTS_ID_LIST_KEY = "FAVOURITE_POSTS_ID_LIST_KEY";
+    public static String postsOrder = "ORDER BY nrLikes-nrDislikes DESC";
+    public static String forumPostCategory = "";
+    private boolean deschidereInitiala = true;
+
+    // Controlale vizuale
     private Spinner spinnerCategory;
+    private Spinner spinnerSortPosts;
     private FloatingActionButton fabAddPost;
     private ListView lvForum;
 
@@ -100,6 +105,9 @@ public class ForumFragment extends Fragment {
         // Initializare adapter spinner category
         initSpinnerCategory();
 
+        // Initializare spinner sortare posturi
+        initSortPostsSpinner();
+
         // Preluare initiala de posturi
         //initialGetAllForumPosts();
 
@@ -113,6 +121,9 @@ public class ForumFragment extends Fragment {
         // Adaugare eveniment click pe obiectele din listview
         lvForum.setOnItemClickListener(onClickListViewItem());
 
+        // Adaugare eveniment click pe spinner sortare
+        spinnerSortPosts.setOnItemSelectedListener(onItemSelectedSortPostsSpinner());
+
         return view;
     }
 
@@ -122,8 +133,19 @@ public class ForumFragment extends Fragment {
     private void initComponents(View view) {
         // Initializare controale vizuale
         spinnerCategory = view.findViewById(R.id.spinner_category_forumPost);
+        spinnerSortPosts = view.findViewById(R.id.spinner_sortingPosts_forumFragment);
         fabAddPost = view.findViewById(R.id.fab_createPost_forumFragment);
         lvForum = view.findViewById(R.id.lv_forumFragment);
+    }
+
+
+    // Initializare spinner sortare posturi
+    private void initSortPostsSpinner() {
+        ArrayAdapter<CharSequence> adapter = createFromResource(getContext(),
+                R.array.OptiuniSortarePostari,
+                android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerSortPosts.setAdapter(adapter);
     }
 
 
@@ -188,7 +210,8 @@ public class ForumFragment extends Fragment {
     private void initListViewAdapter() {
         ForumPostLvAdapter adapter = new ForumPostLvAdapter(getContext(),
                 R.layout.listview_row_forum_post, forumPostList,
-                getLayoutInflater(), likeForumMap, currentUser, favouritePostsIdList, false);
+                getLayoutInflater(), likeForumMap, currentUser, favouritePostsIdList,
+                false);
         lvForum.setAdapter(adapter);
     }
 
@@ -201,7 +224,7 @@ public class ForumFragment extends Fragment {
 
     // Preluare initiala a posturilor de pe forum
     private void initialGetAllForumPosts() {
-        forumPostService.getAllForumPosts(callbackGetAllForumPostInitialy());
+        forumPostService.getAllForumPosts(postsOrder, callbackGetAllForumPostInitialy());
     }
 
     // Callback gett all forum posts initailly
@@ -256,50 +279,81 @@ public class ForumFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 // Switch pe enum
-                String category = "";
                 switch (position) {
                     case 0:
-                        category = "GENERAL";
+                        forumPostCategory = "GENERAL";
                         break;
                     case 1:
-                        category = "SFATURI";
+                        forumPostCategory = "SFATURI";
                         break;
                     case 2:
-                        category = "PESTI";
+                        forumPostCategory = "PESTI";
                         break;
                     case 3:
-                        category = "ECHIPAMENTE";
+                        forumPostCategory = "ECHIPAMENTE";
                         break;
                     case 4:
-                        category = "INCEPATORI";
+                        forumPostCategory = "INCEPATORI";
                         break;
                     case 5:
-                        category = "GLUME";
+                        forumPostCategory = "GLUME";
                         break;
                     case 6:
-                        category = "POSTARILE_MELE";
+                        forumPostCategory = "POSTARILE_MELE";
                         break;
                     case 7:
-                        category = "POSTARILE_FAVORITE";
+                        forumPostCategory = "POSTARILE_FAVORITE";
                         break;
                     default:
-                        category = "";
+                        forumPostCategory = "GENERAL";
                 }
 
-                if (!(category.equals("GENERAL") || category.equals("POSTARILE_MELE") || category.equals("POSTARILE_FAVORITE"))) {
-                    forumPostService.getAllForumPostsByCategory(category, callbackGetAllByCategory());
-                } else if (category.equals("GENERAL")) {
-                    initialGetAllForumPosts();
-                } else if (category.equals("POSTARILE_MELE")) {
-                    forumPostService.getAllForumPostsByUserId(currentUser.getId(), callbackGetForumPostsByUserId());
+                alegereCallInFunctieDeSpinnerCategorie();
+            }
 
-                } else if (category.equals("POSTARILE_FAVORITE")) {
-                    if (favouritePostsIdList.size() == 0) {
-                        Toast.makeText(getContext(), "Nimic aici", Toast.LENGTH_SHORT).show();
-                        forumPostList.clear();
-                    } else {
-                        forumPostService.getFavouriteForumPostsByIdList(favouritePostsIdList, callbackGetFavouriteForumPosts());
-                    }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+    }
+
+
+    // On click pentru schimbare spinner sortare posturi
+    @NotNull
+    private AdapterView.OnItemSelectedListener onItemSelectedSortPostsSpinner() {
+        return new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Schimbare posts order
+                switch (position) {
+                    case 0:
+                        postsOrder = "ORDER BY nrLikes-nrDislikes DESC";
+                        break;
+                    case 1:
+                        postsOrder = "ORDER BY nrLikes-nrDislikes";
+                        break;
+                    case 2:
+                        postsOrder = "ORDER BY nrComments DESC";
+                        break;
+                    case 3:
+                        postsOrder = "ORDER BY nrComments";
+                        break;
+                    case 4:
+                        postsOrder = "ORDER BY postDate DESC";
+                        break;
+                    case 5:
+                        postsOrder = "ORDER BY postDate";
+                        break;
+                    default:
+                        postsOrder = "ORDER BY nrLikes-nrDislikes DESC";
+                }
+
+                // Nu trebuie apelata la deshiderea aplicatiei
+                if (!deschidereInitiala) {
+                    alegereCallInFunctieDeSpinnerCategorie();
+                } else {
+                    deschidereInitiala = false;
                 }
 
                 lvForum.setSelection(0);
@@ -310,6 +364,26 @@ public class ForumFragment extends Fragment {
 
             }
         };
+    }
+
+
+    // FUNCTIE ORIBILA TREBUIE SCHIMBATA CANDVA
+    private void alegereCallInFunctieDeSpinnerCategorie() {
+        if (!(forumPostCategory.equals("GENERAL") || forumPostCategory.equals("POSTARILE_MELE") || forumPostCategory.equals("POSTARILE_FAVORITE"))) {
+            forumPostService.getAllForumPostsByCategory(forumPostCategory, postsOrder, callbackGetAllByCategory());
+        } else if (forumPostCategory.equals("GENERAL")) {
+            initialGetAllForumPosts();
+        } else if (forumPostCategory.equals("POSTARILE_MELE")) {
+            forumPostService.getAllForumPostsByUserId(currentUser.getId(), postsOrder, callbackGetForumPostsByUserId());
+
+        } else if (forumPostCategory.equals("POSTARILE_FAVORITE")) {
+            if (favouritePostsIdList.size() == 0) {
+                Toast.makeText(getContext(), "Nimic aici", Toast.LENGTH_SHORT).show();
+                forumPostList.clear();
+            } else {
+                forumPostService.getFavouriteForumPostsByIdList(favouritePostsIdList, postsOrder, callbackGetFavouriteForumPosts());
+            }
+        }
     }
 
 
@@ -360,12 +434,12 @@ public class ForumFragment extends Fragment {
         if (requestCode == REQUEST_CODE_CREATE_FORUM_POST && resultCode == RESULT_OK && data != null) {
             ForumPost forumPost = (ForumPost) data.getSerializableExtra(CreateForumPostActivity.NEW_FORUM_POST_KEY);
             spinnerCategory.setSelection(0);
-            forumPostList.add(forumPost);
+            forumPostList.add(0, forumPost);
             notifyInternalAdapter();
         }
 
         // Intoarcere de la vizitarea unui post detaliat
-        if (requestCode == REQUEST_CODE_FORUM_POST_DETAILED && resultCode == RESULT_CANCELED && data != null) {
+        else if (requestCode == REQUEST_CODE_FORUM_POST_DETAILED && resultCode == RESULT_CANCELED && data != null) {
             List<ForumPost> forumPostListSingular = (List<ForumPost>) data.
                     getSerializableExtra(ForumPostDetailedActivity.FORUM_POST_MODIFICAT_LIKE_DISLIKE_KEY);
 

@@ -29,13 +29,13 @@ public class ForumPostService {
 
     // Metode
     // Get all
-    public void getAllForumPosts(Callback<List<ForumPost>> callback) {
+    public void getAllForumPosts(String postsOrder, Callback<List<ForumPost>> callback) {
         Callable<List<ForumPost>> callable = new Callable<List<ForumPost>>() {
             @Override
             public List<ForumPost> call() throws Exception {
                 List<ForumPost> forumPostList = new ArrayList<>();
 
-                String sql = "SELECT * FROM " + numeBDforum;
+                String sql = "SELECT * FROM " + numeBDforum + " " + postsOrder;
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
                 ResultSet resultSet = statement.executeQuery();
 
@@ -72,13 +72,13 @@ public class ForumPostService {
 
 
     // Get all by category
-    public void getAllForumPostsByCategory(String category, Callback<List<ForumPost>> callback) {
+    public void getAllForumPostsByCategory(String category, String postsOrder, Callback<List<ForumPost>> callback) {
         Callable<List<ForumPost>> callable = new Callable<List<ForumPost>>() {
             @Override
             public List<ForumPost> call() throws Exception {
                 List<ForumPost> forumPostList = new ArrayList<>();
 
-                String sql = "SELECT * FROM " + numeBDforum + " WHERE category LIKE ?";
+                String sql = "SELECT * FROM " + numeBDforum + " WHERE category LIKE ? " + postsOrder;
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
                 statement.setString(1, category);
                 ResultSet resultSet = statement.executeQuery();
@@ -116,13 +116,13 @@ public class ForumPostService {
 
 
     // Get all forum post by user id
-    public void getAllForumPostsByUserId(int id, Callback<List<ForumPost>> callback) {
+    public void getAllForumPostsByUserId(int id, String postsOrder, Callback<List<ForumPost>> callback) {
         Callable<List<ForumPost>> callable = new Callable<List<ForumPost>>() {
             @Override
             public List<ForumPost> call() throws Exception {
                 List<ForumPost> forumPostList = new ArrayList<>();
 
-                String sql = "SELECT * FROM " + numeBDforum + " WHERE userId LIKE ?";
+                String sql = "SELECT * FROM " + numeBDforum + " WHERE userId LIKE ? " + postsOrder;
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
                 statement.setInt(1, id);
                 ResultSet resultSet = statement.executeQuery();
@@ -160,7 +160,7 @@ public class ForumPostService {
 
 
     // Get all forum post by favourite list
-    public void getFavouriteForumPostsByIdList(List<Integer> idList, Callback<List<ForumPost>> callback) {
+    public void getFavouriteForumPostsByIdList(List<Integer> idList, String postsOrder, Callback<List<ForumPost>> callback) {
         Callable<List<ForumPost>> callable = new Callable<List<ForumPost>>() {
             @Override
             public List<ForumPost> call() throws Exception {
@@ -170,7 +170,7 @@ public class ForumPostService {
                 for (int i = 1; i < idList.size(); i++) {
                     sql += ", ?";
                 }
-                sql += ")";
+                sql += ") " + postsOrder;
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
                 for (int i = 0; i < idList.size(); i++) {
                     statement.setInt(i + 1, idList.get(i));

@@ -148,4 +148,14 @@
         <item>Cele mai noi</item>
         <item>Cele mai vechi</item>
     </string-array>
+
+    <string-array name="OptiuniSortarePostari">
+        <item>Cu cele mai multe puncte</item>
+        <item>Cu cele mai putine puncte</item>
+        <item>Cu cele mai multe comentarii</item>
+        <item>Cu cele mai putine comentarii</item>
+        <item>Cele mai noi</item>
+        <item>Cele mai vechi</item>
+    </string-array>
+
 </resources>

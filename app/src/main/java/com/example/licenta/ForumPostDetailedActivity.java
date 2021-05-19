@@ -62,7 +62,7 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
     private LikeCommentService likeCommentService = new LikeCommentService();
     private List<CommentForum> commentForumList = new ArrayList<>();
     private Map<Integer, LikeComment> likeCommentMap = new HashMap<>();
-    public static String commentsOrder = "ORDER BY nrLikes-nrDislikes DESC";
+    private String commentsOrder = "ORDER BY nrLikes-nrDislikes DESC";
 
     // Utile generale
     private CurrentUser currentUser = CurrentUser.getInstance();
@@ -163,7 +163,7 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
     private void initLvAdapterCommentsForum() {
         CommentLvAdapter adapter = new CommentLvAdapter(getApplicationContext(),
                 R.layout.listview_row_comment_forum, commentForumList, getLayoutInflater(),
-                likeCommentMap, currentUser, forumPost);
+                likeCommentMap, currentUser, forumPost, commentsOrder);
         lvComments.setAdapter(adapter);
     }
 

@@ -19,10 +19,13 @@ import com.example.licenta.database.service.FavouriteForumPostService;
 import com.example.licenta.database.service.ForumPostService;
 import com.example.licenta.database.service.LikeForumService;
 import com.example.licenta.database.service.UserService;
+import com.example.licenta.homeFragments.ForumFragment;
 import com.example.licenta.util.dateUtils.DateConverter;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +59,71 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     private UserService userService = new UserService();
     private String LogTag = "ForumPostLvAdapter";
     private static final int MaxContentCharacters = 200;
+
+
+    // Sortari
+    Comparator<ForumPost> comparatorPointsDesc;
+    Comparator<ForumPost> comparatorCommentsDesc;
+
+    // Initializare comparatori
+    private void initForumPostsComparators() {
+        // Puncte
+        comparatorPointsDesc = new Comparator<ForumPost>() {
+            @Override
+            public int compare(ForumPost o1, ForumPost o2) {
+                int points1 = o1.getNrLikes() - o1.getNrDislikes();
+                int points2 = o2.getNrLikes() - o2.getNrDislikes();
+
+                if (points1 > points2) {
+                    return -1;
+                } else if (points1 < points2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        };
+
+        // Comentarii
+        comparatorCommentsDesc = new Comparator<ForumPost>() {
+            @Override
+            public int compare(ForumPost o1, ForumPost o2) {
+                int comments1 = o1.getNrComments();
+                int comments2 = o2.getNrComments();
+
+                if (comments1 > comments2) {
+                    return -1;
+                } else if (comments1 < comments2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        };
+    }
+
+
+    // Ordonare dinaminca dupa apasare like dislike
+    private void ordonareForumPostsDupaApasareLikeDislike() {
+        if (ForumFragment.postsOrder.equals("ORDER BY nrLikes-nrDislikes DESC")) {
+            Collections.sort(forumPostList, comparatorPointsDesc);
+            notifyDataSetChanged();
+
+        } else if (ForumFragment.postsOrder.equals("ORDER BY nrLikes-nrDislikes")) {
+            Collections.sort(forumPostList, comparatorPointsDesc);
+            Collections.reverse(forumPostList);
+            notifyDataSetChanged();
+
+        } else if (ForumFragment.postsOrder.equals("ORDER BY nrComments DESC")) {
+            Collections.sort(forumPostList, comparatorCommentsDesc);
+            notifyDataSetChanged();
+
+        } else if (ForumFragment.postsOrder.equals("ORDER BY nrComments")) {
+            Collections.sort(forumPostList, comparatorCommentsDesc);
+            Collections.reverse(forumPostList);
+            notifyDataSetChanged();
+        }
+    }
 
 
     // Constructor
@@ -94,6 +162,9 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
         // Initializare favorite
         initFavouritePosts(forumPost.getId());
 
+        // Initializare comparatori
+        initForumPostsComparators();
+
         // Functii butoane
         btnLike.setOnClickListener(onClickLikeForumPost(forumPost));
         btnDislike.setOnClickListener(onClickDislikeForumPost(forumPost));
@@ -120,7 +191,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
 
         // content
         tvContent = view.findViewById(R.id.tv_content_forumPostRowAdapter);
-        if(isDetalied == true){
+        if (isDetalied == true) {
             tvContent.setText(forumPost.getContent());
         } else {
             String smallContent = fitContent(forumPost.getContent(), MaxContentCharacters);
@@ -148,7 +219,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
         btnFavourite.setFocusable(false);
 
         // Anulare click cand este pe pagina de detalii forum post
-        if(isDetalied){
+        if (isDetalied) {
             btnLike.setFocusable(true);
             btnDislike.setFocusable(true);
             btnFavourite.setFocusable(true);
@@ -215,7 +286,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
         return new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
-                if(result == 1){
+                if (result == 1) {
                     favouritePostsIdList.add(forumPost.getId());
                     notifyDataSetChanged();
                 } else {
@@ -231,8 +302,14 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
         return new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
-                if(result == 1){
+                if (result == 1) {
                     favouritePostsIdList.remove((Integer) forumPost.getId());
+
+                    // Eliminare din lista de favorite
+                    if (!isDetalied && ForumFragment.forumPostCategory.equals("POSTARILE_FAVORITE")) {
+                        forumPostList.remove(forumPost);
+                    }
+
                     notifyDataSetChanged();
                 } else {
                     Log.e(LogTag, context.getString(R.string.log_bad_delete_favourite_forumPostLvAdapter));
@@ -240,7 +317,6 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
             }
         };
     }
-
 
 
     // LIKE
@@ -292,6 +368,9 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
                 // Schimbare puncte utilizator apreciat
                 userService.updatePointsByUserIdAndPoints(forumPost.getUserId(),
                         nrLikeuriSchimbate, callbackUpdatePointsUser());
+
+                // Schimbare dinamica a ordinii
+                ordonareForumPostsDupaApasareLikeDislike();
             }
         };
     }
@@ -395,6 +474,9 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
                 // Schimbare puncte utilizator apreciat
                 userService.updatePointsByUserIdAndPoints(forumPost.getUserId(),
                         nrLikeuriSchimbate, callbackUpdatePointsUser());
+
+                // Schimbare dinamica a ordinii
+                ordonareForumPostsDupaApasareLikeDislike();
             }
         };
     }
