@@ -12,6 +12,7 @@ public class CommentForum {
     private String creatorUsername;
 
     private String content;
+    private boolean isEdited;
     private int nrLikes;
     private int nrDislikes;
     private Date postDate;
@@ -19,12 +20,13 @@ public class CommentForum {
 
     // Constructori
     public CommentForum(int id, int userId, int forumPostId, String creatorUsername, String content,
-                        int nrLikes, int nrDislikes, Date postDate) {
+                        boolean isEdited, int nrLikes, int nrDislikes, Date postDate) {
         this.id = id;
         this.userId = userId;
         this.forumPostId = forumPostId;
         this.creatorUsername = creatorUsername;
         this.content = content;
+        this.isEdited = isEdited;
         this.nrLikes = nrLikes;
         this.nrDislikes = nrDislikes;
         this.postDate = postDate;
@@ -37,6 +39,7 @@ public class CommentForum {
         this.creatorUsername = creatorUsername;
         this.content = content;
 
+        this.isEdited = false;
         this.nrLikes = 0;
         this.nrDislikes = 0;
         this.postDate = DateConverter.toDateFromLong(System.currentTimeMillis());
@@ -87,6 +90,14 @@ public class CommentForum {
         this.content = content;
     }
 
+    public boolean isEdited() {
+        return isEdited;
+    }
+
+    public void setEdited(boolean edited) {
+        isEdited = edited;
+    }
+
     public int getNrLikes() {
         return nrLikes;
     }
@@ -121,11 +132,11 @@ public class CommentForum {
         sb.append(", forumPostId=").append(forumPostId);
         sb.append(", creatorUsername='").append(creatorUsername).append('\'');
         sb.append(", content='").append(content).append('\'');
+        sb.append(", isEdited=").append(isEdited);
         sb.append(", nrLikes=").append(nrLikes);
         sb.append(", nrDislikes=").append(nrDislikes);
         sb.append(", postDate=").append(postDate);
         sb.append('}');
         return sb.toString();
     }
-
 }

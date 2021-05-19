@@ -127,6 +127,10 @@
     <string name="dummy_tvUser_commentRowAdapter">Blex24</string>
     <string name="dummy_tvPostDate_commentRowAdapter">12-05-2021</string>
     <string name="dummy_tvContent_commentRowAdapter">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ultrices, erat id scelerisque facilisis, massa felis lobortis nisi, et vulputate massa ligula ac dolor. Etiam laoreet eros lorem, in,!</string>
+    <string name="log_updateForumPostsComments_ForumPostDetailed">Updateul de numar de comentarii a modificat mai mult de un rand</string>
+    <string name="tiet_hint_addComment_forumPostDetalied">Adauga un comentariu</string>
+    <string name="toast_comentariu_actualizat_succes">Comentariu actualizat cu succes</string>
+    <string name="log_updateComment_ForumPostDetalied">Updatul de comentariu a modificat mai mult de un rand</string>
 
 
     <string-array name="SpeciiPesti">

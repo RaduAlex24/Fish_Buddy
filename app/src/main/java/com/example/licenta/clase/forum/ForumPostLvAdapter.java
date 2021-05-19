@@ -65,66 +65,6 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     Comparator<ForumPost> comparatorPointsDesc;
     Comparator<ForumPost> comparatorCommentsDesc;
 
-    // Initializare comparatori
-    private void initForumPostsComparators() {
-        // Puncte
-        comparatorPointsDesc = new Comparator<ForumPost>() {
-            @Override
-            public int compare(ForumPost o1, ForumPost o2) {
-                int points1 = o1.getNrLikes() - o1.getNrDislikes();
-                int points2 = o2.getNrLikes() - o2.getNrDislikes();
-
-                if (points1 > points2) {
-                    return -1;
-                } else if (points1 < points2) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        };
-
-        // Comentarii
-        comparatorCommentsDesc = new Comparator<ForumPost>() {
-            @Override
-            public int compare(ForumPost o1, ForumPost o2) {
-                int comments1 = o1.getNrComments();
-                int comments2 = o2.getNrComments();
-
-                if (comments1 > comments2) {
-                    return -1;
-                } else if (comments1 < comments2) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        };
-    }
-
-
-    // Ordonare dinaminca dupa apasare like dislike
-    private void ordonareForumPostsDupaApasareLikeDislike() {
-        if (ForumFragment.postsOrder.equals("ORDER BY nrLikes-nrDislikes DESC")) {
-            Collections.sort(forumPostList, comparatorPointsDesc);
-            notifyDataSetChanged();
-
-        } else if (ForumFragment.postsOrder.equals("ORDER BY nrLikes-nrDislikes")) {
-            Collections.sort(forumPostList, comparatorPointsDesc);
-            Collections.reverse(forumPostList);
-            notifyDataSetChanged();
-
-        } else if (ForumFragment.postsOrder.equals("ORDER BY nrComments DESC")) {
-            Collections.sort(forumPostList, comparatorCommentsDesc);
-            notifyDataSetChanged();
-
-        } else if (ForumFragment.postsOrder.equals("ORDER BY nrComments")) {
-            Collections.sort(forumPostList, comparatorCommentsDesc);
-            Collections.reverse(forumPostList);
-            notifyDataSetChanged();
-        }
-    }
-
 
     // Constructor
     public ForumPostLvAdapter(@NonNull Context context, int resource, @NonNull List<ForumPost> objects,
@@ -234,6 +174,68 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
             return smallContent;
         } else {
             return content;
+        }
+    }
+
+
+    // Initializare comparatori
+    private void initForumPostsComparators() {
+        // Puncte
+        comparatorPointsDesc = new Comparator<ForumPost>() {
+            @Override
+            public int compare(ForumPost o1, ForumPost o2) {
+                int points1 = o1.getNrLikes() - o1.getNrDislikes();
+                int points2 = o2.getNrLikes() - o2.getNrDislikes();
+
+                if (points1 > points2) {
+                    return -1;
+                } else if (points1 < points2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        };
+
+
+        // Comentarii
+        comparatorCommentsDesc = new Comparator<ForumPost>() {
+            @Override
+            public int compare(ForumPost o1, ForumPost o2) {
+                int comments1 = o1.getNrComments();
+                int comments2 = o2.getNrComments();
+
+                if (comments1 > comments2) {
+                    return -1;
+                } else if (comments1 < comments2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        };
+    }
+
+
+    // Ordonare dinaminca dupa apasare like dislike
+    private void ordonareForumPostsDupaApasareLikeDislike() {
+        if (ForumFragment.postsOrder.equals("ORDER BY nrLikes-nrDislikes DESC")) {
+            Collections.sort(forumPostList, comparatorPointsDesc);
+            notifyDataSetChanged();
+
+        } else if (ForumFragment.postsOrder.equals("ORDER BY nrLikes-nrDislikes")) {
+            Collections.sort(forumPostList, comparatorPointsDesc);
+            Collections.reverse(forumPostList);
+            notifyDataSetChanged();
+
+        } else if (ForumFragment.postsOrder.equals("ORDER BY nrComments DESC")) {
+            Collections.sort(forumPostList, comparatorCommentsDesc);
+            notifyDataSetChanged();
+
+        } else if (ForumFragment.postsOrder.equals("ORDER BY nrComments")) {
+            Collections.sort(forumPostList, comparatorCommentsDesc);
+            Collections.reverse(forumPostList);
+            notifyDataSetChanged();
         }
     }
 

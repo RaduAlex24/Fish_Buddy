@@ -136,4 +136,26 @@ public class LikeCommentService {
         asyncTaskRunner.executeAsync(callable, callback);
     }
 
+
+    // Delete like comment by commentId
+    public void deleteLikeCommentByCommentId(int commentId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "DELETE " + numeBDlikeComment + "  WHERE answerId = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, commentId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
 }

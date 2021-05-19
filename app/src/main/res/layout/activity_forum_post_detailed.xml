@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:inputType="textNoSuggestions|textVisiblePassword"
             android:maxLength="200"
-            android:hint="Adauga un comentariu" />
+            android:hint="@string/tiet_hint_addComment_forumPostDetalied" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageButton

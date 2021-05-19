@@ -48,6 +48,7 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
     private TextView tvCreatorUsername;
     private TextView tvPostDate;
     private TextView tvContent;
+    private TextView tvEdited;
 
     // Utile
     private LikeCommentService likeCommentService = new LikeCommentService();
@@ -110,6 +111,12 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
         // creator username
         tvCreatorUsername = view.findViewById(R.id.tv_creatorUsername_commentRowAdapter);
         tvCreatorUsername.setText(commentForum.getCreatorUsername());
+
+        // is edited
+        tvEdited = view.findViewById(R.id.tv_isEdited_commentRowAdapter);
+        if(commentForum.isEdited()){
+            tvEdited.setVisibility(View.VISIBLE);
+        }
 
         // post date
         tvPostDate = view.findViewById(R.id.tv_postDate_commentRowAdapter);

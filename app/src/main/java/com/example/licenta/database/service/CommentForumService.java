@@ -49,14 +49,15 @@ public class CommentForumService {
                     int forumPostId = resultSet.getInt(3);
                     String creatorUsername = resultSet.getString(4);
                     String content = resultSet.getString(5);
-                    int nrLikes = resultSet.getInt(6);
-                    int nrDislikes = resultSet.getInt(7);
+                    boolean isEdited = Boolean.parseBoolean(resultSet.getString(6));
+                    int nrLikes = resultSet.getInt(7);
+                    int nrDislikes = resultSet.getInt(8);
 
-                    String postDate = resultSet.getString(8);
+                    String postDate = resultSet.getString(9);
                     Date date = DateConverter.toDate(postDate);
 
                     CommentForum commentForum = new CommentForum(id, userId, forumPostId,
-                            creatorUsername, content, nrLikes, nrDislikes, date);
+                            creatorUsername, content, isEdited, nrLikes, nrDislikes, date);
                     commentForumList.add(commentForum);
                 }
 
@@ -103,8 +104,8 @@ public class CommentForumService {
             public Integer call() throws Exception {
 
                 String sql = "INSERT INTO " + numeBDcommentsForum + "(id, userId, forumPostId, " +
-                        "creatorUsername, content, nrLikes, nrDislikes, postDate)" +
-                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+                        "creatorUsername, content, isEdited, nrLikes, nrDislikes, postDate)" +
+                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
                 statement.setInt(1, commentForum.getId());
@@ -112,9 +113,10 @@ public class CommentForumService {
                 statement.setInt(3, commentForum.getForumPostId());
                 statement.setString(4, commentForum.getCreatorUsername());
                 statement.setString(5, commentForum.getContent());
-                statement.setInt(6, commentForum.getNrLikes());
-                statement.setInt(7, commentForum.getNrDislikes());
-                statement.setString(8, DateConverter.toString(commentForum.getPostDate()));
+                statement.setString(6, String.valueOf(commentForum.isEdited()));
+                statement.setInt(7, commentForum.getNrLikes());
+                statement.setInt(8, commentForum.getNrDislikes());
+                statement.setString(9, DateConverter.toString(commentForum.getPostDate()));
                 int nrRanduriAfectate = statement.executeUpdate();
 
 
@@ -151,5 +153,51 @@ public class CommentForumService {
         asyncTaskRunner.executeAsync(callable, callback);
     }
 
+
+    // Update content by comment
+    public void updateContentByCommentForum(CommentForum commentForum, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "UPDATE " + numeBDcommentsForum + " SET content = ? , isEdited= ? " +
+                        "WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setString(1, commentForum.getContent());
+                statement.setString(2, String.valueOf(commentForum.isEdited()));
+                statement.setInt(3, commentForum.getId());
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Delete comment by commentId
+    public void deleteCommentByCommentId(int commentId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "DELETE " + numeBDcommentsForum + "  WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, commentId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
 
 }

@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +56,7 @@ public class ForumFragment extends Fragment {
     public static String postsOrder = "ORDER BY nrLikes-nrDislikes DESC";
     public static String forumPostCategory = "";
     private boolean deschidereInitiala = true;
+    private Comparator<ForumPost> comparatorCommentsDesc;
 
     // Controlale vizuale
     private Spinner spinnerCategory;
@@ -111,6 +114,8 @@ public class ForumFragment extends Fragment {
         // Preluare initiala de posturi
         //initialGetAllForumPosts();
 
+        // Initializare comparator
+        initForumPostNrCommentsComparator();
 
         // Evenimentru pentru schimbarea categoriei
         spinnerCategory.setOnItemSelectedListener(onItemSelectedListenerSpinner());
@@ -356,7 +361,6 @@ public class ForumFragment extends Fragment {
                     deschidereInitiala = false;
                 }
 
-                lvForum.setSelection(0);
             }
 
             @Override
@@ -384,6 +388,8 @@ public class ForumFragment extends Fragment {
                 forumPostService.getFavouriteForumPostsByIdList(favouritePostsIdList, postsOrder, callbackGetFavouriteForumPosts());
             }
         }
+
+        lvForum.setSelection(0);
     }
 
 
@@ -434,6 +440,9 @@ public class ForumFragment extends Fragment {
         if (requestCode == REQUEST_CODE_CREATE_FORUM_POST && resultCode == RESULT_OK && data != null) {
             ForumPost forumPost = (ForumPost) data.getSerializableExtra(CreateForumPostActivity.NEW_FORUM_POST_KEY);
             spinnerCategory.setSelection(0);
+            spinnerSortPosts.setSelection(0);
+
+            // Nu merge deoarece se apeleaza functii asincrone
             forumPostList.add(0, forumPost);
             notifyInternalAdapter();
         }
@@ -454,8 +463,19 @@ public class ForumFragment extends Fragment {
                 if (forumPost.getId() == forumPostNou.getId()) {
                     forumPost.setNrLikes(forumPostNou.getNrLikes());
                     forumPost.setNrDislikes(forumPostNou.getNrDislikes());
+                    forumPost.setNrComments(forumPostNou.getNrComments());
                     notFound = false;
                 }
+            }
+
+            // Ordonare dupa comentarii
+            if (postsOrder.equals("ORDER BY nrComments DESC")) {
+                Collections.sort(forumPostList, comparatorCommentsDesc);
+                notifyInternalAdapter();
+            } else if (postsOrder.equals("ORDER BY nrComments")) {
+                Collections.sort(forumPostList, comparatorCommentsDesc);
+                Collections.reverse(forumPostList);
+                notifyInternalAdapter();
             }
 
             // Preluare din noi din BD a postarilor favorite si a like-urilor
@@ -464,6 +484,25 @@ public class ForumFragment extends Fragment {
 
         }
 
-
     }
+
+    private void initForumPostNrCommentsComparator() {
+        comparatorCommentsDesc = new Comparator<ForumPost>() {
+            @Override
+            public int compare(ForumPost o1, ForumPost o2) {
+                int comments1 = o1.getNrComments();
+                int comments2 = o2.getNrComments();
+
+                if (comments1 > comments2) {
+                    return -1;
+                } else if (comments1 < comments2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        };
+    }
+
+
 }

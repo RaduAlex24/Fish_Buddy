@@ -292,4 +292,29 @@ public class ForumPostService {
         asyncTaskRunner.executeAsync(callable, callback);
     }
 
+
+    // Update nrLikes nrDislikes by Forum Post
+    public void updateNrCommentsByForumPostAndNrComments(ForumPost forumPost, int nrComments, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "UPDATE " + numeBDforum + " SET nrComments = ? + nrComments " +
+                        "WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, nrComments);
+                statement.setInt(2, forumPost.getId());
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
 }
