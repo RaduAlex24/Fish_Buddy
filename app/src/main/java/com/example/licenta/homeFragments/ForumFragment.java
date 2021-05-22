@@ -345,10 +345,10 @@ public class ForumFragment extends Fragment {
                         postsOrder = "ORDER BY nrComments";
                         break;
                     case 4:
-                        postsOrder = "ORDER BY postDate DESC";
+                        postsOrder = "ORDER BY TO_DATE(postDate,'dd-mm-yyyy') DESC";
                         break;
                     case 5:
-                        postsOrder = "ORDER BY postDate";
+                        postsOrder = "ORDER BY TO_DATE(postDate,'dd-mm-yyyy')";
                         break;
                     default:
                         postsOrder = "ORDER BY nrLikes-nrDislikes DESC";

@@ -131,6 +131,8 @@
     <string name="tiet_hint_addComment_forumPostDetalied">Adauga un comentariu</string>
     <string name="toast_comentariu_actualizat_succes">Comentariu actualizat cu succes</string>
     <string name="log_updateComment_ForumPostDetalied">Updatul de comentariu a modificat mai mult de un rand</string>
+    <string name="editeaza_postarea_forum_oldMenu">Editeaza postarea forum</string>
+    <string name="sterge_postarea_forum_oldMenu">Sterge postarea forum</string>
 
 
     <string-array name="SpeciiPesti">
