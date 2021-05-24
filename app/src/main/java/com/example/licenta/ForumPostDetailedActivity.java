@@ -1,5 +1,6 @@
 package com.example.licenta;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +10,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -109,7 +112,6 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
         // Adaugare functie lv comments on long click pt editare
         lvComments.setOnItemLongClickListener(onLongClickEditComment());
     }
-
 
 
     // Functii
@@ -298,6 +300,27 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
             public void runResultOnUiThread(Integer result) {
                 commentForumList.remove(commentForum);
                 notifyInternalAdapter();
+
+                // Modificare nr comms forum post
+                forumPostService.updateNrCommentsByForumPostAndNrComments(forumPost, -1,
+                        callbackModificareNegativaNrDeCommForumPost());
+            }
+        };
+    }
+
+
+    // Callback modificare cu -1 a nr de commentarii forum post
+    @NotNull
+    private Callback<Integer> callbackModificareNegativaNrDeCommForumPost() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                if (result == 1) {
+                    forumPost.setNrComments(forumPost.getNrComments() - 1);
+                    notifyInternalForumPostAdapter();
+                } else {
+                    Log.e(LogTag, getString(R.string.log_updateForumPostsComments_ForumPostDetailed));
+                }
             }
         };
     }
@@ -489,10 +512,10 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
                         commentsOrder = "ORDER BY nrLikes-nrDislikes";
                         break;
                     case 2:
-                        commentsOrder = "ORDER BY postDate DESC";
+                        commentsOrder = "ORDER BY TO_DATE(postDate,'dd-mm-yyyy') DESC";
                         break;
                     case 3:
-                        commentsOrder = "ORDER BY postDate";
+                        commentsOrder = "ORDER BY TO_DATE(postDate,'dd-mm-yyyy')";
                         break;
                     default:
                         commentsOrder = "ORDER BY nrLikes-nrDislikes DESC";
@@ -548,6 +571,37 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
 
             }
         };
+    }
+
+
+    // Meniu vechi pentru update si delete forum post
+    // Creare menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(currentUser.getId() == forumPost.getUserId()) {
+            super.onCreateOptionsMenu(menu);
+            getMenuInflater().inflate(R.menu.old_menu_edit_forumpost, menu);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    // Selectare elemente din old menu
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        if(item.getItemId() == R.id.old_menu_editForumPost){
+            Toast.makeText(getApplicationContext(), "Selectare optiune editare postare " + forumPost.getId(),
+                    Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.old_menu_deleteForumPost){
+            Toast.makeText(getApplicationContext(), "Selectare optiune stergere postare " + forumPost.getId(),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        return  true;
     }
 
 

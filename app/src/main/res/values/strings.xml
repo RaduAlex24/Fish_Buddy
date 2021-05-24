@@ -131,17 +131,7 @@
     <string name="tiet_hint_addComment_forumPostDetalied">Adauga un comentariu</string>
     <string name="toast_comentariu_actualizat_succes">Comentariu actualizat cu succes</string>
     <string name="log_updateComment_ForumPostDetalied">Updatul de comentariu a modificat mai mult de un rand</string>
-    <string name="distanta">distanta</string>
-    <string name="km">km</string>
-    <string name="apasati_aici_pentru_mai_mult_detalii">Apasati aici pentru mai mult detalii</string>
-    <string name="distanta_dintre_dvs_si_punctul_ales_este_de">Distanta dintre dvs si punctul ales este de:</string>
-    <string name="titlu">Titlu</string>
-    <string name="imaginelocatie">imagineLocatie</string>
-    <string name="titlu_locatie">Titlu Locatie</string>
-    <string name="rating">Rating:</string>
-    <string name="doriti_sa_planificati_o_drumetie">Doriti sa planificati o drumetie?</string>
-    <string name="website">website</string>
-    <string name="ultimi_pesti_prinsi">Ultimi pesti prinsi:</string>
+    <string name="editeaza_postarea_forum_oldMenu">Editeaza postarea forum</string>
 
 
     <string-array name="SpeciiPesti">
