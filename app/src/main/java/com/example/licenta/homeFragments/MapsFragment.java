@@ -150,6 +150,9 @@ public class MapsFragment extends Fragment {
                     Location.distanceBetween(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(),
                             marker.getPosition().latitude, marker.getPosition().longitude, results);
                     Toast.makeText(getContext(), "Distanta dintre cele doua puncte este de " + Math.round(results[0] / 1000) + " kilometri", Toast.LENGTH_LONG).show();
+                    String distanta = "Distanta dintre dvs si punctul ales este de " + Math.round(results[0] / 1000) + " kilometri" + " \n apasati pentru mai multe detalii ";
+                    mMap.setInfoWindowAdapter(new InfoWindowAdapter(getContext()));
+                    marker.setSnippet(String.valueOf(Math.round(results[0] / 1000)));
                     return false;
                 }
             });
@@ -171,7 +174,7 @@ public class MapsFragment extends Fragment {
                     mMap.addMarker(markerOptions);
 
                     //move map camera
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
                 }
 
                 @Override
@@ -219,7 +222,7 @@ public class MapsFragment extends Fragment {
                                 longitude = mLastKnownLocation.getLongitude();
                                 String fishingspots = "lake";
                                 String url = getUrl(latitude, longitude, fishingspots);
-                                Object dataTransfer[] = new Object[2];
+                                Object[] dataTransfer = new Object[2];
                                 GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
                                 dataTransfer[0] = mMap;
                                 dataTransfer[1] = url;

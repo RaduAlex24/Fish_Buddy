@@ -86,15 +86,16 @@
 
     <ImageView
         android:id="@+id/adaugare_poza_peste"
-        android:layout_width="143dp"
-        android:layout_height="97dp"
+        android:layout_width="135dp"
+        android:layout_height="83dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/adaugare_imagine_peste"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/spinner"
-        app:srcCompat="@drawable/ic_menu_camera"
-        android:contentDescription="@string/adaugare_imagine_peste" />
+        app:srcCompat="@drawable/ic_menu_camera" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilDate"

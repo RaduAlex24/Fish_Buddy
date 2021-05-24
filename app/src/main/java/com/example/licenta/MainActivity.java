@@ -68,13 +68,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.button, menu);
-        return true;
-    }
-
     private NavigationView.OnNavigationItemSelectedListener itemSelectedListener =
             new NavigationView.OnNavigationItemSelectedListener() {
 
