@@ -15,7 +15,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:contentDescription="@string/imaginelocatie"
+        android:contentDescription="@string/imagine_locatie"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_activity_info_window_title"
@@ -95,7 +95,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/ultimi_pesti_prinsi"
+        android:text="@string/ultimi_pesti_care_au_fost_prinsi_la_aceasta_balta"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_go_to_planificare_drumetie" />
 </androidx.constraintlayout.widget.ConstraintLayout>
