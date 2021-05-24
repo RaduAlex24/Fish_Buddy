@@ -2,6 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/old_menu_editForumPost" android:title="@string/editeaza_postarea_forum_oldMenu"/>
-    <item android:id="@+id/old_menu_deleteForumPost" android:title="@string/sterge_postarea_forumoldForum"/>
+    <item android:id="@+id/old_menu_deleteForumPost" android:title="@string/sterge_postarea_forum_oldMenu"/>
 
 </menu>
