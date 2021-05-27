@@ -12,6 +12,7 @@ public class ForumPost implements Serializable {
 
     private String title;
     private String content;
+    private boolean isEdited;
     private int nrLikes;
     private int nrDislikes;
     private int nrComments;
@@ -20,13 +21,14 @@ public class ForumPost implements Serializable {
 
 
     // Constructori
-    public ForumPost(int id, int userId, String creatorUsername, String title, String content,
+    public ForumPost(int id, int userId, String creatorUsername, String title, String content, boolean isEdited,
                      int nrLikes, int nrDislikes, int nrComments, CategoryForum category, Date postDate) {
         this.id = id;
         this.userId = userId;
         this.creatorUsername = creatorUsername;
         this.title = title;
         this.content = content;
+        this.isEdited = isEdited;
         this.nrLikes = nrLikes;
         this.nrDislikes = nrDislikes;
         this.nrComments = nrComments;
@@ -56,6 +58,7 @@ public class ForumPost implements Serializable {
         this.content = content;
         this.category = category;
 
+        this.isEdited = false;
         this.nrLikes = 0;
         this.nrDislikes = 0;
         this.nrComments = 0;
@@ -101,6 +104,14 @@ public class ForumPost implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public boolean isEdited() {
+        return isEdited;
+    }
+
+    public void setEdited(boolean edited) {
+        isEdited = edited;
     }
 
     public int getNrLikes() {

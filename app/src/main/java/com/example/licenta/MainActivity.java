@@ -185,32 +185,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode ==PICK_IMAGE && resultCode == RESULT_OK) {
-            try {
-
-                final Uri imageUri = data.getData();
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-
-                int currentBitmapWidth = selectedImage.getWidth();
-                int currentBitmapHeight = selectedImage.getHeight();
-                int ivWidth = imagineUtilizator.getWidth();
-                int ivHeight = imagineUtilizator.getHeight();
-                int newHeight = (int) Math.floor((double) currentBitmapHeight *( (double) ivWidth / (double) currentBitmapWidth));
-
-                Bitmap newbitMap = Bitmap.createScaledBitmap(selectedImage, ivWidth, newHeight, true);
-                imagineUtilizator.setImageBitmap(newbitMap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
-            }
-
-        }
-
-    }
+    // AM COMENTAT AICI CA CRAPA LA STERGERE POSTARE FORUM SI NU INTELEG DC
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode ==PICK_IMAGE && resultCode == RESULT_OK) {
+//            try {
+//
+//                final Uri imageUri = data.getData();
+//                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+//                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+//
+//                int currentBitmapWidth = selectedImage.getWidth();
+//                int currentBitmapHeight = selectedImage.getHeight();
+//                int ivWidth = imagineUtilizator.getWidth();
+//                int ivHeight = imagineUtilizator.getHeight();
+//                int newHeight = (int) Math.floor((double) currentBitmapHeight *( (double) ivWidth / (double) currentBitmapWidth));
+//
+//                Bitmap newbitMap = Bitmap.createScaledBitmap(selectedImage, ivWidth, newHeight, true);
+//                imagineUtilizator.setImageBitmap(newbitMap);
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//                Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+//            }
+//
+//        }
+//
+//    }
 
     // Rescriere back pt parasire aplicatie
     //Trebuie inchisa aplicatia de tot

@@ -45,18 +45,19 @@ public class ForumPostService {
                     String creatorUsername = resultSet.getString(3);
                     String title = resultSet.getString(4);
                     String content = resultSet.getString(5);
-                    int nrLikes = resultSet.getInt(6);
-                    int nrDislikes = resultSet.getInt(7);
-                    int nrComments = resultSet.getInt(8);
+                    boolean isEdited = Boolean.parseBoolean(resultSet.getString(6));
+                    int nrLikes = resultSet.getInt(7);
+                    int nrDislikes = resultSet.getInt(8);
+                    int nrComments = resultSet.getInt(9);
 
-                    String category = resultSet.getString(9);
+                    String category = resultSet.getString(10);
                     CategoryForum categoryForum = CategoryForum.valueOf(category);
 
-                    String postDate = resultSet.getString(10);
+                    String postDate = resultSet.getString(11);
                     Date date = DateConverter.toDate(postDate);
 
                     ForumPost forumPost = new ForumPost(id, userId, creatorUsername, title, content,
-                            nrLikes, nrDislikes, nrComments, categoryForum, date);
+                            isEdited, nrLikes, nrDislikes, nrComments, categoryForum, date);
                     forumPostList.add(forumPost);
                 }
 
@@ -89,18 +90,19 @@ public class ForumPostService {
                     String creatorUsername = resultSet.getString(3);
                     String title = resultSet.getString(4);
                     String content = resultSet.getString(5);
-                    int nrLikes = resultSet.getInt(6);
-                    int nrDislikes = resultSet.getInt(7);
-                    int nrComments = resultSet.getInt(8);
+                    boolean isEdited = Boolean.parseBoolean(resultSet.getString(6));
+                    int nrLikes = resultSet.getInt(7);
+                    int nrDislikes = resultSet.getInt(8);
+                    int nrComments = resultSet.getInt(9);
 
-                    String category = resultSet.getString(9);
+                    String category = resultSet.getString(10);
                     CategoryForum categoryForum = CategoryForum.valueOf(category);
 
-                    String postDate = resultSet.getString(10);
+                    String postDate = resultSet.getString(11);
                     Date date = DateConverter.toDate(postDate);
 
                     ForumPost forumPost = new ForumPost(id, userId, creatorUsername, title, content,
-                            nrLikes, nrDislikes, nrComments, categoryForum, date);
+                            isEdited, nrLikes, nrDislikes, nrComments, categoryForum, date);
                     forumPostList.add(forumPost);
                 }
 
@@ -133,18 +135,19 @@ public class ForumPostService {
                     String creatorUsername = resultSet.getString(3);
                     String title = resultSet.getString(4);
                     String content = resultSet.getString(5);
-                    int nrLikes = resultSet.getInt(6);
-                    int nrDislikes = resultSet.getInt(7);
-                    int nrComments = resultSet.getInt(8);
+                    boolean isEdited = Boolean.parseBoolean(resultSet.getString(6));
+                    int nrLikes = resultSet.getInt(7);
+                    int nrDislikes = resultSet.getInt(8);
+                    int nrComments = resultSet.getInt(9);
 
-                    String category = resultSet.getString(9);
+                    String category = resultSet.getString(10);
                     CategoryForum categoryForum = CategoryForum.valueOf(category);
 
-                    String postDate = resultSet.getString(10);
+                    String postDate = resultSet.getString(11);
                     Date date = DateConverter.toDate(postDate);
 
                     ForumPost forumPost = new ForumPost(id, userId, creatorUsername, title, content,
-                            nrLikes, nrDislikes, nrComments, categoryForum, date);
+                            isEdited, nrLikes, nrDislikes, nrComments, categoryForum, date);
                     forumPostList.add(forumPost);
                 }
 
@@ -183,18 +186,19 @@ public class ForumPostService {
                     String creatorUsername = resultSet.getString(3);
                     String title = resultSet.getString(4);
                     String content = resultSet.getString(5);
-                    int nrLikes = resultSet.getInt(6);
-                    int nrDislikes = resultSet.getInt(7);
-                    int nrComments = resultSet.getInt(8);
+                    boolean isEdited = Boolean.parseBoolean(resultSet.getString(6));
+                    int nrLikes = resultSet.getInt(7);
+                    int nrDislikes = resultSet.getInt(8);
+                    int nrComments = resultSet.getInt(9);
 
-                    String category = resultSet.getString(9);
+                    String category = resultSet.getString(10);
                     CategoryForum categoryForum = CategoryForum.valueOf(category);
 
-                    String postDate = resultSet.getString(10);
+                    String postDate = resultSet.getString(11);
                     Date date = DateConverter.toDate(postDate);
 
                     ForumPost forumPost = new ForumPost(id, userId, creatorUsername, title, content,
-                            nrLikes, nrDislikes, nrComments, categoryForum, date);
+                            isEdited, nrLikes, nrDislikes, nrComments, categoryForum, date);
                     forumPostList.add(forumPost);
                 }
 
@@ -242,8 +246,8 @@ public class ForumPostService {
                 forumPost.setId(id);
 
                 String sql = "INSERT INTO " + numeBDforum + "(id, userId, creatorUsername, title, content, " +
-                        "nrLikes, nrDislikes, nrComments, category, postDate)" +
-                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        "isEdited, nrLikes, nrDislikes, nrComments, category, postDate)" +
+                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
                 statement.setInt(1, forumPost.getId());
@@ -251,11 +255,12 @@ public class ForumPostService {
                 statement.setString(3, forumPost.getCreatorUsername());
                 statement.setString(4, forumPost.getTitle());
                 statement.setString(5, forumPost.getContent());
-                statement.setInt(6, forumPost.getNrLikes());
-                statement.setInt(7, forumPost.getNrDislikes());
-                statement.setInt(8, forumPost.getNrComments());
-                statement.setString(9, forumPost.getCategory().toString());
-                statement.setString(10, DateConverter.toString(forumPost.getPostDate()));
+                statement.setString(6, String.valueOf(forumPost.isEdited()));
+                statement.setInt(7, forumPost.getNrLikes());
+                statement.setInt(8, forumPost.getNrDislikes());
+                statement.setInt(9, forumPost.getNrComments());
+                statement.setString(10, forumPost.getCategory().toString());
+                statement.setString(11, DateConverter.toString(forumPost.getPostDate()));
                 statement.executeUpdate();
 
 
@@ -293,7 +298,7 @@ public class ForumPostService {
     }
 
 
-    // Update nrLikes nrDislikes by Forum Post
+    // Update numar comments by Forum Post
     public void updateNrCommentsByForumPostAndNrComments(ForumPost forumPost, int nrComments, Callback<Integer> callback) {
         Callable<Integer> callable = new Callable<Integer>() {
             @Override
@@ -316,5 +321,53 @@ public class ForumPostService {
         asyncTaskRunner.executeAsync(callable, callback);
     }
 
+
+    // Update title content si category by forumPost
+    public void updateForumPostByForumPost(ForumPost forumPost, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "UPDATE " + numeBDforum + " SET title = ?, content = ?, category = ?, " +
+                        "isEdited = ? WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setString(1, forumPost.getTitle());
+                statement.setString(2, forumPost.getContent());
+                statement.setString(3, forumPost.getCategory().toString());
+                statement.setString(4, String.valueOf(forumPost.isEdited()));
+                statement.setInt(5, forumPost.getId());
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Delete forum post by forum post id
+    public void deleteForumPostByForumPostId(int forumPostId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "DELETE " + numeBDforum + "  WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, forumPostId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
 
 }

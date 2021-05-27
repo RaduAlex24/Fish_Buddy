@@ -1,6 +1,7 @@
 package com.example.licenta;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,8 +31,10 @@ import com.example.licenta.clase.forum.LikeComment;
 import com.example.licenta.clase.forum.LikeForum;
 import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.database.service.CommentForumService;
+import com.example.licenta.database.service.FavouriteForumPostService;
 import com.example.licenta.database.service.ForumPostService;
 import com.example.licenta.database.service.LikeCommentService;
+import com.example.licenta.database.service.LikeForumService;
 import com.example.licenta.homeFragments.ForumFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -48,6 +51,10 @@ import static android.widget.ArrayAdapter.createFromResource;
 
 public class ForumPostDetailedActivity extends AppCompatActivity {
 
+    public static final int REQUEST_CODE_EDIT_FORUM_POST = 203;
+    public static final String EDIT_FORUM_POST_KEY = "EDIT_FORUM_POST_KEY";
+    public static final int RESULT_CODE_DELETE_FORUMPOST = 5;
+    public static final String STERGERE_FORUM_POST_KEY = "STERGERE_FORUM_POST_KEY";
     // Componente vizuale
     private ListView lvForumPostDetalied;
     private Spinner spinnerSortComments;
@@ -78,6 +85,8 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
     public static final String FORUM_POST_MODIFICAT_LIKE_DISLIKE_KEY = "FORUM_POST_MODIFICAT_LIKE/DISLIKE_KEY";
     public static final String LogTag = "LogTagForumPostDetailed";
     private boolean isEditingComment = false;
+    private FavouriteForumPostService favouriteForumPostService = new FavouriteForumPostService();
+    private LikeForumService likeForumService = new LikeForumService();
 
 
     @Override
@@ -269,12 +278,17 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
         builder.setNegativeButton("Stergere", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                likeCommentService.deleteLikeCommentByCommentId(commentForum.getId(),
-                        callbackStergereLikeCommentByCommentId(commentForum));
+                stergereForumCommentByComment(commentForum);
             }
         });
 
         builder.show();
+    }
+
+    // Stergere comment forum by comment
+    private void stergereForumCommentByComment(CommentForum commentForum) {
+        likeCommentService.deleteLikeCommentByCommentId(commentForum.getId(),
+                callbackStergereLikeCommentByCommentId(commentForum));
     }
 
 
@@ -578,7 +592,7 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
     // Creare menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(currentUser.getId() == forumPost.getUserId()) {
+        if (currentUser.getId() == forumPost.getUserId()) {
             super.onCreateOptionsMenu(menu);
             getMenuInflater().inflate(R.menu.old_menu_edit_forumpost, menu);
             return true;
@@ -593,15 +607,119 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
 
-        if(item.getItemId() == R.id.old_menu_editForumPost){
-            Toast.makeText(getApplicationContext(), "Selectare optiune editare postare " + forumPost.getId(),
-                    Toast.LENGTH_SHORT).show();
-        } else if (item.getItemId() == R.id.old_menu_deleteForumPost){
-            Toast.makeText(getApplicationContext(), "Selectare optiune stergere postare " + forumPost.getId(),
-                    Toast.LENGTH_SHORT).show();
+        if (item.getItemId() == R.id.old_menu_editForumPost) {
+            // Editare
+            Intent intent = new Intent(getApplicationContext(), CreateForumPostActivity.class);
+            intent.putExtra(EDIT_FORUM_POST_KEY, forumPost);
+            startActivityForResult(intent, REQUEST_CODE_EDIT_FORUM_POST);
+
+        } else if (item.getItemId() == R.id.old_menu_deleteForumPost) {
+            // Stergere
+            showDialogBuilderForDeletingForumPostt(forumPost);
         }
 
-        return  true;
+        return true;
+    }
+
+
+    // Afisare dialog builder stergere forum post
+    private void showDialogBuilderForDeletingForumPostt(ForumPost forumPost) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Stergere interventie forum");
+        builder.setMessage("Sunteti sigur ca doriti sa stergeti interventia forum?");
+
+        // Optiunea da
+        builder.setPositiveButton("Da", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Stergere comentarii
+                for (CommentForum commentForum : commentForumList) {
+                    stergereForumCommentByComment(commentForum);
+                }
+
+                // Stergere favourite forum
+                favouriteForumPostService.deleteFavouriteForumsByForumPostId(forumPost.getId(),
+                        callbackDeleteFavouritePostsByPostId(forumPost));
+
+            }
+        });
+
+        // Optiunea anulare
+        builder.setNegativeButton("Anulare", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+
+    // Delete favourite posts by posts id
+    @NotNull
+    private Callback<Integer> callbackDeleteFavouritePostsByPostId(ForumPost forumPost) {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                // Stergere likes forum
+                likeForumService.deleteLikesForumByForumPostId(forumPost.getId(),
+                        callbackDeleteLikesForumByForumId(forumPost));
+            }
+        };
+    }
+
+
+    // Delete likes forum by forum id
+    @NotNull
+    private Callback<Integer> callbackDeleteLikesForumByForumId(ForumPost forumPost) {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                // Stergere forum post
+                forumPostService.deleteForumPostByForumPostId(forumPost.getId(),
+                        deleteForumPostCallback(forumPost));
+            }
+        };
+    }
+
+
+    // Delete forum post callback
+    @NotNull
+    private Callback<Integer> deleteForumPostCallback(Serializable forumPost) {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                if (result == 1) {
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.toast_delete_forumPost_succes),
+                            Toast.LENGTH_SHORT).show();
+
+                    intentPrimit.putExtra(STERGERE_FORUM_POST_KEY, forumPost);
+                    setResult(RESULT_CODE_DELETE_FORUMPOST, intentPrimit);
+                    finish();
+                } else {
+                    Log.e(tagLog, getString(R.string.log_deleteForumPost_maiMultDeUnRandModificat));
+                }
+            }
+        };
+    }
+
+
+    // On activity result
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Post forum modificat
+        if (requestCode == REQUEST_CODE_EDIT_FORUM_POST && resultCode == RESULT_OK && data != null) {
+            ForumPost forumPostModificat = (ForumPost) data.getSerializableExtra(EDIT_FORUM_POST_KEY);
+            forumPost = forumPostModificat;
+
+            forumPostListSingular.clear();
+            forumPostListSingular.add(forumPost);
+            notifyInternalForumPostAdapter();
+        }
     }
 
 

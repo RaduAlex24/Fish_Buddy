@@ -144,6 +144,14 @@
     <string name="website">Website</string>
     <string name="ultimi_pesti_care_au_fost_prinsi_la_aceasta_balta">Ultimi pesti care au fost prinsi la aceasta balta:</string>
     <string name="sterge_postarea_forum_oldMenu">Sterge postarea forum</string>
+    <string name="log_updateForumPost_maiMultDeUnRandModificat">Updateul de forum a modificat mai mult de un rand</string>
+    <string name="toast_updateForumPost_Succes">Interventie forum modificata cu succes</string>
+    <string name="tv_title_modificare_createForumPostActivity">Modificare interventie forum</string>
+    <string name="btn_createForumPost_modificare_createForumPostActivity">Modificare interventie</string>
+    <string name="editat">Editat</string>
+    <string name="peste_categorie">Peste</string>
+    <string name="log_deleteForumPost_maiMultDeUnRandModificat">Stergerea postului forum a sters mai mult de un rand</string>
+    <string name="toast_delete_forumPost_succes">Interventia forum a fost stearsa cu succes</string>
 
 
     <string-array name="SpeciiPesti">

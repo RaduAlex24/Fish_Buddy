@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.licenta.asyncTask.Callback;
@@ -19,6 +20,8 @@ import com.example.licenta.clase.forum.ForumPost;
 import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.database.service.ForumPostService;
 import com.google.android.material.textfield.TextInputEditText;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +33,10 @@ public class CreateForumPostActivity extends AppCompatActivity {
     private TextInputEditText tiet_title;
     private TextInputEditText tiet_content;
     private Button btn_createForumPost;
+    private TextView tvActivityTitle;
 
     private Intent intent;
+    private ForumPost forumPostExistent = null;
     private static final String tagLog = "ActCrearePostareForum";
 
     private CurrentUser currentUser = CurrentUser.getInstance();
@@ -48,6 +53,11 @@ public class CreateForumPostActivity extends AppCompatActivity {
         // Adaugare categorii spinner
         initCategorySpinner();
 
+        // Verificare editare
+        if (intent.hasExtra(ForumPostDetailedActivity.EDIT_FORUM_POST_KEY)) {
+            initiereActivitatePentruEditareForumPost();
+        }
+
         // Functii validare date
         tiet_title.addTextChangedListener(watcherVerificareTitlu());
         tiet_content.addTextChangedListener(watcherVerificareContent());
@@ -55,6 +65,7 @@ public class CreateForumPostActivity extends AppCompatActivity {
         // Functie on click creare post forum
         btn_createForumPost.setOnClickListener(onClickCreateNewForumPost());
     }
+
 
 
     // Metode
@@ -65,6 +76,7 @@ public class CreateForumPostActivity extends AppCompatActivity {
         tiet_title = findViewById(R.id.tiet_title_createForumPost);
         tiet_content = findViewById(R.id.tiet_content_createForumPost);
         btn_createForumPost = findViewById(R.id.btn_createForumPost);
+        tvActivityTitle = findViewById(R.id.tv_title_createForumPost);
 
         tiet_content.setText(" ");
 
@@ -72,6 +84,56 @@ public class CreateForumPostActivity extends AppCompatActivity {
         intent = getIntent();
     }
 
+
+    // Initiere activitare pentru editare forum post
+    private void initiereActivitatePentruEditareForumPost() {
+        forumPostExistent = (ForumPost) intent.getSerializableExtra(ForumPostDetailedActivity.EDIT_FORUM_POST_KEY);
+        adaugareDateForumPostExistnet(forumPostExistent);
+        schimbareTvTitlupentruEditare();
+    }
+
+
+    // Adaugare date in casute pt editare forum post
+    private void adaugareDateForumPostExistnet(ForumPost forumPost) {
+        // Categorie
+        int index = -1;
+        switch (forumPost.getCategory()) {
+            case SFATURI:
+                index = 0;
+                break;
+            case PESTI:
+                index = 1;
+                break;
+            case ECHIPAMENTE:
+                index = 2;
+                break;
+            case INCEPATORI:
+                index = 3;
+                break;
+            case GLUME:
+                index = 4;
+                break;
+            default:
+                index = 5;
+        }
+        spinnerCategory.setSelection(index);
+
+        // Titlu
+        tiet_title.setText(forumPost.getTitle());
+
+        // Continut
+        tiet_content.setText(forumPost.getContent());
+    }
+
+
+    // Schimbare tv titlu si buton pentru modificare
+    private void schimbareTvTitlupentruEditare() {
+        // Titlu
+        tvActivityTitle.setText(R.string.tv_title_modificare_createForumPostActivity);
+
+        // Buton
+        btn_createForumPost.setText(R.string.btn_createForumPost_modificare_createForumPostActivity);
+    }
 
     // Adaugare categorii spiner
     private void initCategorySpinner() {
@@ -98,14 +160,46 @@ public class CreateForumPostActivity extends AppCompatActivity {
                     String textContent = tiet_content.getText().toString().trim();
                     CategoryForum category = getSelectedCategory();
 
-                    // Creare si adaugare in BD
-                    ForumPost forumPost = new ForumPost(currentUser.getId(), currentUser.getUsername(),
-                            textTitle, textContent, category);
-                    forumPostService.getNextForumPostId(callbackgetNextForumPostId(forumPost));
+                    if (forumPostExistent != null) {
+                        // Modificare forum existent
+                        forumPostExistent.setTitle(textTitle);
+                        forumPostExistent.setContent(textContent);
+                        forumPostExistent.setCategory(category);
+                        forumPostExistent.setEdited(true);
+
+                        forumPostService.updateForumPostByForumPost(forumPostExistent, callbackUpdateForumPost());
+                    } else {
+                        // Creare si adaugare in BD
+                        ForumPost forumPost = new ForumPost(currentUser.getId(), currentUser.getUsername(),
+                                textTitle, textContent, category);
+                        forumPostService.getNextForumPostId(callbackgetNextForumPostId(forumPost));
+                    }
                 } else {
                     Toast.makeText(CreateForumPostActivity.this,
                             getString(R.string.criterii_neindeplinite_postForumNou),
                             Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+    }
+
+
+    // Callback update forum post
+    @NotNull
+    private Callback<Integer> callbackUpdateForumPost() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                if (result == 1) {
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.toast_updateForumPost_Succes),
+                            Toast.LENGTH_SHORT).show();
+
+                    intent.putExtra(ForumPostDetailedActivity.EDIT_FORUM_POST_KEY, forumPostExistent);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else {
+                    Log.e(tagLog, getString(R.string.log_updateForumPost_maiMultDeUnRandModificat));
                 }
             }
         };

@@ -101,4 +101,26 @@ public class FavouriteForumPostService {
         asyncTaskRunner.executeAsync(callable, callback);
     }
 
+
+    // Delete favourite forums by forum post id
+    public void deleteFavouriteForumsByForumPostId(int forumPostId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "DELETE " + numeBDfavouriteForum + "  WHERE postId = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, forumPostId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
 }

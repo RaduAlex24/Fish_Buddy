@@ -43,6 +43,8 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
 
     // Controale vizuale
     private TextView tvUser;
+    private TextView tvCategory;
+    private TextView tvEdited;
     private TextView tvDate;
     private TextView tvTitle;
     private TextView tvContent;
@@ -120,6 +122,16 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
         // user
         tvUser = view.findViewById(R.id.tv_user_forumPostRowAdapter);
         tvUser.setText(forumPost.getCreatorUsername());
+
+        // category
+        tvCategory = view.findViewById(R.id.tv_category_forumPostRowAdapter);
+        tvCategory.setText(forumPost.getCategory().getLabel());
+
+        // is edited
+        tvEdited = view.findViewById(R.id.tv_isEdited_forumPostRowAdapter);
+        if(forumPost.isEdited()){
+            tvEdited.setVisibility(View.VISIBLE);
+        }
 
         // date
         tvDate = view.findViewById(R.id.tv_date_forumPostRowAdapter);

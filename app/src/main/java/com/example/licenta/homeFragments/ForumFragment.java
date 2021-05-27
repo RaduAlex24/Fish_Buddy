@@ -464,11 +464,17 @@ public class ForumFragment extends Fragment {
                     forumPost.setNrLikes(forumPostNou.getNrLikes());
                     forumPost.setNrDislikes(forumPostNou.getNrDislikes());
                     forumPost.setNrComments(forumPostNou.getNrComments());
+
+                    // Modificari in caz de editare
+                    forumPost.setEdited(forumPostNou.isEdited());
+                    forumPost.setTitle(forumPostNou.getTitle());
+                    forumPost.setContent(forumPostNou.getContent());
+                    forumPost.setCategory(forumPostNou.getCategory());
                     notFound = false;
                 }
             }
 
-            // Ordonare dupa comentarii
+            // Ordonare dupa comentarii + Ordone dupa likeuri daca e ?????????????????????????????
             if (postsOrder.equals("ORDER BY nrComments DESC")) {
                 Collections.sort(forumPostList, comparatorCommentsDesc);
                 notifyInternalAdapter();
@@ -481,6 +487,25 @@ public class ForumFragment extends Fragment {
             // Preluare din noi din BD a postarilor favorite si a like-urilor
             initFavouritePostsList();
             initLikForumMap(nrSelection);
+
+        }
+
+        // Intoarcere de la stergerea unui forum post
+        else if (requestCode == REQUEST_CODE_FORUM_POST_DETAILED &&
+                resultCode == ForumPostDetailedActivity.RESULT_CODE_DELETE_FORUMPOST && data != null) {
+
+            // Preluare element sters
+            ForumPost forumPostSters = (ForumPost) data.getSerializableExtra(ForumPostDetailedActivity.STERGERE_FORUM_POST_KEY);
+
+            for (ForumPost forumPost : forumPostList) {
+                if(forumPost.getId() == forumPostSters.getId()){
+                    favouritePostsIdList.remove((Integer) forumPost.getId());
+                    likeForumMap.remove(forumPost.getId());
+                    forumPostList.remove(forumPost);
+                    notifyInternalAdapter();
+                    break;
+                }
+            }
 
         }
 

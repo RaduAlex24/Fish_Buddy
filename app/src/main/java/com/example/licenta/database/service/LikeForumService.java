@@ -132,4 +132,26 @@ public class LikeForumService {
         asyncTaskRunner.executeAsync(callable, callback);
     }
 
+
+    // Delete like forum by forum post id
+    public void deleteLikesForumByForumPostId(int forumPostId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "DELETE " + numeBDlikeForum + "  WHERE postId = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, forumPostId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
 }
