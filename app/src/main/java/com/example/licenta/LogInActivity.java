@@ -154,7 +154,7 @@ public class LogInActivity extends AppCompatActivity {
 
     // Validare finala
     private boolean validareFinala() {
-        if (tietUsername.getError() != null || tietPassword.getError() != null) {
+        if (tilUsername.getError() != null || tilPassword.getError() != null) {
             return false;
         }
         if (tietUsername.getText().toString().replace(" ", "").length() == 0 ||
