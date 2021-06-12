@@ -8,12 +8,57 @@
 
 
     <TextView
+        android:id="@+id/tv_title_asistentVirtual"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fragment asisitnet virtual"
+        android:layout_marginTop="16dp"
+        android:text="@string/fragment_asisitnet_virtual_titlu_AsistentVirtual"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <ListView
+        android:id="@+id/lv_chat_asistentVirtual"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/til_addMessage_asistentVirtual"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_asistentVirtual" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_addMessage_asistentVirtual"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/imgBtn_addMessage_asistentVirtual"
+        app:layout_constraintTop_toBottomOf="@id/lv_chat_asistentVirtual"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/tiet_addMessage_asistentVirtual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textNoSuggestions|textVisiblePassword"
+            android:maxLength="200"
+            android:hint="@string/scrie_un_mesaj_chat_AsistentVirtual" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageButton
+        android:id="@+id/imgBtn_addMessage_asistentVirtual"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/ic_baseline_arrow_upward_24"
+        android:background="@null"
+        tools:ignore="VectorDrawableCompat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lv_chat_asistentVirtual"
+        app:layout_constraintStart_toEndOf="@+id/til_addMessage_asistentVirtual"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

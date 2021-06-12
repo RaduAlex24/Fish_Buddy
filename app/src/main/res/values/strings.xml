@@ -152,6 +152,11 @@
     <string name="peste_categorie">Peste</string>
     <string name="log_deleteForumPost_maiMultDeUnRandModificat">Stergerea postului forum a sters mai mult de un rand</string>
     <string name="toast_delete_forumPost_succes">Interventia forum a fost stearsa cu succes</string>
+    <string name="scrie_un_mesaj_chat_AsistentVirtual">Scrie un mesaj</string>
+    <string name="fragment_asisitnet_virtual_titlu_AsistentVirtual">Fragment asisitnet virtual</string>
+    <string name="toast_errNecunoscuta_AsistentVirtual">Eroare necunoscuta, reporniti aplicatia</string>
+    <string name="toast_errChatBotTimeOut_AsistentVirtual">Eroare conectare server, mai incearca o data</string>
+    <string name="toast_errMesajGol_AisistentVirtual">Va rugam sa introduceti un mesaj</string>
 
 
     <string-array name="SpeciiPesti">
