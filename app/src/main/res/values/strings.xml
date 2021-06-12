@@ -157,6 +157,9 @@
     <string name="toast_errNecunoscuta_AsistentVirtual">Eroare necunoscuta, reporniti aplicatia</string>
     <string name="toast_errChatBotTimeOut_AsistentVirtual">Eroare conectare server, mai incearca o data</string>
     <string name="toast_errMesajGol_AisistentVirtual">Va rugam sa introduceti un mesaj</string>
+    <string name="tv_dummy_messageSend_messageRowAdapter">Salut ce faci?</string>
+    <string name="tv_dummy_messageReceive_messageRowAdapter">Sunt bine tu?</string>
+    <string name="mesaj_initial_asistentVirtual">Salutari pescare, ma numesc Puffer si sunt un asistent virtual menit sa te ajute cu orice! Daca ai nevoie de mine da-mi un mesaj!</string>
 
 
     <string-array name="SpeciiPesti">

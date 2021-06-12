@@ -1,32 +1,32 @@
 package com.example.licenta.virtualAssistant.clase;
 
 public class Message {
-    private String message;
+    private String content;
     private boolean isReceived;
 
 
     // Constructori
-    public Message(String message, boolean isReceived) {
-        this.message = message;
+    public Message(String content, boolean isReceived) {
+        this.content = content;
         this.isReceived = isReceived;
     }
 
 
     // Getteri si setteri
-    public String getMessage() {
-        return message;
+    public String getContent() {
+        return content;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public boolean getIsReceived() {
+    public boolean isReceived() {
         return isReceived;
     }
 
-    public void setIsReceived(boolean isReceived) {
-        this.isReceived = isReceived;
+    public void setReceived(boolean received) {
+        isReceived = received;
     }
 
 
@@ -34,7 +34,7 @@ public class Message {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Message{");
-        sb.append("message='").append(message).append('\'');
+        sb.append("message='").append(content).append('\'');
         sb.append(", isReceived=").append(isReceived);
         sb.append('}');
         return sb.toString();
