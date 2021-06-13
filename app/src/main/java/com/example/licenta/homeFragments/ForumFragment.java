@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.licenta.CreateForumPostActivity;
@@ -53,6 +53,7 @@ public class ForumFragment extends Fragment {
     public static final String FORUM_POST_KEY = "FORUM_POST_KEY";
     public static final String LIKE_FORUM_MAP_KEY = "LIKE_FORUM_MAP_KEY";
     public static final String FAVOURITE_POSTS_ID_LIST_KEY = "FAVOURITE_POSTS_ID_LIST_KEY";
+    public static final String CHEIE_LISTA_POSTARI_DUPA_CAUTARE_CUVINTE = "CheieListaPostariDupaCautareCuvinte";
     public static String postsOrder = "ORDER BY nrLikes-nrDislikes DESC";
     public static String forumPostCategory = "";
     private boolean deschidereInitiala = true;
@@ -63,6 +64,7 @@ public class ForumFragment extends Fragment {
     private Spinner spinnerSortPosts;
     private FloatingActionButton fabAddPost;
     private ListView lvForum;
+    private TextView tvSearchResults;
 
     private static final String tagLog = "FragmentForum";
     private CurrentUser currentUser = CurrentUser.getInstance();
@@ -77,24 +79,27 @@ public class ForumFragment extends Fragment {
     public List<Integer> favouritePostsIdList = new ArrayList<>();
 
 
+    // Constructor gol
     public ForumFragment() {
         // Required empty public constructor
     }
 
-//    public static ForumFragment newInstance(String param1, String param2) {
-//        ForumFragment fragment = new ForumFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
 
+    // Functia new Instance
+    public static ForumFragment newInstance(List<ForumPost> forumPostListPrimit) {
+        ForumFragment fragment = new ForumFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(CHEIE_LISTA_POSTARI_DUPA_CAUTARE_CUVINTE, (Serializable) forumPostListPrimit);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+View view;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_forum, container, false);
+        view = inflater.inflate(R.layout.fragment_forum, container, false);
 
         // Preluare like forum posts
         initLikForumMap(0);
@@ -141,6 +146,7 @@ public class ForumFragment extends Fragment {
         spinnerSortPosts = view.findViewById(R.id.spinner_sortingPosts_forumFragment);
         fabAddPost = view.findViewById(R.id.fab_createPost_forumFragment);
         lvForum = view.findViewById(R.id.lv_forumFragment);
+        tvSearchResults = view.findViewById(R.id.tv_searchResults_forumFragment);
     }
 
 
@@ -229,7 +235,23 @@ public class ForumFragment extends Fragment {
 
     // Preluare initiala a posturilor de pe forum
     private void initialGetAllForumPosts() {
-        forumPostService.getAllForumPosts(postsOrder, callbackGetAllForumPostInitialy());
+        List<ForumPost> forumPostListPrimit = (List<ForumPost>) getArguments()
+                .get(CHEIE_LISTA_POSTARI_DUPA_CAUTARE_CUVINTE);
+
+        // Verificare daca exista deja o lista de postari in urma cautarii
+        if(forumPostListPrimit == null) {
+            forumPostService.getAllForumPosts(postsOrder, callbackGetAllForumPostInitialy());
+        } else {
+            forumPostList.clear();
+            forumPostList.addAll(forumPostListPrimit);
+            notifyInternalAdapter();
+
+            // Adaptare interfata
+            spinnerCategory.setVisibility(View.GONE);
+            spinnerSortPosts.setVisibility(View.GONE);
+            fabAddPost.setVisibility(View.GONE);
+            tvSearchResults.setVisibility(View.VISIBLE);
+        }
     }
 
     // Callback gett all forum posts initailly

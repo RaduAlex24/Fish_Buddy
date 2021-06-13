@@ -9,20 +9,30 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.licenta.CreateForumPostActivity;
+import com.example.licenta.ListaPesti;
+import com.example.licenta.Profil;
 import com.example.licenta.R;
+import com.example.licenta.Setari;
+import com.example.licenta.asyncTask.Callback;
+import com.example.licenta.clase.forum.ForumPost;
 import com.example.licenta.clase.user.CurrentUser;
+import com.example.licenta.database.service.ForumPostService;
+import com.example.licenta.virtualAssistant.clase.KeyWordsChatBot;
 import com.example.licenta.virtualAssistant.clase.MessageLvAdapter;
 import com.example.licenta.virtualAssistant.dialogFlow.BotReply;
 import com.example.licenta.virtualAssistant.clase.Message;
 import com.example.licenta.virtualAssistant.dialogFlow.SendMessageInBackground;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -53,6 +63,9 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
     List<Message> messageList = new ArrayList<>();
     private Message mesajInitial;
     private CurrentUser currentUser = CurrentUser.getInstance();
+    private BottomNavigationView bottomNavigationView;
+    private boolean modCautarePostari = false;
+    private ForumPostService forumPostService = new ForumPostService();
 
     // Dialogflow
     private SessionsClient sessionsClient;
@@ -99,6 +112,9 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
         // Initializare mesaj
         mesajInitial = new Message(getString(R.string.mesaj_initial_asistentVirtual), true);
         messageList.add(mesajInitial);
+
+        // Preluare bottomNavigationView
+        bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
     }
 
 
@@ -182,24 +198,123 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
 
     // Efectuare cereri utilizator
     private String efectuareCereriUtilizator(String botReply) {
-        // Exemplu creare interventie forum noua
-        if (botReply.toUpperCase().contains("CREARE INTERVENTIE FORUM")) {
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(getContext(), CreateForumPostActivity.class);
-                    startActivity(intent);
-                }
-            }, 3000);
+        // Redirectionari
+        // Vizualizare pagina forum
+        if (botReply.toUpperCase().contains(KeyWordsChatBot.VIZUALIZARE_POSTARI_FORUM.getLabel())) {
+            redirectionareVizualizareForumPosts();
+        }
+
+        // Vizualizare harti
+        if (botReply.toUpperCase().contains(KeyWordsChatBot.VIZUALIZARE_HARTI.getLabel())) {
+            redirectionareVizualizareHarti();
+
+        }
+
+        // Creare interventie forum
+        if (botReply.toUpperCase().contains(KeyWordsChatBot.CREARE_INTERVENTIE.getLabel())) {
+            redirectionareCreareInterventie();
+        }
+
+        // Vizualizare cont
+        if (botReply.toUpperCase().contains(KeyWordsChatBot.VIZUALIZARE_CONT.getLabel())) {
+            redirectionareVizualizareCont();
+        }
+
+        // Vizualizare setari
+        if (botReply.toUpperCase().contains(KeyWordsChatBot.VIZUALIZARE_SETARI.getLabel())) {
+            redirectionareVizualizareSetari();
+        }
+
+        // Vizualizare lista pesti prinsi
+        if (botReply.toUpperCase().contains(KeyWordsChatBot.VIZUALIZARE_LISTA_PESTI.getLabel())) {
+            redirectionareVizualizareListaPesti();
+        }
+
+        // Incepere cautare forum post
+        if (botReply.toUpperCase().contains(KeyWordsChatBot.CAUTARE.getLabel())) {
+            modCautarePostari = true;
         }
 
         // Inlocuire nume
-        if (botReply.contains("INLOCUIESTE_NUME")) {
-            botReply = botReply.replace("INLOCUIESTE_NUME", currentUser.getName());
+        if (botReply.toUpperCase().contains(KeyWordsChatBot.INLOCCUIESTE_NUME.getLabel())) {
+            botReply = botReply.replace(KeyWordsChatBot.INLOCCUIESTE_NUME.getLabel(), currentUser.getName());
         }
 
 
         return botReply;
+    }
+
+
+    // Redirectionari
+    // Redirectionare forum
+    private void redirectionareVizualizareForumPosts() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                closeKeyboard();
+                bottomNavigationView.setSelectedItemId(R.id.nav_forum);
+            }
+        }, 5000);
+    }
+
+
+    // Redirectionare harti
+    private void redirectionareVizualizareHarti() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                closeKeyboard();
+                bottomNavigationView.setSelectedItemId(R.id.nav_map);
+            }
+        }, 5000);
+    }
+
+
+    // Creare interventie
+    private void redirectionareCreareInterventie() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(getContext(), CreateForumPostActivity.class);
+                startActivity(intent);
+            }
+        }, 5000);
+    }
+
+
+    // Redirectionare cont personal
+    private void redirectionareVizualizareCont() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(getContext(), Profil.class);
+                startActivity(intent);
+            }
+        }, 5000);
+    }
+
+
+    // Redirectionare setari
+    private void redirectionareVizualizareSetari() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(getContext(), Setari.class);
+                startActivity(intent);
+            }
+        }, 5000);
+    }
+
+
+    // Redirectionare lista pesti
+    private void redirectionareVizualizareListaPesti() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(getContext(), ListaPesti.class);
+                startActivity(intent);
+            }
+        }, 5000);
     }
 
 
@@ -209,13 +324,21 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String message = tietMesaj.getText().toString();
+                String message = tietMesaj.getText().toString().trim();
 
                 if (!message.isEmpty()) {
                     messageList.add(new Message(message, false));
                     tietMesaj.setText("");
-                    sendMessageToBot(message);
                     notifyInternalAdapter();
+
+                    // Verificare cautare
+                    if (!modCautarePostari) {
+                        sendMessageToBot(message);
+                    } else {
+                        message = formatareCuvintePentruCautare(message);
+                        forumPostService.getAllForumPostsBySearchWords("ORDER BY nrLikes-nrDislikes DESC",
+                                message, callbackGetForumPostsBySearchWords());
+                    }
                 } else {
                     Toast.makeText(getContext(),
                             getString(R.string.toast_errMesajGol_AisistentVirtual),
@@ -225,5 +348,61 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
         };
     }
 
+
+    // Callback get forum post by search words
+    // De bagat in strings !!!
+    @NotNull
+    private Callback<List<ForumPost>> callbackGetForumPostsBySearchWords() {
+        return new Callback<List<ForumPost>>() {
+            @Override
+            public void runResultOnUiThread(List<ForumPost> result) {
+                String rezultatString;
+                boolean existaPostari = false;
+
+                if (result.size() != 0) {
+                    existaPostari = true;
+                    rezultatString = "Gata cautarea pescare, am gasit " + result.size()
+                            + " posturi ce contin acele cuvinte! Vei fi redirectionat imediat la ele.";
+                } else {
+                    rezultatString = "Nu am gasit nici o postare ce sa contina acele cuvinte :(";
+                }
+
+                Message message = new Message(rezultatString, true);
+                messageList.add(message);
+                notifyInternalAdapter();
+                modCautarePostari = false;
+
+                // Redirectionare
+                if (existaPostari) {
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            closeKeyboard();
+                            getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                    ForumFragment.newInstance(result)).commit();
+                        }
+                    }, 5000);
+                }
+
+            }
+        };
+    }
+
+
+    // Functie formatare cuvinte pentru cautare
+    private String formatareCuvintePentruCautare(String message) {
+        return "%" + message.replace(" ", "%") + "%";
+    }
+
+
+    // Inchidere tastatura
+    private void closeKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getContext()
+                    .getSystemService(getContext().INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 
 }

@@ -18,12 +18,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.licenta.clase.forum.ForumPost;
 import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.homeFragments.ForumFragment;
 import com.example.licenta.homeFragments.MapsFragment;
@@ -34,6 +36,8 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new ForumFragment()).commit();
+                    ForumFragment.newInstance(null)).commit();
         }
 
     }
@@ -106,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     Fragment selectedFragment = null;
                     switch (item.getItemId()) {
                         case R.id.nav_forum:
-                            selectedFragment = new ForumFragment();
+                            selectedFragment = ForumFragment.newInstance(null);
                             break;
                         case R.id.nav_asistent:
                             selectedFragment = new VirtualAssistantFragment();
@@ -115,8 +119,9 @@ public class MainActivity extends AppCompatActivity {
                             selectedFragment = new MapsFragment();
                             break;
                         default:
-                            selectedFragment = new ForumFragment();
+                            selectedFragment = ForumFragment.newInstance(null);
                     }
+                    closeKeyboard();
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             selectedFragment).commit();
                     return true;
@@ -189,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode ==PICK_IMAGE && resultCode == RESULT_OK) {
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
             try {
 
                 final Uri imageUri = data.getData();
@@ -200,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                 int currentBitmapHeight = selectedImage.getHeight();
                 int ivWidth = imagineUtilizator.getWidth();
                 int ivHeight = imagineUtilizator.getHeight();
-                int newHeight = (int) Math.floor((double) currentBitmapHeight *( (double) ivWidth / (double) currentBitmapWidth));
+                int newHeight = (int) Math.floor((double) currentBitmapHeight * ((double) ivWidth / (double) currentBitmapWidth));
 
                 Bitmap newbitMap = Bitmap.createScaledBitmap(selectedImage, ivWidth, newHeight, true);
                 imagineUtilizator.setImageBitmap(newbitMap);
@@ -215,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Rescriere back pt parasire aplicatie
     //Trebuie inchisa aplicatia de tot
+    // Nu se poate
     @Override
     public void onBackPressed() {
         if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
@@ -228,4 +234,16 @@ public class MainActivity extends AppCompatActivity {
         }
         mBackPressed = System.currentTimeMillis();
     }
+
+
+    // Inchidere tastatura
+    private void closeKeyboard() {
+        View view = getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) this
+                    .getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
 }

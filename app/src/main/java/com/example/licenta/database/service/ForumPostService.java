@@ -72,6 +72,54 @@ public class ForumPostService {
     }
 
 
+    // Get all by search words
+    public void getAllForumPostsBySearchWords(String postsOrder, String searchWords,
+                                              Callback<List<ForumPost>> callback) {
+        Callable<List<ForumPost>> callable = new Callable<List<ForumPost>>() {
+            @Override
+            public List<ForumPost> call() throws Exception {
+                List<ForumPost> forumPostList = new ArrayList<>();
+
+                String sql = "SELECT * FROM " + numeBDforum + " WHERE LOWER(title) LIKE LOWER(?)" +
+                        " OR LOWER(content) LIKE LOWER(?)" + " " + postsOrder;
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setString(1, searchWords);
+                statement.setString(2, searchWords);
+                ResultSet resultSet = statement.executeQuery();
+
+                while (resultSet.next()) {
+                    int id = resultSet.getInt(1);
+                    int userId = resultSet.getInt(2);
+                    String creatorUsername = resultSet.getString(3);
+                    String title = resultSet.getString(4);
+                    String content = resultSet.getString(5);
+                    boolean isEdited = Boolean.parseBoolean(resultSet.getString(6));
+                    int nrLikes = resultSet.getInt(7);
+                    int nrDislikes = resultSet.getInt(8);
+                    int nrComments = resultSet.getInt(9);
+
+                    String category = resultSet.getString(10);
+                    CategoryForum categoryForum = CategoryForum.valueOf(category);
+
+                    String postDate = resultSet.getString(11);
+                    Date date = DateConverter.toDate(postDate);
+
+                    ForumPost forumPost = new ForumPost(id, userId, creatorUsername, title, content,
+                            isEdited, nrLikes, nrDislikes, nrComments, categoryForum, date);
+                    forumPostList.add(forumPost);
+                }
+
+
+                statement.close();
+                resultSet.close();
+                return forumPostList;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
     // Get all by category
     public void getAllForumPostsByCategory(String category, String postsOrder, Callback<List<ForumPost>> callback) {
         Callable<List<ForumPost>> callable = new Callable<List<ForumPost>>() {
