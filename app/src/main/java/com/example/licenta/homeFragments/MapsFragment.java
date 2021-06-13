@@ -11,23 +11,18 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.licenta.InfoWindowActivity;
 import com.example.licenta.util.MapsUtils.GetNearbyPlacesData;
 import com.example.licenta.R;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -54,16 +49,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.material.textfield.TextInputEditText;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+
 
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -96,10 +86,12 @@ public class MapsFragment extends Fragment {
             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
-//
-                    String uri = "http://maps.google.com/maps?daddr=" + marker.getPosition().latitude + "," + marker.getPosition().longitude;
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                    intent.setPackage("com.google.android.apps.maps");
+                    Intent intent=new Intent(getContext(), InfoWindowActivity.class);
+                    intent.putExtra("markerTitle",marker.getTitle());
+                    intent.putExtra("markerLatLng",marker.getPosition());
+                    String[] cutText = marker.getTitle().split("//");
+                    String placeId=cutText[1];
+                    intent.putExtra("placeID",placeId);
                     startActivity(intent);
                 }
             });
@@ -149,7 +141,6 @@ public class MapsFragment extends Fragment {
                     float[] results = new float[3];
                     Location.distanceBetween(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(),
                             marker.getPosition().latitude, marker.getPosition().longitude, results);
-                    Toast.makeText(getContext(), "Distanta dintre cele doua puncte este de " + Math.round(results[0] / 1000) + " kilometri", Toast.LENGTH_LONG).show();
                     String distanta = "Distanta dintre dvs si punctul ales este de " + Math.round(results[0] / 1000) + " kilometri" + " \n apasati pentru mai multe detalii ";
                     mMap.setInfoWindowAdapter(new InfoWindowAdapter(getContext()));
                     marker.setSnippet(String.valueOf(Math.round(results[0] / 1000)));
@@ -169,7 +160,7 @@ public class MapsFragment extends Fragment {
 
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(latLng);
-                    markerOptions.title(name);
+                    markerOptions.title(name+": //"+place.getId());
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
                     mMap.addMarker(markerOptions);
 
@@ -185,14 +176,14 @@ public class MapsFragment extends Fragment {
         }
     };
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 51) {
-            getDeviceLocation();
-
-        }
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 51) {
+//            getDeviceLocation();
+//
+//        }
+//    }
 
     private String getUrl(double latitude, double longitude, String nearbyPlace) {
 
@@ -227,6 +218,7 @@ public class MapsFragment extends Fragment {
                                 dataTransfer[0] = mMap;
                                 dataTransfer[1] = url;
                                 getNearbyPlacesData.execute(dataTransfer);
+
                             } else {
                                 final LocationRequest locationRequest = LocationRequest.create();
                                 locationRequest.setInterval(1000);

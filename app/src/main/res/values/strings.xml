@@ -160,6 +160,9 @@
     <string name="tv_dummy_messageSend_messageRowAdapter">Salut ce faci?</string>
     <string name="tv_dummy_messageReceive_messageRowAdapter">Sunt bine tu?</string>
     <string name="mesaj_initial_asistentVirtual">Salutari pescare, ma numesc Puffer si sunt un asistent virtual menit sa te ajute cu orice! Daca ai nevoie de mine da-mi un mesaj!</string>
+    <string name="porniti_calatoria">Porniti calatoria</string>
+    <string name="textview">TextView</string>
+    <string name="nu_exista_date">Nu exista Date</string>
 
 
     <string-array name="SpeciiPesti">

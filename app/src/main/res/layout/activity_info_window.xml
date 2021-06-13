@@ -7,9 +7,9 @@
     tools:context=".InfoWindowActivity">
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="395dp"
-        android:layout_height="141dp"
+        android:id="@+id/infoWindowPesteImagine"
+        android:layout_width="382dp"
+        android:layout_height="129dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -27,8 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/titlu_locatie"
-        android:textStyle="bold"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -37,20 +37,19 @@
         android:id="@+id/tvRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
         android:text="@string/rating"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/tvRatingDouble" />
 
     <RatingBar
         android:id="@+id/rating"
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
         android:isIndicator="true"
         android:numStars="5"
         android:stepSize="0.1"
@@ -65,17 +64,7 @@
         android:text="@string/doriti_sa_planificati_o_drumetie"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_activity_info_window_website" />
-
-    <TextView
-        android:id="@+id/tv_activity_info_window_website"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:visibility="invisible"
-        android:text="@string/website"
-        app:layout_constraintStart_toStartOf="@+id/tvRating"
-        app:layout_constraintTop_toBottomOf="@+id/tvRating" />
+        app:layout_constraintTop_toBottomOf="@+id/button_info_window_poniti_calatoria" />
 
     <ListView
         android:id="@+id/lv_pesti_locatie"
@@ -84,9 +73,10 @@
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUltimiPestiPrinsi" />
+        app:layout_constraintTop_toBottomOf="@+id/tvUltimiPestiPrinsi"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/tvUltimiPestiPrinsi"
@@ -95,7 +85,37 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="19sp"
         android:text="@string/ultimi_pesti_care_au_fost_prinsi_la_aceasta_balta"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_go_to_planificare_drumetie" />
+
+    <Button
+        android:id="@+id/button_info_window_poniti_calatoria"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/porniti_calatoria"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvNumarRating" />
+
+    <TextView
+        android:id="@+id/tvNumarRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:text="@string/nu_exista_date"
+        app:layout_constraintStart_toEndOf="@+id/rating"
+        app:layout_constraintTop_toTopOf="@+id/rating" />
+
+    <TextView
+        android:id="@+id/tvRatingDouble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/nu_exista_date"
+        app:layout_constraintStart_toStartOf="@+id/rating"
+        app:layout_constraintTop_toBottomOf="@+id/infoWindowPesteImagine" />
 </androidx.constraintlayout.widget.ConstraintLayout>
