@@ -142,7 +142,7 @@ View view;
     // Init components
     private void initComponents(View view) {
         // Initializare controale vizuale
-        spinnerCategory = view.findViewById(R.id.spinner_category_forumPost);
+        spinnerCategory = view.findViewById(R.id.spinner_category_forumFragment);
         spinnerSortPosts = view.findViewById(R.id.spinner_sortingPosts_forumFragment);
         fabAddPost = view.findViewById(R.id.fab_createPost_forumFragment);
         lvForum = view.findViewById(R.id.lv_forumFragment);
@@ -247,7 +247,7 @@ View view;
             notifyInternalAdapter();
 
             // Adaptare interfata
-            spinnerCategory.setVisibility(View.GONE);
+            spinnerCategory.setVisibility(View.INVISIBLE);
             spinnerSortPosts.setVisibility(View.GONE);
             fabAddPost.setVisibility(View.GONE);
             tvSearchResults.setVisibility(View.VISIBLE);
