@@ -369,23 +369,42 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
 
                 Message message = new Message(rezultatString, true);
                 messageList.add(message);
-                notifyInternalAdapter();
                 modCautarePostari = false;
+
+                // Notificare intarziata a adapterului pentru a face scroll
+                notificareIntarziataAdapter();
 
                 // Redirectionare
                 if (existaPostari) {
-                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            closeKeyboard();
-                            getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                    ForumFragment.newInstance(result)).commit();
-                        }
-                    }, 5000);
+                    redirectionareForumFragmentDupaCautare(result);
                 }
 
             }
         };
+    }
+
+
+    // Redirectioare forum fragment dupa cautare
+    private void redirectionareForumFragmentDupaCautare(List<ForumPost> result) {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                closeKeyboard();
+                getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        ForumFragment.newInstance(result)).commit();
+            }
+        }, 5000);
+    }
+
+
+    // Notificare intarziata adapter
+    private void notificareIntarziataAdapter() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                notifyInternalAdapter();
+            }
+        }, 500);
     }
 
 
