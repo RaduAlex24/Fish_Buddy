@@ -8,7 +8,7 @@
 
 
     <Spinner
-        android:id="@+id/spinner_category_forumPost"
+        android:id="@+id/spinner_category_forumFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -31,18 +31,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinner_category_forumPost" />
+        app:layout_constraintTop_toBottomOf="@id/spinner_category_forumFragment" />
 
 
     <TextView
         android:id="@+id/tv_searchResults_forumFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Rezultatul cautarii"
-        android:textSize="30dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/rezultatul_cautarii_forumFragment"
+        android:textSize="25dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/lv_forumFragment"
+        app:layout_constraintBottom_toTopOf="@+id/spinner_sortingPosts_forumFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -59,7 +59,7 @@
         app:layout_constraintBottom_toTopOf="@+id/lv_forumFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/spinner_category_forumPost"
+        app:layout_constraintStart_toEndOf="@+id/spinner_category_forumFragment"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -68,11 +68,11 @@
         android:id="@+id/lv_forumFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="16dp"
         android:dividerHeight="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_searchResults_forumFragment" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner_sortingPosts_forumFragment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
