@@ -13,12 +13,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.protobuf.FloatValue;
@@ -35,7 +37,7 @@ public class InfoWindowActivity extends AppCompatActivity {
     private RatingBar ratingBar;
     private Button planificareCalatorie;
     private ListView lvPestiPrinsiBalta;
-    private ImageView imageViewPeste;
+    private ViewFlipper imageViewPeste;
     private LatLng latLng;
     private String placeId;
     private TextView numarRating;
@@ -70,15 +72,40 @@ public class InfoWindowActivity extends AppCompatActivity {
                 tvRatingFloat.setText(place.getRating().toString());
             }
             if (place.getUserRatingsTotal() != null) {
-                String ratingDatUsers=place.getUserRatingsTotal().toString()+" au dat review";
+                String ratingDatUsers = place.getUserRatingsTotal().toString() + " au dat review";
                 numarRating.setText(ratingDatUsers);
             }
-        }).addOnFailureListener((exception) -> {
-            if (exception instanceof ApiException) {
-                final ApiException apiException = (ApiException) exception;
-                Log.e(TAG, "Place not found: " + exception.getMessage());
-                final int statusCode = apiException.getStatusCode();
-                // TODO: Handle error with given status code.
+            final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
+            if (metadata == null || metadata.isEmpty()) {
+                Log.w(TAG, "No photo metadata.");
+                return;
+            }
+            for(int i=0;i<metadata.size();i++) {
+                final PhotoMetadata photoMetadata = metadata.get(i);
+
+                // Get the attribution text.
+                final String attributions = photoMetadata.getAttributions();
+
+                // Create a FetchPhotoRequest.
+                final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                        .setMaxWidth(300) // Optional.
+                        .setMaxHeight(200) // Optional.
+                        .build();
+                placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                    Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                    ImageView image = new ImageView ( getApplicationContext() );
+                    image.setImageBitmap(bitmap);
+                    imageViewPeste.addView(image);
+                    imageViewPeste.setFlipInterval(3000);
+                    imageViewPeste.startFlipping();
+                }).addOnFailureListener((exception) -> {
+                    if (exception instanceof ApiException) {
+                        final ApiException apiException = (ApiException) exception;
+                        Log.e(TAG, "Place not found: " + exception.getMessage());
+                        final int statusCode = apiException.getStatusCode();
+                        // TODO: Handle error with given status code.
+                    }
+                });
             }
         });
     }

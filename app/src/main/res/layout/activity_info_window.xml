@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".InfoWindowActivity">
 
-    <ImageView
+    <ViewFlipper
         android:id="@+id/infoWindowPesteImagine"
-        android:layout_width="382dp"
-        android:layout_height="129dp"
+        android:layout_width="357dp"
+        android:layout_height="196dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -20,7 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_activity_info_window_title"
         app:srcCompat="@drawable/menu_fish" />
-
     <TextView
         android:id="@+id/tv_activity_info_window_title"
         android:layout_width="wrap_content"
