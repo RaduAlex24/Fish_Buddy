@@ -4,18 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -25,7 +21,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.licenta.clase.forum.ForumPost;
 import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.homeFragments.ForumFragment;
 import com.example.licenta.homeFragments.MapsFragment;
@@ -36,8 +31,6 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -81,21 +74,25 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Optiunea profil a fost apasata", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), Profil.class);
                         startActivity(intent);
+                        drawerLayout.closeDrawers();
                     }
                     if (item.getItemId() == R.id.nav_setari) {
                         Toast.makeText(MainActivity.this, "Optiunea setari a fost apasata", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), Setari.class);
                         startActivity(intent);
+                        drawerLayout.closeDrawers();
                     }
                     if (item.getItemId() == R.id.nav_adauga_peste) {
                         Toast.makeText(MainActivity.this, "Optiunea adauga un peste a fost apasata", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(), ListaPesti.class);
+                        Intent intent = new Intent(getApplicationContext(), VizualizatiPesti.class);
                         startActivity(intent);
+                        drawerLayout.closeDrawers();
                     }
                     if (item.getItemId() == R.id.nav_logout) {
                         Toast.makeText(MainActivity.this, "Optiunea Logout a fost apasata", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), LogInActivity.class);
                         startActivity(intent);
+                        drawerLayout.closeDrawers();
                         currentUser.delelteInstance();
                         finish();
                     }

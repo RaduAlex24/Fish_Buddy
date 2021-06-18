@@ -1,4 +1,4 @@
-package com.example.licenta.homeFragments;
+package com.example.licenta.util.dateUtils;
 
 import android.content.Context;
 import android.view.LayoutInflater;

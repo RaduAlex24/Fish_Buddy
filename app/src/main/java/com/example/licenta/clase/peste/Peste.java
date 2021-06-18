@@ -14,28 +14,23 @@ public class Peste implements Serializable {
     private String specie;
     private String locatie;
     private Date dataPrindere;
-   // private Bitmap imagine;
+    private byte[] imagine;
 
-    public Peste(int id, int greutate, int lungime, String specie, String locatie, Date dataPrindere) {
-        this.id = id;
+    public Peste(int greutate, int lungime, String specie, String locatie, Date dataPrindere, byte[] imagine) {
         this.greutate = greutate;
         this.lungime = lungime;
         this.specie = specie;
         this.locatie = locatie;
         this.dataPrindere = dataPrindere;
+        this.imagine = imagine;
     }
-    public Peste( int greutate, int lungime, String specie, String locatie, Date dataPrindere) {
+
+    public Peste(int greutate, int lungime, String specie, String locatie, Date dataPrindere) {
         this.greutate = greutate;
         this.lungime = lungime;
         this.specie = specie;
         this.locatie = locatie;
         this.dataPrindere = dataPrindere;
-    }
-    public Peste( int greutate, int lungime, String specie, String locatie) {
-        this.greutate = greutate;
-        this.lungime = lungime;
-        this.specie = specie;
-        this.locatie = locatie;
     }
 
     public int getId() {
@@ -86,13 +81,13 @@ public class Peste implements Serializable {
         this.dataPrindere = dataPrindere;
     }
 
-//    public Bitmap getImagine() {
-//        return imagine;
-//    }
-//
-//    public void setImagine(Bitmap imagine) {
-//        this.imagine = imagine;
-//    }
+    public byte[] getImagine() {
+        return imagine;
+    }
+
+    public void setImagine(byte[] imagine) {
+        this.imagine = imagine;
+    }
 
     @Override
     public String toString() {

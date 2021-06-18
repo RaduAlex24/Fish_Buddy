@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.example.licenta.InfoWindowActivity;
 import com.example.licenta.util.MapsUtils.GetNearbyPlacesData;
 import com.example.licenta.R;
+import com.example.licenta.util.dateUtils.InfoWindowAdapter;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;

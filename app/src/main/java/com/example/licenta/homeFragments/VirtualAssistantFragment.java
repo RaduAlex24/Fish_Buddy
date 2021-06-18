@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -19,7 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.licenta.CreateForumPostActivity;
-import com.example.licenta.ListaPesti;
+import com.example.licenta.VizualizatiPesti;
 import com.example.licenta.Profil;
 import com.example.licenta.R;
 import com.example.licenta.Setari;
@@ -311,7 +310,7 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(getContext(), ListaPesti.class);
+                Intent intent = new Intent(getContext(), VizualizatiPesti.class);
                 startActivity(intent);
             }
         }, 5000);

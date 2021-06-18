@@ -1,5 +1,6 @@
 package com.example.licenta;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,21 +18,27 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.licenta.clase.peste.Peste;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class AdaugaPeste extends AppCompatActivity {
@@ -44,8 +51,12 @@ public class AdaugaPeste extends AppCompatActivity {
     private Button adaugarePeste;
     private ImageView poza_peste;
     private TextInputEditText dataPeste;
+    private AutocompleteSupportFragment autocompleteFragment;
     private Date date2;
+    private String rezultatLocatie;
+    private byte[] imagineByte;
     final Calendar myCalendar = Calendar.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +69,8 @@ public class AdaugaPeste extends AppCompatActivity {
         specie.setAdapter(arrayAdapter);
         adaugarePeste.setOnClickListener(adaugarePeste());
         poza_peste.setOnClickListener(pozaPeste());
-        DatePickerDialog.OnDateSetListener dateSetListener=new DatePickerDialog.OnDateSetListener() {
+
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 myCalendar.set(Calendar.YEAR, year);
@@ -99,20 +111,24 @@ public class AdaugaPeste extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
             try {
                 final Uri imageUri = data.getData();
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 poza_peste.setImageBitmap(selectedImage);
+                imagineByte = getBitmapAsByteArray(selectedImage);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(AdaugaPeste.this, "Something went wrong", Toast.LENGTH_LONG).show();
             }
 
-        } else {
-            Toast.makeText(AdaugaPeste.this, "You haven't picked Image", Toast.LENGTH_LONG).show();
         }
+    }
+    public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 50, outputStream);
+        return outputStream.toByteArray();
     }
 
     @NotNull
@@ -120,31 +136,51 @@ public class AdaugaPeste extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Peste peste = createPeste();
-                //transfer de parametri intre activitati - VEZI Seminar 3
-                //(pasul 3 din schema - intoarcerea rezultatului catre apelator)
-                Intent intent=new Intent(getApplicationContext(), ListaPesti.class);
-                intent.putExtra(Peste_key, peste);
-                setResult(RESULT_OK, intent);
-                finish();
+                if (validari()) {
+                    Peste peste = createPeste();
+                    //transfer de parametri intre activitati - VEZI Seminar 3
+                    //(pasul 3 din schema - intoarcerea rezultatului catre apelator)
+                    Intent intent = new Intent(getApplicationContext(), VizualizatiPesti.class);
+                    intent.putExtra(Peste_key, peste);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Introduceti Date in fiecare casuta", Toast.LENGTH_SHORT).show();
+                }
             }
         };
     }
-    private Peste createPeste()  {
+
+    private Peste createPeste() {
         //preluare informatii din componentele vizuale pentru a construi un obiect de tip BankAccount
         int lungime = Integer.parseInt(tietLungime.getText().toString());
         int greutate = Integer.parseInt(tietGreutate.getText().toString());
         String species = specie.getSelectedItem().toString();
-
         SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
-
         try {
             date2 = formatter.parse(dataPeste.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        return new Peste(greutate, lungime, species, "dsa",date2);
+        return new Peste(greutate, lungime, species, rezultatLocatie, date2,imagineByte);
+    }
+
+    private boolean validari() {
+        if (tietLungime.getText().toString().trim().equals("") || tietLungime == null) {
+            tietLungime.setError("Introduceti lungimea pestelui");
+            return false;
+        }
+        if (tietGreutate.getText().toString().trim().equals("") || tietGreutate == null) {
+            tietGreutate.setError("Introduceti greutatea pestelui");
+            return false;
+        }
+        if (rezultatLocatie == null|| rezultatLocatie.trim().equals("")) {
+            Toast.makeText(getApplicationContext(), "Introduceti locatia unde pestele a fost prins", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 
     private void initcomponents() {
@@ -154,8 +190,28 @@ public class AdaugaPeste extends AppCompatActivity {
         specie.setTitle("Specia:");
         adaugarePeste = findViewById(R.id.button_adauga_peste);
         poza_peste = findViewById(R.id.adaugare_poza_peste);
-        dataPeste=findViewById(R.id.tietDatePeste);
+        dataPeste = findViewById(R.id.tietDatePeste);
+        Places.initialize(getApplicationContext(), "AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk");
+        PlacesClient placesClient = Places.createClient(this);
+        autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment_locatie_peste);
+        assert autocompleteFragment != null;
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        autocompleteFragment.setHint("Introduceti locatia pestelui");
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                rezultatLocatie = place.getName();
+                //Toast.makeText(AdaugaPeste.this, rezultatLocatie, Toast.LENGTH_SHORT).show();
+                autocompleteFragment.setText(rezultatLocatie);
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+                Toast.makeText(AdaugaPeste.this, "S-a produs o eroare", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
     private void updateLabel() {
         String myFormat = "dd/MM/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);

@@ -18,12 +18,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListaPesti extends AppCompatActivity {
+public class VizualizatiPesti extends AppCompatActivity {
 
     private ListView lvPesti;
     private List<Peste> pesteList = new ArrayList<>();
     private Button adaugaPeste;
-    private int ReqPeste = 100;
+    private int ReqPeste = 1060;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

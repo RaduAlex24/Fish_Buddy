@@ -35,7 +35,8 @@
             android:id="@+id/tiet_lungime_peste"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/introduceti_lungimea_pestelui" />
+            android:hint="@string/introduceti_lungimea_pestelui"
+            android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -50,7 +51,8 @@
             android:id="@+id/tiet_greutate_peste"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/introduceti_greutatea_pestelui" />
+            android:hint="@string/introduceti_greutatea_pestelui"
+            android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.toptoche.searchablespinnerlibrary.SearchableSpinner
@@ -97,14 +99,23 @@
         app:layout_constraintTop_toBottomOf="@+id/spinner"
         app:srcCompat="@drawable/ic_menu_camera" />
 
+    <fragment
+        android:id="@+id/autocomplete_fragment_locatie_peste"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adaugare_poza_peste" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adaugare_poza_peste">
+        app:layout_constraintTop_toBottomOf="@+id/autocomplete_fragment_locatie_peste">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tietDatePeste"
