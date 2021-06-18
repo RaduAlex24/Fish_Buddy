@@ -126,22 +126,22 @@ public class SignUpActivity extends AppCompatActivity {
 
     // Validare finala
     private boolean validareFinala() {
-        if (!validarePartiala(tietUsername)) {
+        if (!validarePartiala(tilUsername, tietUsername)) {
             return false;
         }
-        if (!validarePartiala(tietSurname)) {
+        if (!validarePartiala(tilSurname, tietSurname)) {
             return false;
         }
-        if (!validarePartiala(tietName)) {
+        if (!validarePartiala(tilName, tietName)) {
             return false;
         }
-        if (!validarePartiala(tietEmail)) {
+        if (!validarePartiala(tilEmail, tietEmail)) {
             return false;
         }
-        if (!validarePartiala(tietPassword)) {
+        if (!validarePartiala(tilPassword, tietPassword)) {
             return false;
         }
-        if (!validarePartiala(tietConfirmPassword)) {
+        if (!validarePartiala(tilConfirmPassword, tietConfirmPassword)) {
             return false;
         }
 
@@ -149,9 +149,9 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     // Validare partiala
-    private boolean validarePartiala(TextInputEditText tiet) {
+    private boolean validarePartiala(TextInputLayout til, TextInputEditText tiet) {
         if (tiet.getText().toString().replace(" ", "").length() == 0 ||
-                tiet.getError() != null) {
+                til.getError() != null) {
             return false;
         }
 
@@ -189,9 +189,16 @@ public class SignUpActivity extends AppCompatActivity {
                     tilPassword.setError("Parola trebuie sa aiba cel putin 6 caractere");
                 } else if (stringTietPassword.length() > 20) {
                     tilPassword.setError("Parola trebuie sa aiba maximul 20 de caractere");
+                } else if (stringTietConfirmaPassword.length() != 0) {
+                    if (!stringTietPassword.equals(stringTietConfirmaPassword)) {
+                        tilPassword.setError("Parolele nu coincid");
+                        tilConfirmPassword.setError("Parolele nu coincid");
+                    } else {
+                        tilPassword.setError(null);
+                        tilConfirmPassword.setError(null);
+                    }
                 } else {
                     tilPassword.setError(null);
-                    tilConfirmPassword.setError(null);
                 }
             }
         };
@@ -217,7 +224,7 @@ public class SignUpActivity extends AppCompatActivity {
                     tilConfirmPassword.setError("Parola trebuie sa aiba cel putin 6 caractere");
                 } else if (stringTietConfirmaPassword.length() > 20) {
                     tilConfirmPassword.setError("Parola trebuie sa aiba maximul 20 de caractere");
-                } else if (tietPassword.length() != 0) {
+                } else if (stringTietPassword.length() != 0) {
                     if (!stringTietPassword.equals(stringTietConfirmaPassword)) {
                         tilPassword.setError("Parolele nu coincid");
                         tilConfirmPassword.setError("Parolele nu coincid");
@@ -225,6 +232,8 @@ public class SignUpActivity extends AppCompatActivity {
                         tilPassword.setError(null);
                         tilConfirmPassword.setError(null);
                     }
+                } else {
+                    tilConfirmPassword.setError(null);
                 }
             }
         };
