@@ -36,7 +36,7 @@ public class CurrentUser {
         }
     }
 
-    // Pentru accesare i nrestul activitatiilor
+    // Pentru accesare in restul activitatiilor
     public static CurrentUser getInstance(){
         if(currentUser == null){
             //currentUser = new CurrentUser();
