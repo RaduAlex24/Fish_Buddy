@@ -8,6 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.homeFragments.ForumFragment;
 import com.example.licenta.homeFragments.MapsFragment;
 import com.example.licenta.homeFragments.VirtualAssistantFragment;
+import com.example.licenta.introTutorialSlider.IntroTutorialSlider;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -37,9 +39,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int TIME_INTERVAL = 2000;
     private static final int PICK_IMAGE = 123;
+    public static final String FIRST_TIME_IN_APP_SP = "FIRST_TIME_IN_APP_SP";
     private long mBackPressed;
 
     private CurrentUser currentUser = CurrentUser.getInstance();
+    private SharedPreferences sharedPreferences;
 
     private DrawerLayout drawerLayout;
     private BottomNavigationView bottomNavigationView;
@@ -62,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
                     ForumFragment.newInstance(null)).commit();
         }
 
+        // Tutorial pentru prima intrare in aplicatie
+        aplicareTutorial();
     }
 
 
@@ -230,6 +236,24 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
         }
         mBackPressed = System.currentTimeMillis();
+    }
+
+
+    // Functie de aplicare tutorial daca este prima data cand se intra in aplicatie
+    private void aplicareTutorial(){
+        // Preluare shared preferences
+        sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_FILE_NAME, MODE_PRIVATE);
+        boolean firstTimeInApplication = sharedPreferences.getBoolean(FIRST_TIME_IN_APP_SP, true);
+
+        // Verificare aplicare tutorial
+        if(firstTimeInApplication){
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(FIRST_TIME_IN_APP_SP, false);
+            editor.apply();
+
+            Intent intent = new Intent(getApplicationContext(), IntroTutorialSlider.class);
+            startActivity(intent);
+        }
     }
 
 

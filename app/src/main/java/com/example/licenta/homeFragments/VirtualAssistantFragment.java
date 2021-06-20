@@ -26,6 +26,7 @@ import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.forum.ForumPost;
 import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.database.service.ForumPostService;
+import com.example.licenta.introTutorialSlider.IntroTutorialSlider;
 import com.example.licenta.virtualAssistant.clase.KeyWordsChatBot;
 import com.example.licenta.virtualAssistant.clase.MessageLvAdapter;
 import com.example.licenta.virtualAssistant.dialogFlow.BotReply;
@@ -234,6 +235,11 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
             modCautarePostari = true;
         }
 
+        // Vizualizare tutorial
+        if (botReply.toUpperCase().contains(KeyWordsChatBot.TUTORIAL.getLabel())) {
+            redirectionareTutorial();
+        }
+
         // Inlocuire nume
         if (botReply.toUpperCase().contains(KeyWordsChatBot.INLOCCUIESTE_NUME.getLabel())) {
             botReply = botReply.replace(KeyWordsChatBot.INLOCCUIESTE_NUME.getLabel(), currentUser.getName());
@@ -384,6 +390,18 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
 
 
     // Redirectioare forum fragment dupa cautare
+    private void redirectionareTutorial() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(getContext(), IntroTutorialSlider.class);
+                startActivity(intent);
+            }
+        }, 5000);
+    }
+
+
+    // Redirectioare tutorial
     private void redirectionareForumFragmentDupaCautare(List<ForumPost> result) {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override

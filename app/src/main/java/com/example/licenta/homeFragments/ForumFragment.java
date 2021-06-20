@@ -254,7 +254,7 @@ View view;
         }
     }
 
-    // Callback gett all forum posts initailly
+    // Callback get all forum posts initailly
     private Callback<List<ForumPost>> callbackGetAllForumPostInitialy() {
         return new Callback<List<ForumPost>>() {
             @Override
@@ -267,7 +267,7 @@ View view;
     }
 
 
-    // On clcikpt fab add new forum post
+    // On click pt fab add new forum post
     private View.OnClickListener onClickCreateForumPost() {
         return new View.OnClickListener() {
             @Override
