@@ -20,15 +20,15 @@ public class IntroTutorialSlider extends AppIntro2 {
         setWizardMode(true);
 
         // Adaugare slideuri
-        addSlide(AppIntroFragment.newInstance("C++", "C++ Self Paced Course",
+        addSlide(AppIntroFragment.newInstance("Modul forum", "Instructiuni forum",
                 R.drawable.b, ContextCompat.getColor(getApplicationContext(), R.color.purple_200)));
 
 
-        addSlide(AppIntroFragment.newInstance("DSA", "Data Structures and Algorithms",
+        addSlide(AppIntroFragment.newInstance("Modul asistent virtual", "Instructiuni asistent virtual",
                 R.drawable.b, ContextCompat.getColor(getApplicationContext(), R.color.purple_200)));
 
 
-        addSlide(AppIntroFragment.newInstance("Java", "Java Self Paced Course",
+        addSlide(AppIntroFragment.newInstance("Modul harti", "Instructiuni harti",
                 R.drawable.b, ContextCompat.getColor(getApplicationContext(), R.color.purple_200)));
 
     }

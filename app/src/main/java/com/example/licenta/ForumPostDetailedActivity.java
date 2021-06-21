@@ -615,7 +615,7 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
 
         } else if (item.getItemId() == R.id.old_menu_deleteForumPost) {
             // Stergere
-            showDialogBuilderForDeletingForumPostt(forumPost);
+            showDialogBuilderForDeletingForumPost(forumPost);
         }
 
         return true;
@@ -623,7 +623,7 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
 
 
     // Afisare dialog builder stergere forum post
-    private void showDialogBuilderForDeletingForumPostt(ForumPost forumPost) {
+    private void showDialogBuilderForDeletingForumPost(ForumPost forumPost) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Stergere interventie forum");
         builder.setMessage("Sunteti sigur ca doriti sa stergeti interventia forum?");
