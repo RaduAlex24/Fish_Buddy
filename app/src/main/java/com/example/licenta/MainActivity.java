@@ -112,9 +112,6 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     Fragment selectedFragment = null;
                     switch (item.getItemId()) {
-                        case R.id.nav_forum:
-                            selectedFragment = ForumFragment.newInstance(null);
-                            break;
                         case R.id.nav_asistent:
                             selectedFragment = new VirtualAssistantFragment();
                             break;

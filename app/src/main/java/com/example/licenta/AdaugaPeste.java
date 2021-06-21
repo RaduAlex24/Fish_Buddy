@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -54,6 +55,7 @@ public class AdaugaPeste extends AppCompatActivity {
     private AutocompleteSupportFragment autocompleteFragment;
     private Date date2;
     private String rezultatLocatie;
+    private Bitmap poza_scalata;
     private byte[] imagineByte;
     final Calendar myCalendar = Calendar.getInstance();
 
@@ -117,7 +119,13 @@ public class AdaugaPeste extends AppCompatActivity {
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 poza_peste.setImageBitmap(selectedImage);
-                imagineByte = getBitmapAsByteArray(selectedImage);
+                if(selectedImage.getWidth()>130 || selectedImage.getHeight()>90) {
+                    poza_scalata = Bitmap.createScaledBitmap(selectedImage, 130, 90, true);
+                }
+                else{
+                    poza_scalata = selectedImage;
+                }
+                imagineByte = getBitmapAsByteArray(poza_scalata);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(AdaugaPeste.this, "Something went wrong", Toast.LENGTH_LONG).show();

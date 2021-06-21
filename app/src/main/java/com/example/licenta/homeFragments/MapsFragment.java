@@ -14,7 +14,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +73,8 @@ public class MapsFragment extends Fragment {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             mMap.setMyLocationEnabled(true);
@@ -130,7 +130,6 @@ public class MapsFragment extends Fragment {
 
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-            // layoutParams.addRule(RelativeLayout.ALIGN_END, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             layoutParams.setMargins(40, 0, 0, 90);
@@ -177,15 +176,6 @@ public class MapsFragment extends Fragment {
         }
     };
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 51) {
-//            getDeviceLocation();
-//
-//        }
-//    }
-
     private String getUrl(double latitude, double longitude, String nearbyPlace) {
 
         StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
@@ -194,9 +184,6 @@ public class MapsFragment extends Fragment {
         googlePlaceUrl.append("&keyword=" + nearbyPlace);
         googlePlaceUrl.append("&sensor=true");
         googlePlaceUrl.append("&key=AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk");
-
-        Log.d("MapsActivity", "url = " + googlePlaceUrl.toString());
-
         return googlePlaceUrl.toString();
     }
 

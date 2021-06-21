@@ -167,16 +167,22 @@
 
 
     <string-array name="SpeciiPesti">
-        <item>Somn</item>
-        <item>Crap</item>
-        <item>Stiuca</item>
-        <item>Pastrav</item>
-        <item>Caras</item>
         <item>Avat</item>
         <item>Biban</item>
+        <item>Babusca</item>
+        <item>Balos</item>
         <item>Clean</item>
+        <item>Crap</item>
+        <item>Caras</item>
+        <item>Lin</item>
+        <item>Mrean</item>
+        <item>Morunas</item>
+        <item>Pastrav</item>
         <item>Platica</item>
         <item>Salau</item>
+        <item>Somn</item>
+        <item>Stiuca</item>
+        <item>Rosioara</item>
     </string-array>
 
     <string-array name="OptiuniSortareComentarii">
