@@ -164,6 +164,21 @@
     <string name="textview">TextView</string>
     <string name="nu_exista_date">Nu exista Date</string>
     <string name="rezultatul_cautarii_forumFragment">Rezultatul cautarii</string>
+    <string name="forum">Forum</string>
+    <string name="asistent">Asistent</string>
+    <string name="map">Map</string>
+    <string name="creati_o_calatorie">Creati o calatorie</string>
+    <string name="data">Data:</string>
+    <string name="temperatura_zi">Temperatura zi:</string>
+    <string name="temperatura_noapte">Temperatura Noapte:</string>
+    <string name="_100">100</string>
+    <string name="umiditate">Umiditate:</string>
+    <string name="probabilitate_de_precipitatii">Probabilitate de precipitatii:</string>
+    <string name="_1001">100%</string>
+    <string name="temperatura">Temperatura Zi:</string>
+    <string name="procent">%</string>
+    <string name="slash">/ Noapte:</string>
+    <string name="imagine_vreme">imagine vreme</string>
 
 
     <string-array name="SpeciiPesti">

@@ -52,8 +52,10 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
-import java.util.Arrays;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.Objects;
 
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -71,7 +73,7 @@ public class MapsFragment extends Fragment {
 
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
         @Override
-        public void onMapReady(GoogleMap googleMap) {
+        public void onMapReady(@NotNull GoogleMap googleMap) {
             mMap = googleMap;
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -86,11 +88,11 @@ public class MapsFragment extends Fragment {
             locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
-                public void onInfoWindowClick(Marker marker) {
+                public void onInfoWindowClick(@NotNull Marker marker) {
                     Intent intent=new Intent(getContext(), InfoWindowActivity.class);
                     intent.putExtra("markerTitle",marker.getTitle());
                     intent.putExtra("markerLatLng",marker.getPosition());
-                    String[] cutText = marker.getTitle().split("//");
+                    String[] cutText = Objects.requireNonNull(marker.getTitle()).split("//");
                     String placeId=cutText[1];
                     intent.putExtra("placeID",placeId);
                     startActivity(intent);
@@ -137,7 +139,7 @@ public class MapsFragment extends Fragment {
 
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
-                public boolean onMarkerClick(Marker marker) {
+                public boolean onMarkerClick(@NotNull Marker marker) {
                     float[] results = new float[3];
                     Location.distanceBetween(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(),
                             marker.getPosition().latitude, marker.getPosition().longitude, results);

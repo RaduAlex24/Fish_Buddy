@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/procent"
+        app:layout_constraintStart_toEndOf="@+id/lv_vreme_precipitatii"
+        app:layout_constraintTop_toTopOf="@+id/lv_vreme_precipitatii" />
+
+    <TextView
+        android:id="@+id/lv_vreme_textviewData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="@string/data"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lv_vreme_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="@string/textview"
+        app:layout_constraintStart_toEndOf="@+id/lv_vreme_textviewData"
+        app:layout_constraintTop_toTopOf="@+id/lv_vreme_textviewData" />
+
+    <TextView
+        android:id="@+id/lv_vreme_textView_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/temperatura"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lv_vreme_textviewData" />
+
+    <TextView
+        android:id="@+id/lv_vreme_tempZi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:text="@string/_100"
+        app:layout_constraintStart_toEndOf="@+id/lv_vreme_textView_temp"
+        app:layout_constraintTop_toTopOf="@+id/lv_vreme_textView_temp" />
+
+    <TextView
+        android:id="@+id/lv_vreme_textViewtemperaturaNoapte"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:text="@string/slash"
+        app:layout_constraintStart_toEndOf="@+id/lv_vreme_tempZi"
+        app:layout_constraintTop_toTopOf="@+id/lv_vreme_tempZi" />
+
+    <TextView
+        android:id="@+id/lv_vreme_tempNoapte"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:text="@string/_100"
+        app:layout_constraintStart_toEndOf="@+id/lv_vreme_textViewtemperaturaNoapte"
+        app:layout_constraintTop_toTopOf="@+id/lv_vreme_textViewtemperaturaNoapte" />
+
+    <TextView
+        android:id="@+id/lv_vreme_textview_Umiditate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/umiditate"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lv_vreme_textView_temp" />
+
+    <TextView
+        android:id="@+id/lv_vreme_umiditate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:text="@string/_1001"
+        app:layout_constraintBottom_toBottomOf="@+id/lv_vreme_textview_Umiditate"
+        app:layout_constraintStart_toEndOf="@+id/lv_vreme_textview_Umiditate"
+        app:layout_constraintTop_toTopOf="@+id/lv_vreme_textview_Umiditate" />
+
+    <TextView
+        android:id="@+id/lv_vreme_textview_probabilitate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:text="@string/probabilitate_de_precipitatii"
+        app:layout_constraintBottom_toBottomOf="@+id/lv_vreme_umiditate"
+        app:layout_constraintStart_toEndOf="@+id/lv_vreme_umiditate"
+        app:layout_constraintTop_toTopOf="@+id/lv_vreme_umiditate" />
+
+    <TextView
+        android:id="@+id/lv_vreme_precipitatii"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:text="@string/_1001"
+        app:layout_constraintBottom_toBottomOf="@+id/lv_vreme_textview_probabilitate"
+        app:layout_constraintStart_toEndOf="@+id/lv_vreme_textview_probabilitate"
+        app:layout_constraintTop_toTopOf="@+id/lv_vreme_textview_probabilitate" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/procent"
+        app:layout_constraintStart_toEndOf="@+id/lv_vreme_umiditate"
+        app:layout_constraintTop_toTopOf="@+id/lv_vreme_umiditate" />
+
+    <ImageView
+        android:id="@+id/lv_vreme_imageview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/quantum_lightblue"
+        android:contentDescription="@string/imagine_vreme"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toTopOf="@+id/lv_vreme_precipitatii"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lv_vreme_tempNoapte"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+</androidx.constraintlayout.widget.ConstraintLayout>

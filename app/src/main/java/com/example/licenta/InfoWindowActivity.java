@@ -42,6 +42,7 @@ public class InfoWindowActivity extends AppCompatActivity {
     private String placeId;
     private TextView numarRating;
     private TextView tvRatingFloat;
+    private LatLng latLngLocatie;
     private String TAG = "InfoWindowActivity";
 
     @Override
@@ -56,17 +57,19 @@ public class InfoWindowActivity extends AppCompatActivity {
 
         String title = (intent.getExtras().getString("markerTitle"));
         goToMapsLocatie.setOnClickListener(pornesteCalatoria());
+        planificareCalatorie.setOnClickListener(pornestePlanificare());
         if (!title.equals("")) {
             String[] cutText = title.split(":");
             titlu.setText(cutText[0]);
         }
 
-        final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.RATING, Place.Field.USER_RATINGS_TOTAL, Place.Field.PHOTO_METADATAS);
+        final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.RATING, Place.Field.USER_RATINGS_TOTAL, Place.Field.PHOTO_METADATAS,Place.Field.LAT_LNG);
         final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
         Places.initialize(getApplicationContext(), "AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk");
         PlacesClient placesClient = Places.createClient(this);
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
+            latLngLocatie=place.getLatLng();
             if (place.getRating() != null) {
                 ratingBar.setRating(place.getRating().floatValue());
                 tvRatingFloat.setText(place.getRating().toString());
@@ -108,6 +111,18 @@ public class InfoWindowActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    @NotNull
+    private View.OnClickListener pornestePlanificare() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),PlanificareCalatorieActivity.class);
+                intent.putExtra("latLng",latLng);
+                startActivity(intent);
+            }
+        };
     }
 
     @NotNull
