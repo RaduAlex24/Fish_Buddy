@@ -35,7 +35,7 @@
         android:layout_marginLeft="2dp"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:text="@string/textview"
+        android:text="@string/_20_04_2021"
         app:layout_constraintStart_toEndOf="@+id/lv_vreme_textviewData"
         app:layout_constraintTop_toTopOf="@+id/lv_vreme_textviewData" />
 
@@ -150,5 +150,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/lv_vreme_tempNoapte"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@drawable/cloudy__weather__cloud__sun" />
 </androidx.constraintlayout.widget.ConstraintLayout>
