@@ -389,7 +389,7 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
     }
 
 
-    // Redirectioare forum fragment dupa cautare
+    // Redirectioare tutorial
     private void redirectionareTutorial() {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
@@ -401,7 +401,7 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
     }
 
 
-    // Redirectioare tutorial
+    // Redirectioare forum fragment dupa cautare
     private void redirectionareForumFragmentDupaCautare(List<ForumPost> result) {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
