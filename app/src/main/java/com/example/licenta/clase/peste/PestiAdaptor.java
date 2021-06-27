@@ -45,7 +45,9 @@ public class PestiAdaptor extends ArrayAdapter<Peste> {
             adaugaGreutate(view, peste.getGreutate());
             adaugaSpecie(view, peste.getSpecie());
             adaugaLocatie(view, peste.getLocatie());
-            adaugaPoza(view,peste.getImagine());
+            if(peste.getImagine()!=null) {
+                adaugaPoza(view, peste.getImagine());
+            }
         }
         return view;
     }

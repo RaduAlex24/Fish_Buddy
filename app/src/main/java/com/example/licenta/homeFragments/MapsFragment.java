@@ -4,16 +4,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +31,7 @@ import android.widget.Toast;
 import com.example.licenta.InfoWindowActivity;
 import com.example.licenta.util.MapsUtils.GetNearbyPlacesData;
 import com.example.licenta.R;
+import com.example.licenta.util.MapsUtils.SingleShotLocationProvider;
 import com.example.licenta.util.dateUtils.InfoWindowAdapter;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.Status;
@@ -40,6 +48,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -68,15 +77,20 @@ public class MapsFragment extends Fragment {
     private Location mLastKnownLocation;
     int PROXIMITY_RADIUS = 3000000;
     double latitude, longitude;
+    private boolean bool = false;
+    private ImageView ancora;
+    private Marker markerAncora;
+    LatLng latLngPozitieAncora;
+    Boolean stopNotificari = false;
     AutocompleteSupportFragment autocompleteFragment;
-    private OnMapReadyCallback callback = new OnMapReadyCallback() {
+    private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
         @Override
         public void onMapReady(@NotNull GoogleMap googleMap) {
             mMap = googleMap;
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             mMap.setMyLocationEnabled(true);
@@ -89,21 +103,21 @@ public class MapsFragment extends Fragment {
             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(@NotNull Marker marker) {
-                    Intent intent=new Intent(getContext(), InfoWindowActivity.class);
-                    intent.putExtra("markerTitle",marker.getTitle());
-                    intent.putExtra("markerLatLng",marker.getPosition());
+                    Intent intent = new Intent(getContext(), InfoWindowActivity.class);
+                    intent.putExtra("markerTitle", marker.getTitle());
+                    intent.putExtra("markerLatLng", marker.getPosition());
                     String[] cutText = Objects.requireNonNull(marker.getTitle()).split("//");
-                    String placeId=cutText[1];
-                    intent.putExtra("placeID",placeId);
+                    String placeId = cutText[1];
+                    intent.putExtra("placeID", placeId);
                     startActivity(intent);
                 }
             });
             LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
 
-            SettingsClient settingsClient = LocationServices.getSettingsClient(getContext());
+            SettingsClient settingsClient = LocationServices.getSettingsClient(requireContext());
             Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
 
-            task.addOnSuccessListener(getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+            task.addOnSuccessListener(requireActivity(), new OnSuccessListener<LocationSettingsResponse>() {
                 @Override
                 public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                     getDeviceLocation();
@@ -111,13 +125,13 @@ public class MapsFragment extends Fragment {
                 }
             });
 
-            task.addOnFailureListener(getActivity(), new OnFailureListener() {
+            task.addOnFailureListener(requireActivity(), new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     if (e instanceof ResolvableApiException) {
                         ResolvableApiException resolvable = (ResolvableApiException) e;
                         try {
-                            resolvable.startResolutionForResult(getActivity(), 51);
+                            resolvable.startResolutionForResult(requireActivity(), 51);
                         } catch (IntentSender.SendIntentException e1) {
                             e1.printStackTrace();
                         }
@@ -137,19 +151,8 @@ public class MapsFragment extends Fragment {
             layoutParams.setMargins(40, 0, 0, 90);
             btnMyLocation.setLayoutParams(layoutParams);
 
-            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(@NotNull Marker marker) {
-                    float[] results = new float[3];
-                    Location.distanceBetween(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(),
-                            marker.getPosition().latitude, marker.getPosition().longitude, results);
-                    String distanta = "Distanta dintre dvs si punctul ales este de " + Math.round(results[0] / 1000) + " kilometri" + " \n apasati pentru mai multe detalii ";
-                    mMap.setInfoWindowAdapter(new InfoWindowAdapter(getContext()));
-                    marker.setSnippet(String.valueOf(Math.round(results[0] / 1000)));
-                    return false;
-                }
-            });
-            Places.initialize(getContext(), "AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk");
+            mMap.setOnMarkerClickListener(onMarkerClick());
+            Places.initialize(requireContext(), "AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk");
             autocompleteFragment = (AutocompleteSupportFragment)
                     getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
             assert autocompleteFragment != null;
@@ -157,12 +160,12 @@ public class MapsFragment extends Fragment {
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override
                 public void onPlaceSelected(@NonNull Place place) {
-                    String name = (String) place.getName();
+                    String name = place.getName();
                     LatLng latLng = place.getLatLng();
 
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(latLng);
-                    markerOptions.title(name+": //"+place.getId());
+                    markerOptions.title(name + ": //" + place.getId());
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
                     mMap.addMarker(markerOptions);
 
@@ -178,15 +181,30 @@ public class MapsFragment extends Fragment {
         }
     };
 
-    private String getUrl(double latitude, double longitude, String nearbyPlace) {
+    @NotNull
+    private GoogleMap.OnMarkerClickListener onMarkerClick() {
+        return new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(@NotNull Marker marker) {
+                float[] results = new float[3];
+                Location.distanceBetween(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(),
+                        marker.getPosition().latitude, marker.getPosition().longitude, results);
+                mMap.setInfoWindowAdapter(new InfoWindowAdapter(getContext()));
+                marker.setSnippet(String.valueOf(Math.round(results[0] / 1000)));
+                return false;
 
-        StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlaceUrl.append("location=" + latitude + "," + longitude);
-        googlePlaceUrl.append("&radius=" + PROXIMITY_RADIUS);
-        googlePlaceUrl.append("&keyword=" + nearbyPlace);
-        googlePlaceUrl.append("&sensor=true");
-        googlePlaceUrl.append("&key=AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk");
-        return googlePlaceUrl.toString();
+            }
+        };
+    }
+
+    private String getUrl(double latitude, double longitude) {
+
+        String googlePlaceUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" + "location=" + latitude + "," + longitude +
+                "&radius=" + PROXIMITY_RADIUS +
+                "&keyword=lake" +
+                "&sensor=true" +
+                "&key=AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk";
+        return googlePlaceUrl;
     }
 
     @SuppressLint("MissingPermission")
@@ -198,17 +216,18 @@ public class MapsFragment extends Fragment {
                         if (task.isSuccessful()) {
                             mLastKnownLocation = task.getResult();
                             if (mLastKnownLocation != null) {
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), 10));
+                                CameraPosition cameraPosition = new CameraPosition.Builder()
+                                        .target(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude())).zoom(10).build();
+                                mMap.animateCamera(CameraUpdateFactory
+                                        .newCameraPosition(cameraPosition));
                                 latitude = mLastKnownLocation.getLatitude();
                                 longitude = mLastKnownLocation.getLongitude();
-                                String fishingspots = "lake";
-                                String url = getUrl(latitude, longitude, fishingspots);
+                                String url = getUrl(latitude, longitude);
                                 Object[] dataTransfer = new Object[2];
                                 GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
                                 dataTransfer[0] = mMap;
                                 dataTransfer[1] = url;
                                 getNearbyPlacesData.execute(dataTransfer);
-
                             } else {
                                 final LocationRequest locationRequest = LocationRequest.create();
                                 locationRequest.setInterval(1000);
@@ -222,11 +241,14 @@ public class MapsFragment extends Fragment {
                                             return;
                                         }
                                         mLastKnownLocation = locationResult.getLastLocation();
-                                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), 10));
+                                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                                .target(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude())).zoom(10).build();
+                                        mMap.animateCamera(CameraUpdateFactory
+                                                .newCameraPosition(cameraPosition));
                                         fusedLocationClient.removeLocationUpdates(locationCallback);
                                     }
                                 };
-                                fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
+                                fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
                             }
                         }
                     }
@@ -234,7 +256,7 @@ public class MapsFragment extends Fragment {
     }
 
     private void requestPermision() {
-        ActivityCompat.requestPermissions(getActivity(), new String[]{ACCESS_FINE_LOCATION}, 1);
+        ActivityCompat.requestPermissions(requireActivity(), new String[]{ACCESS_FINE_LOCATION}, 1);
     }
 
     @Nullable
@@ -257,6 +279,109 @@ public class MapsFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("My Notification", "My Notification", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = requireContext().getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+        final Handler ha = new Handler();
+        ha.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //call function
+                verificaLocatia();
+                if (!stopNotificari) {
+                    ha.postDelayed(this, 10000);
+                }
+            }
+        }, 10000);
 
+        ancora = view.findViewById(R.id.imageview_maps_ancora);
+        ancora.setOnClickListener(ancoraOnClickEvent());
+    }
+
+    @NotNull
+    private View.OnClickListener ancoraOnClickEvent() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (markerAncora != null) {
+                    markerAncora.remove();
+                    markerAncoraNou(getContext());
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    LatLng latLng = new LatLng(latitude, longitude);
+                    markerOptions.position(latLng);
+                    markerOptions.title("ancora");
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    markerAncora = mMap.addMarker(markerOptions);
+                    latLngPozitieAncora = new LatLng(markerAncora.getPosition().latitude, markerAncora.getPosition().longitude);
+                    stopNotificari = false;
+                } else {
+                    bool = true;
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                    markerOptions.position(latLng);
+                    markerOptions.title("ancora");
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    markerAncora = mMap.addMarker(markerOptions);
+                    latLngPozitieAncora = new LatLng(markerAncora.getPosition().latitude, markerAncora.getPosition().longitude);
+                    stopNotificari = false;
+                }
+            }
+        };
+    }
+
+    private void verificaLocatia() {
+        if (bool) {
+            final Handler ha = new Handler();
+            ha.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //call function
+                    distAncoraLocN(getContext(), latLngPozitieAncora);
+                    if (!stopNotificari) {
+                        ha.postDelayed(this, 10000);
+                    }
+                }
+            }, 10000);
+        }
+    }
+
+    public void distAncoraLocN(Context context, LatLng latLng) {
+        if (context != null) {
+            SingleShotLocationProvider.requestSingleUpdate(context,
+                    new SingleShotLocationProvider.LocationCallback() {
+                        @Override
+                        public void onNewLocationAvailable(SingleShotLocationProvider.GPSCoordinates location) {
+                            float[] results = new float[3];
+                            Location.distanceBetween(latLng.latitude, latLng.longitude,
+                                    location.latitude, location.longitude, results);
+                            if (Math.round(results[0] / 1000) > 1) {
+                                NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), "My Notification");
+                                builder.setContentTitle("Ancora");
+                                builder.setContentText("V-ati indepartat prea mult de ancora");
+                                builder.setSmallIcon(R.drawable.menu_fish);
+                                builder.setAutoCancel(true);
+                                NotificationManagerCompat managerCompat = NotificationManagerCompat.from(requireContext());
+                                managerCompat.notify(1, builder.build());
+                                bool = false;
+                                stopNotificari = true;
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void markerAncoraNou(Context context) {
+        if (context != null) {
+            SingleShotLocationProvider.requestSingleUpdate(context,
+                    new SingleShotLocationProvider.LocationCallback() {
+                        @Override
+                        public void onNewLocationAvailable(SingleShotLocationProvider.GPSCoordinates location) {
+                            latitude = location.latitude;
+                            longitude = location.longitude;
+                        }
+                    });
+        }
     }
 }

@@ -23,6 +23,7 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.licenta.clase.user.CurrentUser;
+import com.example.licenta.database.service.ForumPostService;
 import com.example.licenta.homeFragments.ForumFragment;
 import com.example.licenta.homeFragments.MapsFragment;
 import com.example.licenta.homeFragments.VirtualAssistantFragment;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private ImageView imagineUtilizator;
     private static int RESULT_LOAD_IMAGE = 1;
+    private boolean wasImgApasata;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,25 +79,21 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     if (item.getItemId() == R.id.nav_profile) {
-                        Toast.makeText(MainActivity.this, "Optiunea profil a fost apasata", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), Profil.class);
                         startActivity(intent);
                         drawerLayout.closeDrawers();
                     }
                     if (item.getItemId() == R.id.nav_setari) {
-                        Toast.makeText(MainActivity.this, "Optiunea setari a fost apasata", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), Setari.class);
                         startActivity(intent);
                         drawerLayout.closeDrawers();
                     }
                     if (item.getItemId() == R.id.nav_adauga_peste) {
-                        Toast.makeText(MainActivity.this, "Optiunea adauga un peste a fost apasata", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), VizualizatiPesti.class);
                         startActivity(intent);
                         drawerLayout.closeDrawers();
                     }
                     if (item.getItemId() == R.id.nav_logout) {
-                        Toast.makeText(MainActivity.this, "Optiunea Logout a fost apasata", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), LogInActivity.class);
                         startActivity(intent);
                         drawerLayout.closeDrawers();
@@ -154,12 +152,11 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-
+                setareCredintentiale();
             }
 
             @Override
             public void onDrawerOpened(@NonNull View drawerView) {
-                setareCredintentiale();
                 imagineUtilizator = findViewById(R.id.imagineUtilizator);
                 imagineUtilizator.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -172,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
 
                         Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
                         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
-
                         startActivityForResult(chooserIntent, PICK_IMAGE);
                     }
                 });
@@ -180,7 +176,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDrawerClosed(@NonNull View drawerView) {
-
+                if(wasImgApasata){
+                    Toast.makeText(getApplicationContext(), "ASDSDSDSDSDS", Toast.LENGTH_LONG).show();
+                    wasImgApasata=false;
+                }
             }
 
             @Override
@@ -196,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
             try {
-
+                wasImgApasata=true;
                 final Uri imageUri = data.getData();
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
