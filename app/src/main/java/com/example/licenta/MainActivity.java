@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     if (item.getItemId() == R.id.nav_profile) {
-                        Intent intent = new Intent(getApplicationContext(), Profil.class);
+                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                         startActivity(intent);
                         drawerLayout.closeDrawers();
                     }

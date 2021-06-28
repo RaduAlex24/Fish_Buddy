@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Licenta">
-        <activity android:name=".PlanificareCalatorieActivity"></activity>
+        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".PlanificareCalatorieActivity" />
         <activity android:name=".InfoWindowActivity" />
         <activity android:name=".ForumPostDetailedActivity" />
         <activity android:name=".VizualizatiPesti" />
