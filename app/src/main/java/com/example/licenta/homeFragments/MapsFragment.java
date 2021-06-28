@@ -32,7 +32,7 @@ import com.example.licenta.InfoWindowActivity;
 import com.example.licenta.util.MapsUtils.GetNearbyPlacesData;
 import com.example.licenta.R;
 import com.example.licenta.util.MapsUtils.SingleShotLocationProvider;
-import com.example.licenta.util.dateUtils.InfoWindowAdapter;
+import com.example.licenta.util.MapsUtils.InfoWindowAdapter;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -75,7 +75,7 @@ public class MapsFragment extends Fragment {
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
     private Location mLastKnownLocation;
-    int PROXIMITY_RADIUS = 3000000;
+    int PROXIMITY_RADIUS = 50000;
     double latitude, longitude;
     private boolean bool = false;
     private ImageView ancora;
@@ -140,10 +140,7 @@ public class MapsFragment extends Fragment {
             });
             ImageView btnMyLocation = ((View) mapFragment.requireView().findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
             btnMyLocation.setImageResource(R.drawable.navigation);
-
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
-                    btnMyLocation.getLayoutParams();
-
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) btnMyLocation.getLayoutParams();
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -162,7 +159,12 @@ public class MapsFragment extends Fragment {
                 public void onPlaceSelected(@NonNull Place place) {
                     String name = place.getName();
                     LatLng latLng = place.getLatLng();
-
+                    String url = getUrl(latLng.latitude, latLng.longitude);
+                    Object[] dataTransfer = new Object[2];
+                    GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+                    dataTransfer[0] = mMap;
+                    dataTransfer[1] = url;
+                    getNearbyPlacesData.execute(dataTransfer);
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(latLng);
                     markerOptions.title(name + ": //" + place.getId());
@@ -187,7 +189,7 @@ public class MapsFragment extends Fragment {
             @Override
             public boolean onMarkerClick(@NotNull Marker marker) {
                 float[] results = new float[3];
-                Location.distanceBetween(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(),
+                Location.distanceBetween(latitude, longitude,
                         marker.getPosition().latitude, marker.getPosition().longitude, results);
                 mMap.setInfoWindowAdapter(new InfoWindowAdapter(getContext()));
                 marker.setSnippet(String.valueOf(Math.round(results[0] / 1000)));
@@ -201,7 +203,7 @@ public class MapsFragment extends Fragment {
 
         String googlePlaceUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" + "location=" + latitude + "," + longitude +
                 "&radius=" + PROXIMITY_RADIUS +
-                "&keyword=lake" +
+                "&keyword=fishing_pond" +
                 "&sensor=true" +
                 "&key=AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk";
         return googlePlaceUrl;
@@ -319,7 +321,7 @@ public class MapsFragment extends Fragment {
                 } else {
                     bool = true;
                     MarkerOptions markerOptions = new MarkerOptions();
-                    LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                    LatLng latLng = new LatLng(latitude, longitude);
                     markerOptions.position(latLng);
                     markerOptions.title("ancora");
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
@@ -354,6 +356,8 @@ public class MapsFragment extends Fragment {
                         @Override
                         public void onNewLocationAvailable(SingleShotLocationProvider.GPSCoordinates location) {
                             float[] results = new float[3];
+                            latitude=location.latitude;
+                            longitude=location.longitude;
                             Location.distanceBetween(latLng.latitude, latLng.longitude,
                                     location.latitude, location.longitude, results);
                             if (Math.round(results[0] / 1000) > 1) {

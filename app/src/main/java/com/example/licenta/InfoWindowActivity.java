@@ -81,7 +81,8 @@ public class InfoWindowActivity extends AppCompatActivity {
         }
 
         getAllFishById(titlu.getText().toString(),callbackGetPestiById());
-        final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.RATING, Place.Field.USER_RATINGS_TOTAL, Place.Field.PHOTO_METADATAS,Place.Field.LAT_LNG);
+        final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.RATING,
+                Place.Field.USER_RATINGS_TOTAL, Place.Field.PHOTO_METADATAS,Place.Field.LAT_LNG);
         final FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
         Places.initialize(getApplicationContext(), "AIzaSyBMhKnzEYxZYqEnvnV2cPIv_b5RsV2bdIk");
         PlacesClient placesClient = Places.createClient(this);
@@ -103,11 +104,6 @@ public class InfoWindowActivity extends AppCompatActivity {
             }
             for(int i=0;i<metadata.size();i++) {
                 final PhotoMetadata photoMetadata = metadata.get(i);
-
-                // Get the attribution text.
-                final String attributions = photoMetadata.getAttributions();
-
-                // Create a FetchPhotoRequest.
                 final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
                         .setMaxWidth(300) // Optional.
                         .setMaxHeight(200) // Optional.
@@ -124,7 +120,6 @@ public class InfoWindowActivity extends AppCompatActivity {
                         final ApiException apiException = (ApiException) exception;
                         Log.e(TAG, "Place not found: " + exception.getMessage());
                         final int statusCode = apiException.getStatusCode();
-                        // TODO: Handle error with given status code.
                     }
                 });
             }

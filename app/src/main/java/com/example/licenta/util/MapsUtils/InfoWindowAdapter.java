@@ -1,4 +1,4 @@
-package com.example.licenta.util.dateUtils;
+package com.example.licenta.util.MapsUtils;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -18,10 +18,6 @@ public class SingleShotLocationProvider {
     public static interface LocationCallback {
         public void onNewLocationAvailable(GPSCoordinates location);
     }
-
-    // calls back to calling thread, note this is for low grain: if you want higher precision, swap the
-    // contents of the else and if. Also be sure to check gps permission/settings are allowed.
-    // call usually takes <10ms
     public static void requestSingleUpdate(final Context context, final LocationCallback callback) {
 
         final LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -30,32 +26,17 @@ public class SingleShotLocationProvider {
             Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_COARSE);
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 return;
             }
-            locationManager.requestSingleUpdate(criteria, new android.location.LocationListener() {
-                @Override
-                public void onLocationChanged(@NonNull Location location) {
-                    callback.onNewLocationAvailable(new GPSCoordinates(location.getLatitude(), location.getLongitude()));
-                }
-            }, null);
+            locationManager.requestSingleUpdate(criteria, location ->
+                    callback.onNewLocationAvailable(new GPSCoordinates(location.getLatitude(), location.getLongitude())), null);
         } else {
             boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             if (isGPSEnabled) {
                 Criteria criteria = new Criteria();
                 criteria.setAccuracy(Criteria.ACCURACY_FINE);
-                locationManager.requestSingleUpdate(criteria, new android.location.LocationListener() {
-                    @Override
-                    public void onLocationChanged(@NonNull Location location) {
-                        callback.onNewLocationAvailable(new GPSCoordinates(location.getLatitude(), location.getLongitude()));
-                    }
-                }, null);
+                locationManager.requestSingleUpdate(criteria, location ->
+                        callback.onNewLocationAvailable(new GPSCoordinates(location.getLatitude(), location.getLongitude())), null);
             }
         }
     }
