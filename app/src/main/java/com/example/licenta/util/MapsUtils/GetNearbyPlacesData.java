@@ -1,8 +1,15 @@
 package com.example.licenta.util.MapsUtils;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
+import com.example.licenta.MainActivity;
+import com.example.licenta.R;
+import com.example.licenta.homeFragments.MapsFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -18,6 +25,11 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     private String googlePlacesData;
     private GoogleMap mMap;
     String url;
+    private final Context context;
+
+    public GetNearbyPlacesData(Context context) {
+        this.context = context;
+    }
 
     @Override
     protected String doInBackground(Object... objects) {
@@ -40,29 +52,28 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         List<HashMap<String, String>> nearbyPlaceList;
         DataParser parser = new DataParser();
         nearbyPlaceList = parser.parse(s);
-        Log.d("nearbyplacesdata", "called parse method");
         showNearbyPlaces(nearbyPlaceList);
     }
 
     private void showNearbyPlaces(List<HashMap<String, String>> nearbyPlaceList) {
-        for (int i = 0; i < nearbyPlaceList.size(); i++) {
-            MarkerOptions markerOptions = new MarkerOptions();
-            HashMap<String, String> googlePlace = nearbyPlaceList.get(i);
+        if (nearbyPlaceList.size() != 0) {
+            for (int i = 0; i < nearbyPlaceList.size(); i++) {
+                MarkerOptions markerOptions = new MarkerOptions();
+                HashMap<String, String> googlePlace = nearbyPlaceList.get(i);
+                String placeName = googlePlace.get("place_name");
+                String vicinity = googlePlace.get("vicinity");
+                String placeId = googlePlace.get("reference");
+                double lat = Double.parseDouble(googlePlace.get("lat"));
+                double lng = Double.parseDouble(googlePlace.get("lng"));
 
-            String placeName = googlePlace.get("place_name");
-            String vicinity = googlePlace.get("vicinity");
-            String placeId=googlePlace.get("reference");
-            double lat = Double.parseDouble(googlePlace.get("lat"));
-            double lng = Double.parseDouble(googlePlace.get("lng"));
-
-            LatLng latLng = new LatLng(lat, lng);
-            markerOptions.position(latLng);
-            markerOptions.title(placeName + " : " + vicinity+"//"+placeId);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-
-            mMap.addMarker(markerOptions);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+                LatLng latLng = new LatLng(lat, lng);
+                markerOptions.position(latLng);
+                markerOptions.title(placeName + " : " + vicinity + "//" + placeId);
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                mMap.addMarker(markerOptions);
+            }
+        } else {
+            Toast.makeText(context, R.string.eroare_inexistenta_locuri_pescuit, Toast.LENGTH_LONG).show();
         }
     }
 }
