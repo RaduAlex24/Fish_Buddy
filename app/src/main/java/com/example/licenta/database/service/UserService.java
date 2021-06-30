@@ -178,4 +178,55 @@ public class UserService {
         asyncTaskRunner.executeAsync(callable, callback);
     }
 
+
+    // INCOMPLETE
+    // Update user by user and user id
+    public void updateUserByUserAndUserId(int userId,User userNou, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "UPDATE " +  numeBDuser + " SET username = ? , password = ? , email = ? " +
+                        ", surname = ? , name = ? WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setString(1, userNou.getUsername());
+                statement.setString(2, userNou.getPassword());
+                statement.setString(3, userNou.getEmail());
+                statement.setString(4, userNou.getSurname());
+                statement.setString(5, userNou.getName());
+                statement.setInt(6, userId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Delete user by userId
+    public void deleteUserByUserId(int userId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "DELETE " + numeBDuser + "  WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
 }

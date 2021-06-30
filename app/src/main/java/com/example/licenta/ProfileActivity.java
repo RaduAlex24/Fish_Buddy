@@ -10,7 +10,10 @@ import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.peste.Peste;
 import com.example.licenta.clase.peste.PestiAdaptor;
 import com.example.licenta.clase.user.CurrentUser;
+import com.example.licenta.clase.user.User;
 import com.example.licenta.database.ConexiuneBD;
+import com.example.licenta.database.service.CommentForumService;
+import com.example.licenta.database.service.UserService;
 import com.example.licenta.util.dateUtils.DateConverter;
 
 import java.sql.PreparedStatement;
@@ -34,7 +37,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         getAllFishById(currentUser.getId(), callbackGetPestiById());
 
-
+        CommentForumService commentForumService = new CommentForumService();
+        commentForumService.getAnswersCountByUserId(currentUser.getId(), new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                int ceva = result;
+            }
+        });
     }
 
 
