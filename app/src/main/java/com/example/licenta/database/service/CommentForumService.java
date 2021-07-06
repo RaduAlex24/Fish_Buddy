@@ -208,6 +208,7 @@ public class CommentForumService {
             @Override
             public Integer call() throws Exception {
                 int nrAparitii = -1;
+                // Test
 
                 String sql = "SELECT COUNT(*) FROM " + numeBDcommentsForum + " WHERE userId LIKE ?";
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
