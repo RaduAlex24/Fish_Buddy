@@ -13,7 +13,6 @@
     <string name="parola_signup">Parola</string>
     <string name="confirmare_parola_signup">Confirmare parola</string>
     <string name="creeare_cont_signup">Creeare cont</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="toast_autentificare_esuata_logIn">Nume sau parola gresita</string>
     <string name="error_invalid_username">Numele de utilizator trebuie sa aiba cel putin 6 caractere</string>
@@ -39,6 +38,7 @@
     <string name="criterii_neindeplinite_postForumNou">Criterii de creare interventie forum neindeplinite</string>
     <string name="eroare_nextId_postForum">Eroare baza de date reporniti aplicatia</string>
     <string name="toast_creare_interventirForum_reusita">Interventie forum noua creata cu succes!</string>
+    <string name="peste_creat_cu_succes">Pestele a fost creat cu succes!</string>
     <string name="error_title_below3char">Titlul trebuie sa aiba cel putin 3 caractere</string>
     <string name="error_title_aboce100char">Titlul trebuie sa aiba maxim 100 caractere</string>
     <string name="error_content_below5char">Continutul trebuie sa aiba cel putin 5 caractere</string>
@@ -181,6 +181,7 @@
     <string name="imagine_vreme">imagine vreme</string>
     <string name="_20_04_2021">20/04/2021</string>
     <string name="imagine_maps_ancora">imagine maps ancora</string>
+    <string name="eroare_inexistenta_locuri_pescuit">Ne pare rau dar nu exista locuri de pescuit pe o raza de 50 de km</string>
 
 
     <string-array name="SpeciiPesti">

@@ -161,7 +161,7 @@ public class MapsFragment extends Fragment {
                     LatLng latLng = place.getLatLng();
                     String url = getUrl(latLng.latitude, latLng.longitude);
                     Object[] dataTransfer = new Object[2];
-                    GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+                    GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData(getContext());
                     dataTransfer[0] = mMap;
                     dataTransfer[1] = url;
                     getNearbyPlacesData.execute(dataTransfer);
@@ -226,7 +226,7 @@ public class MapsFragment extends Fragment {
                                 longitude = mLastKnownLocation.getLongitude();
                                 String url = getUrl(latitude, longitude);
                                 Object[] dataTransfer = new Object[2];
-                                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+                                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData(getContext());
                                 dataTransfer[0] = mMap;
                                 dataTransfer[1] = url;
                                 getNearbyPlacesData.execute(dataTransfer);

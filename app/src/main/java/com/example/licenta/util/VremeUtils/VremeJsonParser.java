@@ -41,15 +41,9 @@ public class VremeJsonParser {
 
     private static List<Vreme> readVremes(JSONObject object,int j) throws JSONException {
         List<Vreme> rezultatList = new ArrayList<>();
-        String data = object.getString("dt");
         JSONObject temperatura = object.getJSONObject("temp");
         DecimalFormat df = new DecimalFormat("#.#");
-
-        String[] datavector = Calendar.getInstance().getTime().toString().split(" ");
-        SimpleDateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
-        String sourceDate = datavector[1] + " " + datavector[2];
         String dataNoua=getCalculatedDate("dd-MM-yyyy", j);
-
         double tempZi = Double.parseDouble(temperatura.getString("day")) / 10;
         double tempNoapte = Double.parseDouble(temperatura.getString("night")) / 10;
         double tempZinou = Double.parseDouble(df.format(tempZi));

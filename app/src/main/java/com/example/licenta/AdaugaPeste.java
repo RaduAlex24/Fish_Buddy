@@ -137,7 +137,7 @@ public class AdaugaPeste extends AppCompatActivity {
                 byte[] imageInByte = stream.toByteArray();
                 long lengthbmp = imageInByte.length;
                 if (lengthbmp / 1024.0 / 1024.0 >= 2) {
-                    Toast.makeText(getApplicationContext(), "Dimensiunea imaginii este prea mare", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Dimensiunea imaginii este prea mare", Toast.LENGTH_LONG).show();
                 } else {
                     if (selectedImage.getWidth() > 130 || selectedImage.getHeight() > 90) {
                         poza_scalata = Bitmap.createScaledBitmap(selectedImage, 130, 90, true);
@@ -236,7 +236,6 @@ public class AdaugaPeste extends AppCompatActivity {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 rezultatLocatie = place.getName();
-                //Toast.makeText(AdaugaPeste.this, rezultatLocatie, Toast.LENGTH_SHORT).show();
                 autocompleteFragment.setText(rezultatLocatie);
             }
 
@@ -248,7 +247,7 @@ public class AdaugaPeste extends AppCompatActivity {
     }
 
     private void updateLabel() {
-        String myFormat = "dd/MM/yyyy"; //In which you need put here
+        String myFormat = "dd/MM/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
 
         dataPeste.setText(sdf.format(myCalendar.getTime()));
@@ -283,7 +282,7 @@ public class AdaugaPeste extends AppCompatActivity {
             @Override
             public void runResultOnUiThread(Peste result) {
                 Toast.makeText(getApplicationContext(),
-                        getString(R.string.toast_creare_interventirForum_reusita),
+                        getString(R.string.peste_creat_cu_succes),
                         Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.putExtra(new_fish, result);
