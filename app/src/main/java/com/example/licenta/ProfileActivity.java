@@ -3,92 +3,171 @@ package com.example.licenta;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import com.example.licenta.asyncTask.AsyncTaskRunner;
 import com.example.licenta.asyncTask.Callback;
-import com.example.licenta.clase.peste.Peste;
-import com.example.licenta.clase.peste.PestiAdaptor;
 import com.example.licenta.clase.user.CurrentUser;
-import com.example.licenta.clase.user.User;
-import com.example.licenta.database.ConexiuneBD;
 import com.example.licenta.database.service.CommentForumService;
-import com.example.licenta.database.service.UserService;
-import com.example.licenta.util.dateUtils.DateConverter;
+import com.example.licenta.database.service.ForumPostService;
+import com.example.licenta.database.service.LikeCommentService;
+import com.example.licenta.database.service.LikeForumService;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.Callable;
+import org.jetbrains.annotations.NotNull;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private List<Peste> pesteList = new ArrayList<>();
-    private ConexiuneBD conexiuneBD = ConexiuneBD.getInstance();
-    private AsyncTaskRunner asyncTaskRunner = new AsyncTaskRunner();
-    private CurrentUser currentUser = CurrentUser.getInstance();
+    // Controale vizuale
+    private TextView tvPageTitle;
+    private ImageView imageViewProfilePicture;
+    private TextView tvFishingTitle;
+    private TextView tvNumberAnswers;
+    private TextView tvNumberLikes;
+    private TextView tvNumberPostsCreated;
+    private TextView tvNumberPoints;
+    private ListView lvBestFish;
+    private TextView tvUsername;
+    private TextView tvEmail;
+    private Button btnModificareCont;
+    private Button btnStergereCont;
 
+
+    // Utile
+    private CurrentUser currentUser = CurrentUser.getInstance();
+    private CommentForumService commentForumService = new CommentForumService();
+    private LikeForumService likeForumService = new LikeForumService();
+    private LikeCommentService likeCommentService = new LikeCommentService();
+    private ForumPostService forumPostService = new ForumPostService();
+
+    private int numarAprecieri = 0;
+
+
+    // On create
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        getAllFishById(currentUser.getId(), callbackGetPestiById());
+        // Initializare componente
+        initComponents();
 
-        CommentForumService commentForumService = new CommentForumService();
-        commentForumService.getAnswersCountByUserId(currentUser.getId(), new Callback<Integer>() {
+        // Inlocuire campuri
+        replaceFields();
+    }
+
+
+    // Metode
+    // Initializare componente
+    private void initComponents() {
+        // Text view
+        tvPageTitle = findViewById(R.id.tv_title_profile);
+        tvFishingTitle = findViewById(R.id.tv_fisingTitle_profile);
+        tvNumberAnswers = findViewById(R.id.tv_numberAnswers_profile);
+        tvNumberLikes = findViewById(R.id.tv_numberLikes_profile);
+        tvNumberPostsCreated = findViewById(R.id.tv_numberPostsCreated_profile);
+        tvNumberPoints = findViewById(R.id.tv_numberPoints_profile);
+        tvUsername = findViewById(R.id.tv_username_profile);
+        tvEmail = findViewById(R.id.tv_email_profile);
+
+        // Image view
+        imageViewProfilePicture = findViewById(R.id.imageView_profile);
+
+        // Lista
+        lvBestFish = findViewById(R.id.lv_bestFish_profile);
+
+        // Butoane
+        btnModificareCont = findViewById(R.id.btn_modificareCont_profile);
+        btnStergereCont = findViewById(R.id.btn_stergereCont_profile);
+    }
+
+
+    // Inlocuire campuri
+    private void replaceFields() {
+        repaceFromAccount();
+        replaceFromDataBase();
+    }
+
+
+    // Inlocuire instanta
+    private void repaceFromAccount() {
+        // Titlu
+        String surname = currentUser.getSurname().substring(0, 1).toUpperCase() + currentUser.getSurname().substring(1).toLowerCase();
+        String name = currentUser.getName().substring(0, 1).toUpperCase() + currentUser.getName().substring(1).toLowerCase();
+        tvPageTitle.setText(getString(R.string.profile_title_replace, surname + " " + name));
+
+        // Puncte obtinute
+        tvNumberPoints.setText(getString(R.string.profile_puncteObtinute_replace, currentUser.getPoints()));
+
+        // Username
+        tvUsername.setText(getString(R.string.profile_numeUtiliator_replace, currentUser.getUsername()));
+
+        // Email
+        tvEmail.setText(getString(R.string.profile_email_replace, currentUser.getEmail()));
+    }
+
+
+    // Inlocuire din bd
+    private void replaceFromDataBase() {
+        // Comentarii create
+        commentForumService.getAnswersCountByUserId(currentUser.getId(), callbackPreluareNumarComentarii());
+
+        // Aprecieri acordate
+        likeForumService.getForumLikesCountByUserId(currentUser.getId(), callbackPreluareNumarLikeuriForum());
+
+        // Postari create
+        forumPostService.getForumPostCountByUserId(currentUser.getId(), callbackPreluareNumarPostariCreate());
+    }
+
+
+    // Callback preluare numar comentarii
+    @NotNull
+    private Callback<Integer> callbackPreluareNumarComentarii() {
+        return new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
-                int ceva = result;
-            }
-        });
-    }
-
-
-    public void getAllFishById(int id, Callback<List<Peste>> callback) {
-        Callable<List<Peste>> callable = new Callable<List<Peste>>() {
-            @Override
-            public List<Peste> call() throws Exception {
-                List<Peste> pesteListDinBd= new ArrayList<>();
-                String sql = "SELECT * FROM " + "FISH where USERID = ?";
-                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
-                statement.setInt(1,id);
-                ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    int id = resultSet.getInt(1);
-                    String specii = resultSet.getString(3);
-                    int lungime =resultSet.getInt(4);
-                    int greutate = resultSet.getInt(5);
-                    String dataS = resultSet.getString(6);
-                    String locatie = resultSet.getString(7);
-                    byte[] imgByte = resultSet.getBytes(8);
-
-                    Date date = DateConverter.toDate(dataS);
-                    Peste peste = new Peste(greutate,lungime,specii,locatie,date,imgByte);
-                    pesteListDinBd.add(peste);
-                }
-                statement.close();
-                resultSet.close();
-                return pesteListDinBd;
-            }
-        };
-        asyncTaskRunner.executeAsync(callable, callback);
-    }
-    private Callback<List<Peste>> callbackGetPestiById() {
-        return new Callback<List<Peste>>() {
-            @Override
-            public void runResultOnUiThread(List<Peste> result) {
-                pesteList.clear();
-                pesteList.add(result.get(0));
-
-
-                ListView listView = findViewById(R.id.lv_bestFish_profileActivity);
-                PestiAdaptor adaptor = new PestiAdaptor(getApplicationContext(), R.layout.listview_pesti,
-                        pesteList, getLayoutInflater());
-                listView.setAdapter(adaptor);
+                tvNumberAnswers.setText(getString(R.string.profile_raspunsuriAcordate_replace, result));
             }
         };
     }
+
+
+    // Callback pentru preluare numar likeuri postari forum
+    @NotNull
+    private Callback<Integer> callbackPreluareNumarLikeuriForum() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                numarAprecieri += result;
+                likeCommentService.getCommentLikesCountByUserId(currentUser.getId(), callbackPreluareNumarLikeuriComentarii());
+            }
+        };
+    }
+
+
+    // Callback pentru preluare numar likeuri comentarii
+    @NotNull
+    private Callback<Integer> callbackPreluareNumarLikeuriComentarii() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                numarAprecieri += result;
+                tvNumberLikes.setText(getString(R.string.profile_aprecieriAcordate_replace, numarAprecieri));
+            }
+        };
+    }
+
+
+    // Callback preluare numar postari create
+    @NotNull
+    private Callback<Integer> callbackPreluareNumarPostariCreate() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                tvNumberPostsCreated.setText(getString(R.string.profile_postariCreate_replace, result));
+            }
+        };
+    }
+
 }

@@ -219,4 +219,14 @@
         <item>Cele mai vechi</item>
     </string-array>
 
+
+    <string name="profile_title_replace">Pagina lui %1$s</string>
+    <string name="profile_puncteObtinute_replace">Puncte obtinute: %1$d</string>
+    <string name="profile_numeUtiliator_replace">Nume utilizator: %1$s</string>
+    <string name="profile_email_replace">Email: %1$s</string>
+    <string name="profile_raspunsuriAcordate_replace">Raspunsuri acordate: %1$d</string>
+    <string name="profile_aprecieriAcordate_replace">Aprecieri acordate: %1$d</string>
+    <string name="profile_postariCreate_replace">Postari create: %1$d</string>
+
+
 </resources>

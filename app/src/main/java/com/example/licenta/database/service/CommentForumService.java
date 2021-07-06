@@ -202,15 +202,14 @@ public class CommentForumService {
 
 
     // Statistici
-    // Preluare raspunsuri acordate
+    // Preluare numar raspunsuri acordate
     public void getAnswersCountByUserId(int userId, Callback<Integer> callback) {
         Callable<Integer> callable = new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
                 int nrAparitii = -1;
-                // Test
 
-                String sql = "SELECT COUNT(*) FROM " + numeBDcommentsForum + " WHERE userId LIKE ?";
+                String sql = "SELECT COUNT(*) FROM " + numeBDcommentsForum + " WHERE userId = ?";
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
                 statement.setInt(1, userId);
                 ResultSet resultSet = statement.executeQuery();
