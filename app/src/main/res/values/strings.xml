@@ -227,6 +227,9 @@
     <string name="profile_raspunsuriAcordate_replace">Raspunsuri acordate: %1$d</string>
     <string name="profile_aprecieriAcordate_replace">Aprecieri acordate: %1$d</string>
     <string name="profile_postariCreate_replace">Postari create: %1$d</string>
+    <string name="logtag_delete_fish_fishList">Stergerea pestelul a afectat mai mult de un rand</string>
+    <string name="toast_pesteFavorit_VizualizarePEsti">Pestele a fost marcat ca favorit</string>
+    <string name="toast_pesteSters_VizualizarePesti">Pestele a fost sters</string>
 
 
 </resources>

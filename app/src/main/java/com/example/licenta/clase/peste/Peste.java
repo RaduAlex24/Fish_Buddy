@@ -33,6 +33,19 @@ public class Peste implements Serializable {
         this.dataPrindere = dataPrindere;
     }
 
+    public Peste(int id, int greutate, int lungime, String specie, String locatie, Date dataPrindere, byte[] imagine) {
+        this.id = id;
+        this.greutate = greutate;
+        this.lungime = lungime;
+        this.specie = specie;
+        this.locatie = locatie;
+        this.dataPrindere = dataPrindere;
+        this.imagine = imagine;
+    }
+
+    public Peste(){
+    }
+
     public int getId() {
         return id;
     }

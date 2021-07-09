@@ -2,6 +2,7 @@ package com.example.licenta;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -9,13 +10,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.licenta.asyncTask.Callback;
+import com.example.licenta.clase.peste.Peste;
+import com.example.licenta.clase.peste.PestiAdaptor;
 import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.database.service.CommentForumService;
+import com.example.licenta.database.service.FishService;
 import com.example.licenta.database.service.ForumPostService;
 import com.example.licenta.database.service.LikeCommentService;
 import com.example.licenta.database.service.LikeForumService;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.licenta.LogInActivity.SHARED_PREF_FILE_NAME;
+import static com.example.licenta.VizualizatiPesti.FISH_ID_SP;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -40,8 +50,11 @@ public class ProfileActivity extends AppCompatActivity {
     private LikeForumService likeForumService = new LikeForumService();
     private LikeCommentService likeCommentService = new LikeCommentService();
     private ForumPostService forumPostService = new ForumPostService();
+    private FishService fishService = new FishService();
 
     private int numarAprecieri = 0;
+    private SharedPreferences sharedPreferences;
+    private List<Peste> pesteList = new ArrayList<>();
 
 
     // On create
@@ -55,6 +68,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Inlocuire campuri
         replaceFields();
+
+        // Adaugare adapter
+        addAdapter();
+
+        // Verificare existenta peste favorit
+        getFavouriteFishFromSharedPreferences();
     }
 
 
@@ -80,6 +99,48 @@ public class ProfileActivity extends AppCompatActivity {
         // Butoane
         btnModificareCont = findViewById(R.id.btn_modificareCont_profile);
         btnStergereCont = findViewById(R.id.btn_stergereCont_profile);
+
+        // Shared preferences
+        sharedPreferences = getSharedPreferences(SHARED_PREF_FILE_NAME, MODE_PRIVATE);
+    }
+
+
+    // Get fish from shared preferences
+    private void getFavouriteFishFromSharedPreferences(){
+        int fishId = sharedPreferences.getInt(FISH_ID_SP, -1);
+
+        if(fishId != -1){
+            fishService.getFavouriteFishByIdAndUserId(fishId, currentUser.getId(),
+                    callbackGetFavouriteFish());
+        }
+    }
+
+
+    // Callback get favourite fish
+    @NotNull
+    private Callback<Peste> callbackGetFavouriteFish() {
+        return new Callback<Peste>() {
+            @Override
+            public void runResultOnUiThread(Peste result) {
+                pesteList.add(result);
+                notifyAdapter();
+            }
+        };
+    }
+
+
+    // Adaugare adapter
+    private void addAdapter() {
+        PestiAdaptor adaptor = new PestiAdaptor(getApplicationContext(), R.layout.listview_pesti,
+                pesteList, getLayoutInflater());
+        lvBestFish.setAdapter(adaptor);
+    }
+
+
+    // Notificare adapter
+    private void notifyAdapter() {
+        PestiAdaptor adapter = (PestiAdaptor) lvBestFish.getAdapter();
+        adapter.notifyDataSetChanged();
     }
 
 
