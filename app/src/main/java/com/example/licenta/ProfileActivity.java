@@ -13,11 +13,13 @@ import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.peste.Peste;
 import com.example.licenta.clase.peste.PestiAdaptor;
 import com.example.licenta.clase.user.CurrentUser;
+import com.example.licenta.clase.user.FishingTitleEnum;
 import com.example.licenta.database.service.CommentForumService;
 import com.example.licenta.database.service.FishService;
 import com.example.licenta.database.service.ForumPostService;
 import com.example.licenta.database.service.LikeCommentService;
 import com.example.licenta.database.service.LikeForumService;
+import com.example.licenta.database.service.UserService;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -46,6 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Utile
     private CurrentUser currentUser = CurrentUser.getInstance();
+    private UserService userService = new UserService();
     private CommentForumService commentForumService = new CommentForumService();
     private LikeForumService likeForumService = new LikeForumService();
     private LikeCommentService likeCommentService = new LikeCommentService();
@@ -158,14 +161,14 @@ public class ProfileActivity extends AppCompatActivity {
         String name = currentUser.getName().substring(0, 1).toUpperCase() + currentUser.getName().substring(1).toLowerCase();
         tvPageTitle.setText(getString(R.string.profile_title_replace, surname + " " + name));
 
-        // Puncte obtinute
-        tvNumberPoints.setText(getString(R.string.profile_puncteObtinute_replace, currentUser.getPoints()));
-
         // Username
         tvUsername.setText(getString(R.string.profile_numeUtiliator_replace, currentUser.getUsername()));
 
         // Email
         tvEmail.setText(getString(R.string.profile_email_replace, currentUser.getEmail()));
+
+        // Fishing title
+        tvFishingTitle.setText(currentUser.getFishingTitle().getLabel());
     }
 
 
@@ -179,6 +182,22 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Postari create
         forumPostService.getForumPostCountByUserId(currentUser.getId(), callbackPreluareNumarPostariCreate());
+
+        // Numar puncte
+        userService.getPointsForCurrentUser(currentUser.getId(), callbackPreluareNumarPuncte());
+    }
+
+
+    // Callback preluare numar puncte
+    @NotNull
+    private Callback<Integer> callbackPreluareNumarPuncte() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                currentUser.setPoints(result);
+                tvNumberPoints.setText(getString(R.string.profile_puncteObtinute_replace, currentUser.getPoints()));
+            }
+        };
     }
 
 

@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.licenta.CreateForumPostActivity;
+import com.example.licenta.ProfileActivity;
 import com.example.licenta.VizualizatiPesti;
 import com.example.licenta.Profil;
 import com.example.licenta.R;
@@ -292,7 +293,7 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(getContext(), Profil.class);
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
                 startActivity(intent);
             }
         }, 5000);

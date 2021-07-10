@@ -229,4 +229,34 @@ public class UserService {
         asyncTaskRunner.executeAsync(callable, callback);
     }
 
+
+    // Preluare numar puncte user curent
+    public void getPointsForCurrentUser(int userId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrPuncte;
+
+                String sql = "SELECT points FROM " + numeBDuser + " WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                ResultSet resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    nrPuncte = resultSet.getInt(1);
+                } else {
+                    statement.close();
+                    resultSet.close();
+                    return null;
+                }
+
+                statement.close();
+                resultSet.close();
+                return nrPuncte;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
 }

@@ -22,8 +22,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.user.CurrentUser;
-import com.example.licenta.database.service.ForumPostService;
+import com.example.licenta.database.service.UserService;
 import com.example.licenta.homeFragments.ForumFragment;
 import com.example.licenta.homeFragments.MapsFragment;
 import com.example.licenta.homeFragments.VirtualAssistantFragment;
@@ -31,6 +32,8 @@ import com.example.licenta.introTutorialSlider.IntroTutorialSlider;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String FIRST_TIME_IN_APP_SP = "FIRST_TIME_IN_APP_SP";
     private long mBackPressed;
 
+    private UserService userService = new UserService();
     private CurrentUser currentUser = CurrentUser.getInstance();
     private SharedPreferences sharedPreferences;
 
@@ -134,7 +138,20 @@ public class MainActivity extends AppCompatActivity {
         TextView tvPoints = headerView.findViewById(R.id.tv_points_mainNavHeader);
         tvEmail.setText(currentUser.getEmail());
         tvUsername.setText(currentUser.getUsername());
-        tvPoints.setText("Puncte: " + currentUser.getPoints());
+
+        // Preluare puncte
+        userService.getPointsForCurrentUser(currentUser.getId(), callbackPreluarePuncteUtiliatorCurent(tvPoints));
+    }
+
+    @NotNull
+    private Callback<Integer> callbackPreluarePuncteUtiliatorCurent(TextView tvPoints) {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                currentUser.setPoints(result);
+                tvPoints.setText("Puncte: " + currentUser.getPoints());
+            }
+        };
     }
 
     private void configNavigation() {

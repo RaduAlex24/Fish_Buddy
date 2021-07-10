@@ -10,6 +10,7 @@ public class CurrentUser {
     private String surname;
     private String name;
     private int points;
+    private FishingTitleEnum fishingTitle;
 
     // Log unic pentru debug
     private static final String tagLog = "ClasaCurrentUser";
@@ -33,6 +34,10 @@ public class CurrentUser {
             currentUser.surname = user.getSurname();
             currentUser.name = user.getName();
             currentUser.points = user.getPoints();
+
+            // Preluare fishing title
+           currentUser.setFishingTitle(FishingTitleEnum.preluareTitluInFunctieDeUsername(currentUser.getUsername()));
+           currentUser.setUsername(currentUser.getUsername().split(":")[0]);
         }
     }
 
@@ -112,9 +117,16 @@ public class CurrentUser {
         this.points = points;
     }
 
+    public FishingTitleEnum getFishingTitle() {
+        return fishingTitle;
+    }
+
+    public void setFishingTitle(FishingTitleEnum fishingTitle) {
+        this.fishingTitle = fishingTitle;
+    }
+
 
     // Metode
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("CurrentUser{");
