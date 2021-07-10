@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         TextView tvEmail = headerView.findViewById(R.id.tv_main_email);
         TextView tvPoints = headerView.findViewById(R.id.tv_points_mainNavHeader);
         tvEmail.setText(currentUser.getEmail());
-        tvUsername.setText(currentUser.getUsername());
+        tvUsername.setText(currentUser.getUsername().split(":")[0]);
 
         // Preluare puncte
         userService.getPointsForCurrentUser(currentUser.getId(), callbackPreluarePuncteUtiliatorCurent(tvPoints));

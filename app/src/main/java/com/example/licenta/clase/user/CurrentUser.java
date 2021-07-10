@@ -37,7 +37,6 @@ public class CurrentUser {
 
             // Preluare fishing title
            currentUser.setFishingTitle(FishingTitleEnum.preluareTitluInFunctieDeUsername(currentUser.getUsername()));
-           currentUser.setUsername(currentUser.getUsername().split(":")[0]);
         }
     }
 

@@ -1,5 +1,7 @@
 package com.example.licenta.clase.user;
 
+import android.graphics.Color;
+
 public enum FishingTitleEnum {
     // Elemente
     UNU("Pescar invatacel", 100),
@@ -40,32 +42,35 @@ public enum FishingTitleEnum {
 
 
     // Metode
-    public static void actualiareFishingTitle(CurrentUser currentUser){
-        for(FishingTitleEnum fishingTitleEnum: FishingTitleEnum.values()){
-            if(currentUser.getPoints() < fishingTitleEnum.getLimitaSuperioaraPuncte()){
-                currentUser.setFishingTitle(fishingTitleEnum);
-                break;
-            }
-        }
-
-        if(currentUser.getFishingTitle() == null){
-            currentUser.setFishingTitle(FishingTitleEnum.CINCI);
-        }
-    }
-
-    public static FishingTitleEnum preluareTitluInFunctieDePuncte(int nrPuncte){
-        for(FishingTitleEnum fishingTitleEnum: FishingTitleEnum.values()){
-            if(nrPuncte < fishingTitleEnum.getLimitaSuperioaraPuncte()){
-                return fishingTitleEnum;
-            }
-        }
-
-        return FishingTitleEnum.CINCI;
-    }
-
-    public static FishingTitleEnum preluareTitluInFunctieDeUsername(String username){
+    // Preluare titlu in functie de username
+    public static FishingTitleEnum preluareTitluInFunctieDeUsername(String username) {
         String vect[] = username.split(":");
         return FishingTitleEnum.valueOf(vect[1]);
+    }
+
+    // Preluare titlu culoare in functie de titlu
+    public static int preluareCuloareInFunctieDeTitlu(FishingTitleEnum fishingTitleEnum) {
+        int culoare = Color.BLACK;
+
+        switch (fishingTitleEnum) {
+            case UNU:
+                culoare = Color.GRAY;
+                break;
+            case DOI:
+                culoare = Color.BLUE;
+                break;
+            case TREI:
+                culoare = Color.CYAN;
+                break;
+            case PATRU:
+                culoare = Color.YELLOW;
+                break;
+            case CINCI:
+                culoare = Color.RED;
+                break;
+        }
+
+        return culoare;
     }
 
 }

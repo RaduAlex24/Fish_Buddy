@@ -162,7 +162,7 @@ public class ProfileActivity extends AppCompatActivity {
         tvPageTitle.setText(getString(R.string.profile_title_replace, surname + " " + name));
 
         // Username
-        tvUsername.setText(getString(R.string.profile_numeUtiliator_replace, currentUser.getUsername()));
+        tvUsername.setText(getString(R.string.profile_numeUtiliator_replace, currentUser.getUsername().split(":")[0]));
 
         // Email
         tvEmail.setText(getString(R.string.profile_email_replace, currentUser.getEmail()));

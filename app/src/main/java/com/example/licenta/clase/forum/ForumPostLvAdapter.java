@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.example.licenta.R;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.user.CurrentUser;
+import com.example.licenta.clase.user.FishingTitleEnum;
 import com.example.licenta.database.service.FavouriteForumPostService;
 import com.example.licenta.database.service.ForumPostService;
 import com.example.licenta.database.service.LikeForumService;
@@ -119,9 +120,11 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     // Functii
     // Initializare componente
     private void initComponents(View view, ForumPost forumPost) {
-        // user
+        // user si fishing title
+        FishingTitleEnum fishingTitleEnum = FishingTitleEnum.preluareTitluInFunctieDeUsername(forumPost.getCreatorUsername());
         tvUser = view.findViewById(R.id.tv_user_forumPostRowAdapter);
-        tvUser.setText(forumPost.getCreatorUsername());
+        tvUser.setText(forumPost.getCreatorUsername().split(":")[0]);
+        tvUser.setTextColor(FishingTitleEnum.preluareCuloareInFunctieDeTitlu(fishingTitleEnum));
 
         // category
         tvCategory = view.findViewById(R.id.tv_category_forumPostRowAdapter);

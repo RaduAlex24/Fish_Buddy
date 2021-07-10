@@ -17,6 +17,7 @@ import com.example.licenta.ForumPostDetailedActivity;
 import com.example.licenta.R;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.user.CurrentUser;
+import com.example.licenta.clase.user.FishingTitleEnum;
 import com.example.licenta.database.service.CommentForumService;
 import com.example.licenta.database.service.LikeCommentService;
 import com.example.licenta.database.service.UserService;
@@ -108,9 +109,11 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
     // Functii
     // Initializare componente
     private void initComponents(View view, CommentForum commentForum) {
-        // creator username
+        // creator username si fishing title
+        FishingTitleEnum fishingTitleEnum = FishingTitleEnum.preluareTitluInFunctieDeUsername(commentForum.getCreatorUsername());
         tvCreatorUsername = view.findViewById(R.id.tv_creatorUsername_commentRowAdapter);
-        tvCreatorUsername.setText(commentForum.getCreatorUsername());
+        tvCreatorUsername.setText(commentForum.getCreatorUsername().split(":")[0]);
+        tvCreatorUsername.setTextColor(FishingTitleEnum.preluareCuloareInFunctieDeTitlu(fishingTitleEnum));
 
         // is edited
         tvEdited = view.findViewById(R.id.tv_isEdited_commentRowAdapter);
