@@ -1,20 +1,28 @@
 package com.example.licenta;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.licenta.asyncTask.Callback;
+import com.example.licenta.clase.forum.CommentForum;
 import com.example.licenta.clase.peste.Peste;
 import com.example.licenta.clase.peste.PestiAdaptor;
 import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.clase.user.FishingTitleEnum;
 import com.example.licenta.database.service.CommentForumService;
+import com.example.licenta.database.service.FavouriteForumPostService;
 import com.example.licenta.database.service.FishService;
 import com.example.licenta.database.service.ForumPostService;
 import com.example.licenta.database.service.LikeCommentService;
@@ -23,6 +31,7 @@ import com.example.licenta.database.service.UserService;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +40,8 @@ import static com.example.licenta.VizualizatiPesti.FISH_ID_SP;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    public static final int REQUEST_CODE_MODIFY_ACCOUNT = 224;
+    public static final String CURRENT_USER_KEY = "CURRENT_USER_KEY";
     // Controale vizuale
     private TextView tvPageTitle;
     private ImageView imageViewProfilePicture;
@@ -54,6 +65,7 @@ public class ProfileActivity extends AppCompatActivity {
     private LikeCommentService likeCommentService = new LikeCommentService();
     private ForumPostService forumPostService = new ForumPostService();
     private FishService fishService = new FishService();
+    private FavouriteForumPostService favouriteForumPostService = new FavouriteForumPostService();
 
     private int numarAprecieri = 0;
     private SharedPreferences sharedPreferences;
@@ -77,6 +89,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Verificare existenta peste favorit
         getFavouriteFishFromSharedPreferences();
+
+        // Functii butoane
+        btnModificareCont.setOnClickListener(onClickModificare());
+        btnStergereCont.setOnClickListener(onClickStergereCont());
     }
 
 
@@ -108,11 +124,37 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
+    // On click stergere cont
+    @NotNull
+    private View.OnClickListener onClickStergereCont() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogBuilderForDeletingAccountOne();
+            }
+        };
+    }
+
+
+    // Functie on click modificare cont
+    @NotNull
+    private View.OnClickListener onClickModificare() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                intent.putExtra(CURRENT_USER_KEY, currentUser);
+                startActivityForResult(intent, REQUEST_CODE_MODIFY_ACCOUNT);
+            }
+        };
+    }
+
+
     // Get fish from shared preferences
-    private void getFavouriteFishFromSharedPreferences(){
+    private void getFavouriteFishFromSharedPreferences() {
         int fishId = sharedPreferences.getInt(FISH_ID_SP, -1);
 
-        if(fishId != -1){
+        if (fishId != -1) {
             fishService.getFavouriteFishByIdAndUserId(fishId, currentUser.getId(),
                     callbackGetFavouriteFish());
         }
@@ -246,6 +288,160 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void runResultOnUiThread(Integer result) {
                 tvNumberPostsCreated.setText(getString(R.string.profile_postariCreate_replace, result));
+            }
+        };
+    }
+
+
+    // On activity result
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_MODIFY_ACCOUNT && resultCode == RESULT_OK) {
+            currentUser = CurrentUser.getInstance();
+            replaceFields();
+        }
+    }
+
+
+    // Afisare dialog builder avertizare stergere cont 1
+    private void showDialogBuilderForDeletingAccountOne() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Doriti sa va stergeti contul?");
+        builder.setMessage("Stergerea contului este o actiune definitiva si nu se mai poate fi " +
+                "revocata, doriti sa continuati?");
+
+
+        // Anulare operatie
+        builder.setNeutralButton("Anulare", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // Stergere
+        builder.setPositiveButton("Stergere", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                showDialogBuilderForDeletingAccountTwo();
+            }
+        });
+
+
+        builder.show();
+    }
+
+
+    // Afisare dialog builder avertizare stergere cont 2
+    private void showDialogBuilderForDeletingAccountTwo() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Doriti sa va stergeti contul?");
+        builder.setMessage("De asemenea, vor fi sterse totate comentariile si postarile create de " +
+                "dumneavostrat, doriti sa continuati?");
+
+
+        // Anulare operatie
+        builder.setNeutralButton("Anulare", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // Stergere
+        builder.setPositiveButton("Stergere", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                favouriteForumPostService.deleteFavouriteForumsByUserId(currentUser.getId(), callbackStergereFavorite());
+            }
+        });
+
+
+        builder.show();
+    }
+
+
+    // Callback stergere favorite
+    @NotNull
+    private Callback<Integer> callbackStergereFavorite() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                likeCommentService.deleteLikeCommentByUserId(currentUser.getId(), callbackStergereLikeComment());
+            }
+        };
+    }
+
+
+    // Callback stergere likeuri comentarii
+    @NotNull
+    private Callback<Integer> callbackStergereLikeComment() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                likeForumService.deleteLikesForumByUserId(currentUser.getId(), callbackStergereLikeForum());
+            }
+        };
+    }
+
+
+    // Callback stergere likeuri forum
+    @NotNull
+    private Callback<Integer> callbackStergereLikeForum() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                commentForumService.deleteCommentByUserId(currentUser.getId(), callbackStergereComentarii());
+            }
+        };
+    }
+
+
+    // Callback stergere comentarii
+    @NotNull
+    private Callback<Integer> callbackStergereComentarii() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                forumPostService.deleteForumPostByUserId(currentUser.getId(), callbackStergerePostari());
+            }
+        };
+    }
+
+
+    // Callback stergere postari
+    @NotNull
+    private Callback<Integer> callbackStergerePostari() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                fishService.deleteFishByUserId(currentUser.getId(), callbackStergerePesti());
+            }
+        };
+    }
+
+
+    // Callback stergere pesti
+    @NotNull
+    private Callback<Integer> callbackStergerePesti() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                userService.deleteUserByUserId(currentUser.getId(), callbackStergereUser());
+            }
+        };
+    }
+
+
+    // Callback stergere user
+    @NotNull
+    private Callback<Integer> callbackStergereUser() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                finish();
             }
         };
     }

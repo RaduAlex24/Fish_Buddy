@@ -130,4 +130,25 @@ public class FishService {
         asyncTaskRunner.executeAsync(callable, callback);
     }
 
+    // Delete fish by userId
+    public void deleteFishByUserId(int userId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "DELETE " + numeBDfish + "  WHERE userId = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
 }

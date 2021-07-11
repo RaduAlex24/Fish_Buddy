@@ -2,6 +2,13 @@ package com.example.licenta.clase.user;
 
 import android.graphics.Color;
 
+import com.example.licenta.asyncTask.Callback;
+import com.example.licenta.database.service.CommentForumService;
+import com.example.licenta.database.service.ForumPostService;
+import com.example.licenta.database.service.UserService;
+
+import org.jetbrains.annotations.NotNull;
+
 public enum FishingTitleEnum {
     // Elemente
     UNU("Pescar invatacel", 100),
@@ -71,6 +78,84 @@ public enum FishingTitleEnum {
         }
 
         return culoare;
+    }
+
+
+    // Modificare titlu in functie de id si puncte
+    public static void verificaSiActualieazaTitlu(int userId, String username) {
+        UserService userService = new UserService();
+        userService.getPointsForCurrentUser(userId, callbackPreluareNumarPuncteUtilizator(userId, username, userService));
+    }
+
+
+    // Callback preluare numar puncte utilizator
+    @NotNull
+    private static Callback<Integer> callbackPreluareNumarPuncteUtilizator(int userId, String username, UserService userService) {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                FishingTitleEnum fishingTitleCurent = FishingTitleEnum.preluareTitluInFunctieDeUsername(username);
+
+                for (FishingTitleEnum fishingTitle : FishingTitleEnum.values()) {
+                    if (fishingTitle.getLimitaSuperioaraPuncte() >= result &&
+                            fishingTitleCurent != fishingTitle &&
+                            fishingTitle.getLimitaSuperioaraPuncte() - result < 100) {
+
+                        String updatedUsername = username.split(":")[0] + ":" + fishingTitle.toString();
+
+                        // Schimbare nume in baza de date
+                        userService.updateFishingTitleByIdAndNewTitle(userId, updatedUsername, callbackSchimbareNume(userId, updatedUsername));
+
+                        // Verificare current user
+                        CurrentUser currentUser = CurrentUser.getInstance();
+                        if (currentUser.getId() == userId) {
+                            CurrentUser.changeCurrentUsername(updatedUsername);
+                        }
+
+                        break;
+                    }
+                }
+            }
+        };
+    }
+
+
+    // Callback schimbare nume in baza de date
+    @NotNull
+    private static Callback<Integer> callbackSchimbareNume(int userId, String updatedUsername) {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                if (result == 1) {
+                    ForumPostService forumPostService = new ForumPostService();
+                    forumPostService.updateCreatorUsernameById(userId, updatedUsername, callbackUpdateCreatorUsernameForum(userId, updatedUsername));
+                }
+            }
+        };
+    }
+
+    // Callback pt schimbare creatorusername pentru forum
+    @NotNull
+    private static Callback<Integer> callbackUpdateCreatorUsernameForum(int userId, String updatedUsername) {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                CommentForumService commentForumService = new CommentForumService();
+                commentForumService.updateCreatorUsernameById(userId, updatedUsername, callbackUpdateCreatorUsernameComment());
+            }
+        };
+    }
+
+
+    // Callback update creatorusername penntru comment
+    @NotNull
+    private static Callback<Integer> callbackUpdateCreatorUsernameComment() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+
+            }
+        };
     }
 
 }

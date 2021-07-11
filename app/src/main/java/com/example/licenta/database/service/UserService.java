@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.licenta.asyncTask.AsyncTaskRunner;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.forum.LikeForum;
+import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.clase.user.FishingTitleEnum;
 import com.example.licenta.clase.user.User;
 import com.example.licenta.database.ConexiuneBD;
@@ -194,9 +195,8 @@ public class UserService {
     }
 
 
-    // INCOMPLETE
-    // Update user by user and user id
-    public void updateUserByUserAndUserId(int userId, User userNou, Callback<Integer> callback) {
+    // Update user by currentuser
+    public void updateUserByCurrentuser(CurrentUser currentUser, Callback<Integer> callback) {
         Callable<Integer> callable = new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -205,12 +205,12 @@ public class UserService {
                 String sql = "UPDATE " + numeBDuser + " SET username = ? , password = ? , email = ? " +
                         ", surname = ? , name = ? WHERE id = ?";
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
-                statement.setString(1, userNou.getUsername());
-                statement.setString(2, userNou.getPassword());
-                statement.setString(3, userNou.getEmail());
-                statement.setString(4, userNou.getSurname());
-                statement.setString(5, userNou.getName());
-                statement.setInt(6, userId);
+                statement.setString(1, currentUser.getUsername());
+                statement.setString(2, currentUser.getPassword());
+                statement.setString(3, currentUser.getEmail());
+                statement.setString(4, currentUser.getSurname());
+                statement.setString(5, currentUser.getName());
+                statement.setInt(6, currentUser.getId());
                 nrRanduriAfectate = statement.executeUpdate();
 
 
@@ -268,6 +268,30 @@ public class UserService {
                 statement.close();
                 resultSet.close();
                 return nrPuncte;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Update nume utiliator dupa schimbare titlu
+    public void updateFishingTitleByIdAndNewTitle(int id, String updatedUsername, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "UPDATE " + numeBDuser + " SET username = ? " +
+                        "WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setString(1, updatedUsername);
+                statement.setInt(2, id);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
             }
         };
 

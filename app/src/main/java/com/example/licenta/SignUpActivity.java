@@ -3,23 +3,35 @@ package com.example.licenta;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.licenta.asyncTask.Callback;
+import com.example.licenta.clase.user.CurrentUser;
+import com.example.licenta.database.service.CommentForumService;
+import com.example.licenta.database.service.ForumPostService;
 import com.example.licenta.database.service.UserService;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import org.jetbrains.annotations.NotNull;
+
+import static com.example.licenta.LogInActivity.PASSWORD_SP;
+import static com.example.licenta.LogInActivity.SHARED_PREF_FILE_NAME;
+import static com.example.licenta.LogInActivity.USERNAME_SP;
 
 public class SignUpActivity extends AppCompatActivity {
 
     public static final String PASSWORD_KEY = "PASSWORD_KEY";
     public static final String USERNAME_KEY = "USERNAME_KEY";
+    private TextView tvTitle;
     private TextInputEditText tietUsername;
     private TextInputEditText tietSurname;
     private TextInputEditText tietName;
@@ -36,8 +48,14 @@ public class SignUpActivity extends AppCompatActivity {
 
     private UserService userService = new UserService();
     private Intent intent;
+    private boolean isEditing = false;
+    private CurrentUser currentUser = null;
+    private SharedPreferences preferences;
 
     private static final String tagLog = "ActivitateSignUp";
+
+    private ForumPostService forumPostService = new ForumPostService();
+    private CommentForumService commentForumService = new CommentForumService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +76,16 @@ public class SignUpActivity extends AppCompatActivity {
         tietPassword.addTextChangedListener(watcherVerificareParola());
         tietConfirmPassword.addTextChangedListener(watcherVerificareConfirmareParola());
 
+        // Verificare editare
+        verificareEditare();
+
     }
 
 
     // Functii
     // Initializare componente
     private void initComponents() {
+        tvTitle = findViewById(R.id.tv_title_signup);
         tietUsername = findViewById(R.id.tiet_username_signup);
         tietSurname = findViewById(R.id.tiet_surname_signup);
         tietName = findViewById(R.id.tiet_name_signup);
@@ -81,21 +103,66 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
+    // Verificare editare
+    private void verificareEditare() {
+        if (intent.hasExtra(ProfileActivity.CURRENT_USER_KEY)) {
+            isEditing = true;
+            currentUser = (CurrentUser) intent.getSerializableExtra(ProfileActivity.CURRENT_USER_KEY);
+            adaugareUserInCasute(currentUser);
+            schimbareTitluSiButon();
+        }
+    }
+
+
+    // Adaugare atributele currentuser in casutele corespunatoare
+    private void adaugareUserInCasute(CurrentUser currentUser) {
+        tietUsername.setText(currentUser.getUsername().split(":")[0]);
+        tietSurname.setText(currentUser.getSurname());
+        tietName.setText(currentUser.getName());
+        tietEmail.setText(currentUser.getEmail());
+        tietPassword.setText(currentUser.getPassword());
+        tietConfirmPassword.setText(currentUser.getPassword());
+    }
+
+
+    // Schimbare text din titlu si buton
+    private void schimbareTitluSiButon() {
+        tvTitle.setText(R.string.modificare_cont_title_signUpActivity);
+        btnSignup.setText(R.string.modificare_buton_editare_cont);
+    }
+
+
     // Functie click pentru butonul signu up
     private View.OnClickListener onClickSignUp() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validareFinala()) {
-                    // Inserare in BD
+                    // Atribute
                     String username = extragereStringDinTiet(tietUsername);
                     String password = extragereStringDinTiet(tietPassword);
                     String email = extragereStringDinTiet(tietEmail);
                     String surname = extragereStringDinTiet(tietSurname);
                     String name = extragereStringDinTiet(tietName);
 
-                    userService.insertNewUser(username, password, email, surname, name,
-                            callbackInsertUser(username, password));
+                    if (!isEditing) {
+                        // Inserare in BD
+                        userService.insertNewUser(username, password, email, surname, name,
+                                callbackInsertUser(username, password));
+                    } else {
+                        username += ":" + currentUser.getFishingTitle().toString();
+
+                        // Testare atribute schimbate
+                        if (!password.equals(currentUser.getPassword()) || !username.equals(currentUser.getUsername())) {
+                            // Schimbare sp
+                            actualizareSharedPReferences(username.split(":")[0], password);
+                        }
+                        if (!username.equals(currentUser.getUsername())) {
+                            // Schimbare bd
+                            commentForumService.updateCreatorUsernameById(currentUser.getId(), username,
+                                    callbackUpdateUsernameComments(username, password, email, surname, name));
+                        }
+                    }
 
                 } else {
                     Toast.makeText(getApplicationContext(),
@@ -105,6 +172,66 @@ public class SignUpActivity extends AppCompatActivity {
             }
         };
     }
+
+
+    // nu merge???? TO DO
+    // Actualiare shared preferences
+    private void actualizareSharedPReferences(String username, String password) {
+        preferences = getSharedPreferences(SHARED_PREF_FILE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(USERNAME_SP, username);
+        editor.putString(PASSWORD_SP, password);
+        editor.apply();
+    }
+
+
+    // Callback update creatorusername pentru comentarii
+    @NotNull
+    private Callback<Integer> callbackUpdateUsernameComments(String username, String password,
+                                                             String email, String surname, String name) {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                forumPostService.updateCreatorUsernameById(currentUser.getId(), username,
+                        callbackUpdateUsernamePosts(username, password, email, surname, name));
+            }
+        };
+    }
+
+
+    // Callback update creatorusername pentru postari
+    @NotNull
+    private Callback<Integer> callbackUpdateUsernamePosts(String username, String password,
+                                                          String email, String surname, String name) {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                // Modificare currentuser
+                CurrentUser.changeCurrentUserDetails(username, password, email, surname, name);
+
+                // Update cont existent
+                userService.updateUserByCurrentuser(CurrentUser.getInstance(), callbackUpdateUser());
+            }
+        };
+    }
+
+
+    // Callback update user
+    @NotNull
+    private Callback<Integer> callbackUpdateUser() {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                if (result == 1) {
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else {
+                    Log.e(tagLog, getString(R.string.log_maiMultDeUnUserModificat));
+                }
+            }
+        };
+    }
+
 
     // Callback insert user
     private Callback<Integer> callbackInsertUser(String username, String password) {
@@ -262,19 +389,21 @@ public class SignUpActivity extends AppCompatActivity {
                     tilEmail.setError("Emailul trebuie sa fie de forma xxxx@xxxx.xx");
                 } else {
                     tilEmail.setError(null);
-                    userService.getCountByEmail(stringTietEmail, callbackGetCountByEmail());
+                    userService.getCountByEmail(stringTietEmail, callbackGetCountByEmail(stringTietEmail));
                 }
             }
         };
     }
 
     // Callback pt get count by email
-    private Callback<Integer> callbackGetCountByEmail() {
+    private Callback<Integer> callbackGetCountByEmail(String stringTietEmail) {
         return new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
                 if (result != 0) {
-                    tilEmail.setError("Emailul este deja inregistrat");
+                    if (!(currentUser != null && isEditing && currentUser.getEmail().equals(stringTietEmail))) {
+                        tilEmail.setError("Emailul este deja inregistrat");
+                    }
                 }
             }
         };
@@ -353,19 +482,22 @@ public class SignUpActivity extends AppCompatActivity {
                     tilUsername.setError("Numele de utilizator trebuie sa aiba maximum 6 caractere");
                 } else {
                     tilUsername.setError(null);
-                    userService.getCountByUsername(stringTietUsername, callbackCountByUsername());
+                    userService.getCountByUsername(stringTietUsername, callbackCountByUsername(stringTietUsername));
                 }
             }
         };
     }
 
     // Callback count by username
-    private Callback<Integer> callbackCountByUsername() {
+    private Callback<Integer> callbackCountByUsername(String stringTietUsername) {
         return new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
                 if (result != 0) {
-                    tilUsername.setError("Numele de utilizator este deja folosit");
+                    if (!(currentUser != null && isEditing &&
+                            currentUser.getUsername().split(":")[0].equals(stringTietUsername))) {
+                        tilUsername.setError("Numele de utilizator este deja folosit");
+                    }
                 }
             }
         };

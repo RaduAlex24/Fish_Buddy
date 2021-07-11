@@ -419,6 +419,28 @@ public class ForumPostService {
     }
 
 
+    // Delete forum post by userId
+    public void deleteForumPostByUserId(int userId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "DELETE " + numeBDforum + "  WHERE userId = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
     // Statistici
     // Preluare numar postari forum create
     public void getForumPostCountByUserId(int userId, Callback<Integer> callback) {
@@ -443,6 +465,30 @@ public class ForumPostService {
                 statement.close();
                 resultSet.close();
                 return nrAparitii;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Update creatoruserame by id
+    public void updateCreatorUsernameById(int userId, String updatedUsername, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "UPDATE " + numeBDforum + " SET creatorusername = ? " +
+                        "WHERE userid = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setString(1, updatedUsername);
+                statement.setInt(2, userId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
             }
         };
 

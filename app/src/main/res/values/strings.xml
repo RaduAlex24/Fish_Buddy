@@ -230,6 +230,9 @@
     <string name="logtag_delete_fish_fishList">Stergerea pestelul a afectat mai mult de un rand</string>
     <string name="toast_pesteFavorit_VizualizarePEsti">Pestele a fost marcat ca favorit</string>
     <string name="toast_pesteSters_VizualizarePesti">Pestele a fost sters</string>
+    <string name="modificare_buton_editare_cont">Modifica</string>
+    <string name="modificare_cont_title_signUpActivity">Modificare Cont</string>
+    <string name="log_maiMultDeUnUserModificat">Mai mult de un utilizator a fost modificat</string>
 
 
 </resources>

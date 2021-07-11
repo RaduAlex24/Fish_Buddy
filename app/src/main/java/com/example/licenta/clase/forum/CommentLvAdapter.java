@@ -241,7 +241,7 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
 
                 // Schimbare puncte utilizator apreciat
                 userService.updatePointsByUserIdAndPoints(commentForum.getUserId(),
-                        nrLikeuriSchimbate, callbackUpdatePointsUser());
+                        nrLikeuriSchimbate, callbackUpdatePointsUser(commentForum));
 
                 // Ordonare
                 ordonareCommentsDupaApasareLikeDislike();
@@ -349,7 +349,7 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
 
                 // Schimbare puncte utilizator apreciat
                 userService.updatePointsByUserIdAndPoints(commentForum.getUserId(),
-                        nrLikeuriSchimbate, callbackUpdatePointsUser());
+                        nrLikeuriSchimbate, callbackUpdatePointsUser(commentForum));
 
                 // Ordonare
                 ordonareCommentsDupaApasareLikeDislike();
@@ -421,13 +421,15 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
     }
 
     // Callback update points pt user
-    private Callback<Integer> callbackUpdatePointsUser() {
+    private Callback<Integer> callbackUpdatePointsUser(CommentForum commentForum) {
         return new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
                 if (result != 1) {
                     Log.e(LogTag, context.getString(R.string.log_updatePoints_user_forumPostLvAdapter));
                 }
+
+                FishingTitleEnum.verificaSiActualieazaTitlu(commentForum.getUserId(), commentForum.getCreatorUsername());
             }
         };
     }

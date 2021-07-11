@@ -156,6 +156,8 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
             Log.d(TagLog, "projectId : " + projectId);
         } catch (Exception e) {
             Log.d(TagLog, "setUpBot: " + e.getMessage());
+        } finally {
+            sessionsClient.close();
         }
     }
 

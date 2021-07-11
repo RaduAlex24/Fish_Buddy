@@ -1,6 +1,9 @@
 package com.example.licenta.clase.forum;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.licenta.ProfileActivity;
 import com.example.licenta.R;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.user.CurrentUser;
@@ -92,7 +96,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = inflater.inflate(resource, parent, false);
 
-        ForumPost forumPost = forumPostList.get(position);
+       ForumPost  forumPost = forumPostList.get(position);
 
         // Initializare componente
         initComponents(view, forumPost);
@@ -132,7 +136,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
 
         // is edited
         tvEdited = view.findViewById(R.id.tv_isEdited_forumPostRowAdapter);
-        if(forumPost.isEdited()){
+        if (forumPost.isEdited()) {
             tvEdited.setVisibility(View.VISIBLE);
         }
 
@@ -384,7 +388,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
 
                 // Schimbare puncte utilizator apreciat
                 userService.updatePointsByUserIdAndPoints(forumPost.getUserId(),
-                        nrLikeuriSchimbate, callbackUpdatePointsUser());
+                        nrLikeuriSchimbate, callbackUpdatePointsUser(forumPost));
 
                 // Schimbare dinamica a ordinii
                 ordonareForumPostsDupaApasareLikeDislike();
@@ -490,7 +494,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
 
                 // Schimbare puncte utilizator apreciat
                 userService.updatePointsByUserIdAndPoints(forumPost.getUserId(),
-                        nrLikeuriSchimbate, callbackUpdatePointsUser());
+                        nrLikeuriSchimbate, callbackUpdatePointsUser(forumPost));
 
                 // Schimbare dinamica a ordinii
                 ordonareForumPostsDupaApasareLikeDislike();
@@ -560,13 +564,15 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     }
 
     // Callback update points pt user
-    private Callback<Integer> callbackUpdatePointsUser() {
+    private Callback<Integer> callbackUpdatePointsUser(ForumPost forumPost) {
         return new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
                 if (result != 1) {
                     Log.e(LogTag, context.getString(R.string.log_updatePoints_user_forumPostLvAdapter));
                 }
+
+                FishingTitleEnum.verificaSiActualieazaTitlu(forumPost.getUserId(), forumPost.getCreatorUsername());
             }
         };
     }

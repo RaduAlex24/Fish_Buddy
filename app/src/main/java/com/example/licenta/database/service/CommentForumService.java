@@ -201,6 +201,28 @@ public class CommentForumService {
     }
 
 
+    // Delete comment by userId
+    public void deleteCommentByUserId(int userId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "DELETE " + numeBDcommentsForum + "  WHERE userId = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
     // Statistici
     // Preluare numar raspunsuri acordate
     public void getAnswersCountByUserId(int userId, Callback<Integer> callback) {
@@ -225,6 +247,30 @@ public class CommentForumService {
                 statement.close();
                 resultSet.close();
                 return nrAparitii;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Update creatoruserame by id
+    public void updateCreatorUsernameById(int userId, String updatedUsername, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "UPDATE " + numeBDcommentsForum + " SET creatorusername = ? " +
+                        "WHERE userid = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setString(1, updatedUsername);
+                statement.setInt(2, userId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
             }
         };
 

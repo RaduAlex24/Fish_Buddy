@@ -155,6 +155,28 @@ public class LikeForumService {
     }
 
 
+    // Delete like forum by userId
+    public void deleteLikesForumByUserId(int userId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "DELETE " + numeBDlikeForum + "  WHERE userId = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
     // Statistici
     // Preluare numar likeuri forum acordate
     public void getForumLikesCountByUserId(int userId, Callback<Integer> callback) {
