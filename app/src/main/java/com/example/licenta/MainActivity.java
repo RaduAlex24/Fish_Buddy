@@ -23,14 +23,24 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.licenta.clase.user.CurrentUser;
-import com.example.licenta.database.service.ForumPostService;
+import com.example.licenta.clase.user.FishingTitleEnum;
+import com.example.licenta.database.service.UserService;
 import com.example.licenta.homeFragments.ForumFragment;
 import com.example.licenta.homeFragments.MapsFragment;
 import com.example.licenta.homeFragments.VirtualAssistantFragment;
 import com.example.licenta.introTutorialSlider.IntroTutorialSlider;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.cloud.dialogflow.v2.DetectIntentResponse;
+import com.google.cloud.dialogflow.v2.QueryInput;
+import com.google.cloud.dialogflow.v2.QueryResult;
+import com.google.cloud.dialogflow.v2.SessionName;
+import com.google.cloud.dialogflow.v2.SessionsClient;
+import com.google.cloud.dialogflow.v2.SessionsSettings;
 
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -44,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String FIRST_TIME_IN_APP_SP = "FIRST_TIME_IN_APP_SP";
     private long mBackPressed;
 
+    private UserService userService = new UserService();
     private CurrentUser currentUser = CurrentUser.getInstance();
     private SharedPreferences sharedPreferences;
 
@@ -73,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Tutorial pentru prima intrare in aplicatie
         aplicareTutorial();
+
+        // Actualiare titlu pescar
+        FishingTitleEnum.verificaSiActualieazaTitlu(currentUser.getId(), currentUser.getUsername());
     }
 
 
@@ -136,8 +150,21 @@ public class MainActivity extends AppCompatActivity {
         TextView tvEmail = headerView.findViewById(R.id.tv_main_email);
         TextView tvPoints = headerView.findViewById(R.id.tv_points_mainNavHeader);
         tvEmail.setText(currentUser.getEmail());
-        tvUsername.setText(currentUser.getUsername());
-        tvPoints.setText("Puncte: " + currentUser.getPoints());
+        tvUsername.setText(currentUser.getUsername().split(":")[0]);
+
+        // Preluare puncte
+        userService.getPointsForCurrentUser(currentUser.getId(), callbackPreluarePuncteUtiliatorCurent(tvPoints));
+    }
+
+    @NotNull
+    private Callback<Integer> callbackPreluarePuncteUtiliatorCurent(TextView tvPoints) {
+        return new Callback<Integer>() {
+            @Override
+            public void runResultOnUiThread(Integer result) {
+                currentUser.setPoints(result);
+                tvPoints.setText("Puncte: " + currentUser.getPoints());
+            }
+        };
     }
 
     private void configNavigation() {
@@ -160,6 +187,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDrawerOpened(@NonNull View drawerView) {
+
+                // Actualiare titlu pescar
+                FishingTitleEnum.verificaSiActualieazaTitlu(currentUser.getId(), currentUser.getUsername());
+
                 imagineUtilizator = findViewById(R.id.imagineUtilizator);
                 imagineUtilizator.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -206,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
                 int currentBitmapWidth = selectedImage.getWidth();
                 int currentBitmapHeight = selectedImage.getHeight();
                 int ivWidth = imagineUtilizator.getWidth();
+                int ivHeight = imagineUtilizator.getHeight();
                 int newHeight = (int) Math.floor((double) currentBitmapHeight * ((double) ivWidth / (double) currentBitmapWidth));
 
                 Bitmap newbitMap = Bitmap.createScaledBitmap(selectedImage, ivWidth, newHeight, true);

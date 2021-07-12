@@ -14,7 +14,7 @@
         tools:context=".ProfileActivity">
 
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/tv_title_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -27,7 +27,7 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imageView_profile"
             android:layout_width="136dp"
             android:layout_height="132dp"
             android:layout_marginStart="16dp"
@@ -37,91 +37,91 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView10"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title_profile"
             app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@android:mipmap/sym_def_app_icon"
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/tv_fisingTitle_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="Pescar profesionist"
             android:textSize="14dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+            app:layout_constraintStart_toEndOf="@+id/imageView_profile"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title_profile" />
 
         <TextView
-            android:id="@+id/textView13"
+            android:id="@+id/tv_numberAnswers_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Raspunsuri acordate: 35"
             android:textSize="14dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+            app:layout_constraintStart_toEndOf="@+id/imageView_profile"
+            app:layout_constraintTop_toBottomOf="@+id/tv_fisingTitle_profile" />
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/tv_numberLikes_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Aprecieri acordate: 450"
             android:textSize="14dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+            app:layout_constraintStart_toEndOf="@+id/imageView_profile"
+            app:layout_constraintTop_toBottomOf="@+id/tv_numberAnswers_profile" />
 
         <TextView
-            android:id="@+id/textView15"
+            android:id="@+id/tv_numberPostsCreated_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Postari create: 5"
             android:textSize="14dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/textView14" />
+            app:layout_constraintStart_toEndOf="@+id/imageView_profile"
+            app:layout_constraintTop_toBottomOf="@+id/tv_numberLikes_profile" />
 
         <TextView
-            android:id="@+id/textView19"
+            android:id="@+id/tv_numberPoints_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Puncte obtinute: 640"
             android:textSize="14dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/textView15" />
+            app:layout_constraintStart_toEndOf="@+id/imageView_profile"
+            app:layout_constraintTop_toBottomOf="@+id/tv_numberPostsCreated_profile" />
 
 
         <TextView
-            android:id="@+id/tv_bestFish_profileActivity"
+            android:id="@+id/tv_bestFish_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Cea mai buna captura: "
             android:textSize="18dp"
-            app:layout_constraintBottom_toTopOf="@+id/lv_bestFish_profileActivity"
+            app:layout_constraintBottom_toTopOf="@+id/lv_bestFish_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView_profile" />
 
         <ListView
-            android:id="@+id/lv_bestFish_profileActivity"
+            android:id="@+id/lv_bestFish_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView16"
+            app:layout_constraintBottom_toTopOf="@+id/tv_infoCont_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_bestFish_profileActivity" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_bestFish_profile" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/tv_infoCont_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -136,32 +136,32 @@
             app:layout_constraintVertical_bias="0.65" />
 
         <TextView
-            android:id="@+id/textView17"
+            android:id="@+id/tv_username_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Nume utilizator: Blexer254"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView18"
+            app:layout_constraintEnd_toStartOf="@+id/tv_email_profile"
             app:layout_constraintHorizontal_bias="0.54"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView16"
+            app:layout_constraintTop_toBottomOf="@+id/tv_infoCont_profile"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/textView18"
+            android:id="@+id/tv_email_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Email: alex.rad24@gmaiul.com"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView17"
-            app:layout_constraintTop_toBottomOf="@+id/textView16"
+            app:layout_constraintStart_toEndOf="@+id/tv_username_profile"
+            app:layout_constraintTop_toBottomOf="@+id/tv_infoCont_profile"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/textView20"
+            android:id="@+id/tv_actiuniCont_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -170,31 +170,31 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView18"
+            app:layout_constraintTop_toBottomOf="@+id/tv_email_profile"
             app:layout_constraintVertical_bias="0.0" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btn_modificareCont_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Modificare cont"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/button2"
+            app:layout_constraintEnd_toStartOf="@id/btn_stergereCont_profile"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView20"
+            app:layout_constraintTop_toBottomOf="@+id/tv_actiuniCont_profile"
             app:layout_constraintVertical_bias="0.0" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btn_stergereCont_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Stergere cont"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/button"
-            app:layout_constraintTop_toBottomOf="@+id/textView20"
+            app:layout_constraintStart_toEndOf="@id/btn_modificareCont_profile"
+            app:layout_constraintTop_toBottomOf="@+id/tv_actiuniCont_profile"
             app:layout_constraintVertical_bias="0.0" />
 
 

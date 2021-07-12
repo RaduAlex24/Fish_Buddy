@@ -1,6 +1,9 @@
 package com.example.licenta.clase.forum;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +15,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.licenta.ProfileActivity;
 import com.example.licenta.R;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.user.CurrentUser;
+import com.example.licenta.clase.user.FishingTitleEnum;
 import com.example.licenta.database.service.FavouriteForumPostService;
 import com.example.licenta.database.service.ForumPostService;
 import com.example.licenta.database.service.LikeForumService;
@@ -91,7 +96,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = inflater.inflate(resource, parent, false);
 
-        ForumPost forumPost = forumPostList.get(position);
+       ForumPost  forumPost = forumPostList.get(position);
 
         // Initializare componente
         initComponents(view, forumPost);
@@ -119,9 +124,11 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     // Functii
     // Initializare componente
     private void initComponents(View view, ForumPost forumPost) {
-        // user
+        // user si fishing title
+        FishingTitleEnum fishingTitleEnum = FishingTitleEnum.preluareTitluInFunctieDeUsername(forumPost.getCreatorUsername());
         tvUser = view.findViewById(R.id.tv_user_forumPostRowAdapter);
-        tvUser.setText(forumPost.getCreatorUsername());
+        tvUser.setText(forumPost.getCreatorUsername().split(":")[0]);
+        tvUser.setTextColor(FishingTitleEnum.preluareCuloareInFunctieDeTitlu(fishingTitleEnum));
 
         // category
         tvCategory = view.findViewById(R.id.tv_category_forumPostRowAdapter);
@@ -129,7 +136,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
 
         // is edited
         tvEdited = view.findViewById(R.id.tv_isEdited_forumPostRowAdapter);
-        if(forumPost.isEdited()){
+        if (forumPost.isEdited()) {
             tvEdited.setVisibility(View.VISIBLE);
         }
 
@@ -265,9 +272,9 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     // Initializare favorite
     private void initFavouritePosts(Integer id) {
         if (favouritePostsIdList.contains(id)) {
-            btnFavourite.setImageResource(R.drawable.full_heart);
+            btnFavourite.setImageResource(R.drawable.ic_baseline_favorite_24);
         } else {
-            btnFavourite.setImageResource(R.drawable.empty_heart);
+            btnFavourite.setImageResource(R.drawable.ic_baseline_favorite_border_24);
         }
     }
 
@@ -381,7 +388,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
 
                 // Schimbare puncte utilizator apreciat
                 userService.updatePointsByUserIdAndPoints(forumPost.getUserId(),
-                        nrLikeuriSchimbate, callbackUpdatePointsUser());
+                        nrLikeuriSchimbate, callbackUpdatePointsUser(forumPost));
 
                 // Schimbare dinamica a ordinii
                 ordonareForumPostsDupaApasareLikeDislike();
@@ -487,7 +494,7 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
 
                 // Schimbare puncte utilizator apreciat
                 userService.updatePointsByUserIdAndPoints(forumPost.getUserId(),
-                        nrLikeuriSchimbate, callbackUpdatePointsUser());
+                        nrLikeuriSchimbate, callbackUpdatePointsUser(forumPost));
 
                 // Schimbare dinamica a ordinii
                 ordonareForumPostsDupaApasareLikeDislike();
@@ -557,13 +564,15 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     }
 
     // Callback update points pt user
-    private Callback<Integer> callbackUpdatePointsUser() {
+    private Callback<Integer> callbackUpdatePointsUser(ForumPost forumPost) {
         return new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
                 if (result != 1) {
                     Log.e(LogTag, context.getString(R.string.log_updatePoints_user_forumPostLvAdapter));
                 }
+
+                FishingTitleEnum.verificaSiActualieazaTitlu(forumPost.getUserId(), forumPost.getCreatorUsername());
             }
         };
     }

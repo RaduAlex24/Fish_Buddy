@@ -114,7 +114,7 @@ public class LikeForumService {
             public Integer call() throws Exception {
                 int nrRanduriAfectate = -1;
 
-                String sql = "UPDATE " +  numeBDlikeForum + " SET isLiked = ? , isDisliked= ? " +
+                String sql = "UPDATE " + numeBDlikeForum + " SET isLiked = ? , isDisliked= ? " +
                         "WHERE userId = ? AND postId = ?";
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
                 statement.setString(1, String.valueOf(likeForum.isLiked()));
@@ -148,6 +148,60 @@ public class LikeForumService {
 
                 statement.close();
                 return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Delete like forum by userId
+    public void deleteLikesForumByUserId(int userId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "DELETE " + numeBDlikeForum + "  WHERE userId = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Statistici
+    // Preluare numar likeuri forum acordate
+    public void getForumLikesCountByUserId(int userId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrAparitii = -1;
+
+                String sql = "SELECT COUNT(*) FROM " + numeBDlikeForum + " WHERE userId = ? " +
+                        "AND isliked LIKE 'true'";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                ResultSet resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    nrAparitii = resultSet.getInt(1);
+                } else {
+                    statement.close();
+                    resultSet.close();
+                    return null;
+                }
+
+                statement.close();
+                resultSet.close();
+                return nrAparitii;
             }
         };
 

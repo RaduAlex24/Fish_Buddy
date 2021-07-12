@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.licenta.CreateForumPostActivity;
+import com.example.licenta.ProfileActivity;
 import com.example.licenta.VizualizatiPesti;
 import com.example.licenta.Profil;
 import com.example.licenta.R;
@@ -155,9 +156,18 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
             Log.d(TagLog, "projectId : " + projectId);
         } catch (Exception e) {
             Log.d(TagLog, "setUpBot: " + e.getMessage());
+        } finally {
+            //sessionsClient.close();
         }
     }
 
+
+//    @Override
+//    public void onDestroy() {
+//        Toast.makeText(getContext(), "ssss", Toast.LENGTH_SHORT).show();
+//        sessionsClient.close();
+//        super.onDestroy();
+//    }
 
     // Trimitere de mesaj
     private void sendMessageToBot(String message) {
@@ -292,7 +302,7 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(getContext(), Profil.class);
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
                 startActivity(intent);
             }
         }, 5000);

@@ -6,6 +6,8 @@ import android.util.Log;
 import com.example.licenta.asyncTask.AsyncTaskRunner;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.forum.LikeForum;
+import com.example.licenta.clase.user.CurrentUser;
+import com.example.licenta.clase.user.FishingTitleEnum;
 import com.example.licenta.clase.user.User;
 import com.example.licenta.database.ConexiuneBD;
 
@@ -37,10 +39,16 @@ public class UserService {
             public User call() throws Exception {
                 User user = new User();
 
-                String sql = "SELECT * FROM " + numeBDuser + " WHERE username LIKE ? AND password LIKE ?";
+                String sql = "SELECT * FROM " + numeBDuser + " WHERE username IN (?, ?, ?, ?, ?) AND password LIKE ?";
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
-                statement.setString(1, username);
-                statement.setString(2, password);
+
+                int i = 1;
+                for (FishingTitleEnum fishingTitleEnum : FishingTitleEnum.values()) {
+                    String nume = username + ":" + fishingTitleEnum.toString();
+                    statement.setString(i, nume);
+                    i++;
+                }
+                statement.setString(6, password);
                 ResultSet resultSet = statement.executeQuery();
 
                 if (resultSet.next()) {
@@ -69,7 +77,7 @@ public class UserService {
 
     // Inserare in bd a unui nou utilizator
     public void insertNewUser(String username, String password, String email, String surname,
-                                 String name, Callback<Integer> callback) {
+                              String name, Callback<Integer> callback) {
         Callable<Integer> callable = new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -78,7 +86,7 @@ public class UserService {
                 String sql = "INSERT INTO " + numeBDuser + " (id, username, password, email, surname, name)"
                         + "VALUES(user_id.nextval, ?, ?, ?, ?, ?)";
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
-                statement.setString(1, username);
+                statement.setString(1, username + ":UNU");
                 statement.setString(2, password);
                 statement.setString(3, email);
                 statement.setString(4, surname);
@@ -102,9 +110,17 @@ public class UserService {
             public Integer call() throws Exception {
                 int nrAparitii = -1;
 
-                String sql = "SELECT COUNT(*) FROM " + numeBDuser + " WHERE username LIKE ?";
+
+                String sql = "SELECT COUNT(*) FROM " + numeBDuser + " WHERE username IN (?, ?, ?, ?, ?)";
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
-                statement.setString(1, username);
+
+                int i = 1;
+                for (FishingTitleEnum fishingTitleEnum : FishingTitleEnum.values()) {
+                    String nume = username + ":" + fishingTitleEnum.toString();
+                    statement.setString(i, nume);
+                    i++;
+                }
+
                 ResultSet resultSet = statement.executeQuery();
 
                 if (resultSet.next()) {
@@ -162,10 +178,114 @@ public class UserService {
             public Integer call() throws Exception {
                 int nrRanduriAfectate = -1;
 
-                String sql = "UPDATE " +  numeBDuser + " SET points = points + ? " +
+                String sql = "UPDATE " + numeBDuser + " SET points = points + ? " +
                         "WHERE id = ?";
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
                 statement.setInt(1, points);
+                statement.setInt(2, id);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Update user by currentuser
+    public void updateUserByCurrentuser(CurrentUser currentUser, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "UPDATE " + numeBDuser + " SET username = ? , password = ? , email = ? " +
+                        ", surname = ? , name = ? WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setString(1, currentUser.getUsername());
+                statement.setString(2, currentUser.getPassword());
+                statement.setString(3, currentUser.getEmail());
+                statement.setString(4, currentUser.getSurname());
+                statement.setString(5, currentUser.getName());
+                statement.setInt(6, currentUser.getId());
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Delete user by userId
+    public void deleteUserByUserId(int userId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "DELETE " + numeBDuser + "  WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Preluare numar puncte user curent
+    public void getPointsForCurrentUser(int userId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrPuncte;
+
+                String sql = "SELECT points FROM " + numeBDuser + " WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                ResultSet resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    nrPuncte = resultSet.getInt(1);
+                } else {
+                    statement.close();
+                    resultSet.close();
+                    return null;
+                }
+
+                statement.close();
+                resultSet.close();
+                return nrPuncte;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Update nume utiliator dupa schimbare titlu
+    public void updateFishingTitleByIdAndNewTitle(int id, String updatedUsername, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "UPDATE " + numeBDuser + " SET username = ? " +
+                        "WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setString(1, updatedUsername);
                 statement.setInt(2, id);
                 nrRanduriAfectate = statement.executeUpdate();
 

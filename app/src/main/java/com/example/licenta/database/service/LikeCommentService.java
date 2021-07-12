@@ -158,4 +158,58 @@ public class LikeCommentService {
         asyncTaskRunner.executeAsync(callable, callback);
     }
 
+
+    // Delete like comment by userId
+    public void deleteLikeCommentByUserId(int userId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "DELETE " + numeBDlikeComment + "  WHERE userId = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Statistici
+    // Preluare numar likeuri comment acordate
+    public void getCommentLikesCountByUserId(int userId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrAparitii = -1;
+
+                String sql = "SELECT COUNT(*) FROM " + numeBDlikeComment + " WHERE userId = ? " +
+                        "AND isliked LIKE 'true'";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                ResultSet resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    nrAparitii = resultSet.getInt(1);
+                } else {
+                    statement.close();
+                    resultSet.close();
+                    return null;
+                }
+
+                statement.close();
+                resultSet.close();
+                return nrAparitii;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
 }

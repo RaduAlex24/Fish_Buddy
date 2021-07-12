@@ -17,6 +17,7 @@ import com.example.licenta.ForumPostDetailedActivity;
 import com.example.licenta.R;
 import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.user.CurrentUser;
+import com.example.licenta.clase.user.FishingTitleEnum;
 import com.example.licenta.database.service.CommentForumService;
 import com.example.licenta.database.service.LikeCommentService;
 import com.example.licenta.database.service.UserService;
@@ -108,9 +109,11 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
     // Functii
     // Initializare componente
     private void initComponents(View view, CommentForum commentForum) {
-        // creator username
+        // creator username si fishing title
+        FishingTitleEnum fishingTitleEnum = FishingTitleEnum.preluareTitluInFunctieDeUsername(commentForum.getCreatorUsername());
         tvCreatorUsername = view.findViewById(R.id.tv_creatorUsername_commentRowAdapter);
-        tvCreatorUsername.setText(commentForum.getCreatorUsername());
+        tvCreatorUsername.setText(commentForum.getCreatorUsername().split(":")[0]);
+        tvCreatorUsername.setTextColor(FishingTitleEnum.preluareCuloareInFunctieDeTitlu(fishingTitleEnum));
 
         // is edited
         tvEdited = view.findViewById(R.id.tv_isEdited_commentRowAdapter);
@@ -238,7 +241,7 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
 
                 // Schimbare puncte utilizator apreciat
                 userService.updatePointsByUserIdAndPoints(commentForum.getUserId(),
-                        nrLikeuriSchimbate, callbackUpdatePointsUser());
+                        nrLikeuriSchimbate, callbackUpdatePointsUser(commentForum));
 
                 // Ordonare
                 ordonareCommentsDupaApasareLikeDislike();
@@ -346,7 +349,7 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
 
                 // Schimbare puncte utilizator apreciat
                 userService.updatePointsByUserIdAndPoints(commentForum.getUserId(),
-                        nrLikeuriSchimbate, callbackUpdatePointsUser());
+                        nrLikeuriSchimbate, callbackUpdatePointsUser(commentForum));
 
                 // Ordonare
                 ordonareCommentsDupaApasareLikeDislike();
@@ -418,13 +421,15 @@ public class CommentLvAdapter extends ArrayAdapter<CommentForum> {
     }
 
     // Callback update points pt user
-    private Callback<Integer> callbackUpdatePointsUser() {
+    private Callback<Integer> callbackUpdatePointsUser(CommentForum commentForum) {
         return new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
                 if (result != 1) {
                     Log.e(LogTag, context.getString(R.string.log_updatePoints_user_forumPostLvAdapter));
                 }
+
+                FishingTitleEnum.verificaSiActualieazaTitlu(commentForum.getUserId(), commentForum.getCreatorUsername());
             }
         };
     }
