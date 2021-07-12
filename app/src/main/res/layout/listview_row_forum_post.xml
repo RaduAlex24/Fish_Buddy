@@ -3,185 +3,208 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingTop="10sp"
+    android:paddingStart="2sp"
+    android:paddingEnd="2sp">
 
-    <TextView
-        android:id="@+id/tv_user_forumPostRowAdapter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/dummy_user_rowAdapterForumPost"
-        app:layout_constraintBottom_toTopOf="@id/tv_title_forumPostRowAdapter"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_category_forumPostRowAdapter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/peste_categorie"
-        android:textAllCaps="true"
-        app:layout_constraintBottom_toTopOf="@+id/tv_title_forumPostRowAdapter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tv_user_forumPostRowAdapter"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_isEdited_forumPostRowAdapter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/editat"
-        android:textStyle="italic"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/tv_title_forumPostRowAdapter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tv_category_forumPostRowAdapter"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/imgBtn_favourite_forumPostRowAdapter"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@null"
-        app:layout_constraintBottom_toTopOf="@+id/tv_title_forumPostRowAdapter"
-        app:layout_constraintEnd_toStartOf="@+id/tv_date_forumPostRowAdapter"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/empty_heart"
-        tools:ignore="VectorDrawableCompat" />
+        android:background="@drawable/container_background"
+        android:paddingEnd="5sp"
+        android:paddingStart="5sp"
+        android:paddingTop="5sp"
+        android:paddingBottom="15sp"
+        android:layout_margin="5sp"
+        android:elevation="2sp">
 
-    <TextView
-        android:id="@+id/tv_date_forumPostRowAdapter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/dummy_date_rowAdapterForumPost"
-        app:layout_constraintBottom_toTopOf="@id/tv_title_forumPostRowAdapter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/tv_user_forumPostRowAdapter"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_title_forumPostRowAdapter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:text="@string/dummy_title_rowAdapterForumPost"
-        android:textSize="24dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/tv_content_forumPostRowAdapter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_user_forumPostRowAdapter" />
+        <TextView
+            android:id="@+id/tv_user_forumPostRowAdapter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/dummy_user_rowAdapterForumPost"
+            app:layout_constraintBottom_toTopOf="@id/tv_title_forumPostRowAdapter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_content_forumPostRowAdapter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/dummy_content_rowAdapterForumPost"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title_forumPostRowAdapter" />
+        <TextView
+            android:id="@+id/tv_category_forumPostRowAdapter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/peste_categorie"
+            android:textAllCaps="true"
+            app:layout_constraintBottom_toTopOf="@+id/tv_title_forumPostRowAdapter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tv_user_forumPostRowAdapter"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/imgBtn_like_forumPostRowAdapter"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@null"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_content_forumPostRowAdapter"
-        app:srcCompat="@drawable/ic_baseline_arrow_upward_24"
-        tools:ignore="VectorDrawableCompat" />
+        <TextView
+            android:id="@+id/tv_isEdited_forumPostRowAdapter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/editat"
+            android:textStyle="italic"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/tv_title_forumPostRowAdapter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tv_category_forumPostRowAdapter"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_nrLikes_forumPostRowAdapter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/dummy_nrLikes_rowAdapterForumPost"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imgBtn_dislike_forumPostRowAdapter"
-        app:layout_constraintStart_toEndOf="@id/imgBtn_like_forumPostRowAdapter"
-        app:layout_constraintTop_toBottomOf="@+id/tv_content_forumPostRowAdapter" />
+        <ImageButton
+            android:id="@+id/imgBtn_favourite_forumPostRowAdapter"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@null"
+            app:layout_constraintBottom_toTopOf="@+id/tv_title_forumPostRowAdapter"
+            app:layout_constraintEnd_toStartOf="@+id/tv_date_forumPostRowAdapter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_favorite_border_24"
+            tools:ignore="VectorDrawableCompat" />
 
-    <ImageButton
-        android:id="@+id/imgBtn_dislike_forumPostRowAdapter"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        <TextView
+            android:id="@+id/tv_date_forumPostRowAdapter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/dummy_date_rowAdapterForumPost"
+            app:layout_constraintBottom_toTopOf="@id/tv_title_forumPostRowAdapter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/tv_user_forumPostRowAdapter"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        android:layout_marginTop="8dp"
-        android:background="@null"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_nrLikes_forumPostRowAdapter"
-        app:layout_constraintTop_toBottomOf="@id/tv_content_forumPostRowAdapter"
-        app:srcCompat="@drawable/ic_baseline_arrow_downward_24"
-        tools:ignore="VectorDrawableCompat" />
+        <TextView
+            android:id="@+id/tv_title_forumPostRowAdapter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="@string/dummy_title_rowAdapterForumPost"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/tv_content_forumPostRowAdapter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_user_forumPostRowAdapter"
+            android:paddingTop="5sp"/>
 
-    <TextView
-        android:id="@+id/tv_nrComments_forumPostRowAdapter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/dummy_nrComments_rowAdapterForumPost"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.35"
-        app:layout_constraintStart_toEndOf="@id/imgBtn_dislike_forumPostRowAdapter"
-        app:layout_constraintTop_toBottomOf="@id/tv_content_forumPostRowAdapter" />
+        <TextView
+            android:id="@+id/tv_content_forumPostRowAdapter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/dummy_content_rowAdapterForumPost"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_title_forumPostRowAdapter"
+            android:paddingBottom="10sp"/>
 
-    <ImageView
-        android:id="@+id/imageView_comment_forumPostRowAdapter"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/tv_nrComments_forumPostRowAdapter"
-        app:layout_constraintTop_toBottomOf="@id/tv_content_forumPostRowAdapter"
-        app:srcCompat="@drawable/ic_baseline_comment_24"
-        tools:ignore="VectorDrawableCompat" />
+        <ImageButton
+            android:id="@+id/imgBtn_like_forumPostRowAdapter"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@null"
+            android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_content_forumPostRowAdapter"
+            app:srcCompat="@drawable/ic_baseline_arrow_upward_24"
+            tools:ignore="VectorDrawableCompat" />
+
+        <TextView
+            android:id="@+id/tv_nrLikes_forumPostRowAdapter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/dummy_nrLikes_rowAdapterForumPost"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imgBtn_dislike_forumPostRowAdapter"
+            app:layout_constraintStart_toEndOf="@id/imgBtn_like_forumPostRowAdapter"
+            app:layout_constraintTop_toBottomOf="@+id/tv_content_forumPostRowAdapter" />
+
+        <ImageButton
+            android:id="@+id/imgBtn_dislike_forumPostRowAdapter"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+
+            android:layout_marginTop="8dp"
+            android:background="@null"
+            android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_nrLikes_forumPostRowAdapter"
+            app:layout_constraintTop_toBottomOf="@id/tv_content_forumPostRowAdapter"
+            app:srcCompat="@drawable/ic_baseline_arrow_downward_24"
+            tools:ignore="VectorDrawableCompat" />
+
+        <TextView
+            android:id="@+id/tv_nrComments_forumPostRowAdapter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/dummy_nrComments_rowAdapterForumPost"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.35"
+            app:layout_constraintStart_toEndOf="@id/imgBtn_dislike_forumPostRowAdapter"
+            app:layout_constraintTop_toBottomOf="@id/tv_content_forumPostRowAdapter" />
+
+        <ImageView
+            android:id="@+id/imageView_comment_forumPostRowAdapter"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/tv_nrComments_forumPostRowAdapter"
+            app:layout_constraintTop_toBottomOf="@id/tv_content_forumPostRowAdapter"
+            app:srcCompat="@drawable/ic_baseline_comment_24"
+            tools:ignore="VectorDrawableCompat" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

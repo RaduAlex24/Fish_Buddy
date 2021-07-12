@@ -272,9 +272,9 @@ public class ForumPostLvAdapter extends ArrayAdapter<ForumPost> {
     // Initializare favorite
     private void initFavouritePosts(Integer id) {
         if (favouritePostsIdList.contains(id)) {
-            btnFavourite.setImageResource(R.drawable.full_heart);
+            btnFavourite.setImageResource(R.drawable.ic_baseline_favorite_24);
         } else {
-            btnFavourite.setImageResource(R.drawable.empty_heart);
+            btnFavourite.setImageResource(R.drawable.ic_baseline_favorite_border_24);
         }
     }
 

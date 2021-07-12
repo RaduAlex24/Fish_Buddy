@@ -64,16 +64,16 @@ public enum FishingTitleEnum {
                 culoare = Color.GRAY;
                 break;
             case DOI:
-                culoare = Color.BLUE;
+                culoare = Color.parseColor("#A7C957");
                 break;
             case TREI:
-                culoare = Color.CYAN;
+                culoare = Color.parseColor("#0FA3B1");
                 break;
             case PATRU:
-                culoare = Color.YELLOW;
+                culoare = Color.parseColor("#BC4B51");
                 break;
             case CINCI:
-                culoare = Color.RED;
+                culoare = Color.parseColor("#F4A259");
                 break;
         }
 
