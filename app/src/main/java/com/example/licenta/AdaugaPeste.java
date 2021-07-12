@@ -65,8 +65,8 @@ public class AdaugaPeste extends AppCompatActivity {
     public static final String new_fish = "NEW_FISH_KEY";
     private Date date2;
     private String rezultatLocatie;
-    private ConexiuneBD conexiuneBD=ConexiuneBD.getInstance();
-    private AsyncTaskRunner asyncTaskRunner=new AsyncTaskRunner();
+    private ConexiuneBD conexiuneBD = ConexiuneBD.getInstance();
+    private AsyncTaskRunner asyncTaskRunner = new AsyncTaskRunner();
     private Bitmap poza_scalata;
     private byte[] imagineByte;
     public static final String numeTabela = "FISh";
@@ -132,24 +132,23 @@ public class AdaugaPeste extends AppCompatActivity {
                 final Uri imageUri = data.getData();
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                byte[] imageInByte = stream.toByteArray();
-                long lengthbmp = imageInByte.length;
+                int currentBitmapWidth = selectedImage.getWidth();
+                int currentBitmapHeight = selectedImage.getHeight();
+                int ivWidth = poza_peste.getWidth();
+                int newHeight = (int) Math.floor((double) currentBitmapHeight * ((double) ivWidth / (double) currentBitmapWidth));
+                Bitmap newbitMap = Bitmap.createScaledBitmap(selectedImage, ivWidth, newHeight, true);
+                byte[] imagineInByte = getBitmapAsByteArray(newbitMap);
+                long lengthbmp = imagineInByte.length;
                 if (lengthbmp / 1024.0 / 1024.0 >= 2) {
                     Toast.makeText(getApplicationContext(), "Dimensiunea imaginii este prea mare", Toast.LENGTH_LONG).show();
                 } else {
-                    if (selectedImage.getWidth() > 130 || selectedImage.getHeight() > 90) {
-                        poza_scalata = Bitmap.createScaledBitmap(selectedImage, 130, 90, true);
-                    } else {
-                        poza_scalata = selectedImage;
-                    }
+                    poza_scalata = Bitmap.createScaledBitmap(selectedImage, 130, 90, true);
                     poza_peste.setImageBitmap(poza_scalata);
                     imagineByte = getBitmapAsByteArray(poza_scalata);
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                Toast.makeText(AdaugaPeste.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
 
         }
@@ -170,7 +169,7 @@ public class AdaugaPeste extends AppCompatActivity {
                     Peste peste = createPeste();
                     //transfer de parametri intre activitati - VEZI Seminar 3
                     //(pasul 3 din schema - intoarcerea rezultatului catre apelator)
-                    insertNewFish(peste,callBackCreateNewPeste());
+                    insertNewFish(peste, callBackCreateNewPeste());
                     Intent intent = new Intent(getApplicationContext(), VizualizatiPesti.class);
                     intent.putExtra(Peste_key, peste);
                     setResult(RESULT_OK, intent);

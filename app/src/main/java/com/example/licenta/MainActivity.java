@@ -32,6 +32,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -51,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private ImageView imagineUtilizator;
     private static int RESULT_LOAD_IMAGE = 1;
+    private Bitmap poza_scalata;
     private boolean wasImgApasata;
+    private byte[] imagineByte;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,18 +206,32 @@ public class MainActivity extends AppCompatActivity {
                 int currentBitmapWidth = selectedImage.getWidth();
                 int currentBitmapHeight = selectedImage.getHeight();
                 int ivWidth = imagineUtilizator.getWidth();
-                int ivHeight = imagineUtilizator.getHeight();
                 int newHeight = (int) Math.floor((double) currentBitmapHeight * ((double) ivWidth / (double) currentBitmapWidth));
 
                 Bitmap newbitMap = Bitmap.createScaledBitmap(selectedImage, ivWidth, newHeight, true);
                 imagineUtilizator.setImageBitmap(newbitMap);
+                byte[] asd=getBitmapAsByteArray(newbitMap);
+                long lengthbmp = asd.length;
+                if (lengthbmp / 1024.0 / 1024.0 >= 2) {
+                    Toast.makeText(getApplicationContext(), "Dimensiunea imaginii este prea mare", Toast.LENGTH_LONG).show();
+                } else {
+                    poza_scalata = Bitmap.createScaledBitmap(selectedImage, 280, 280, true);
+                    imagineUtilizator.setImageBitmap(poza_scalata);
+                    imagineByte = getBitmapAsByteArray(poza_scalata); // Asta trebuie adaugata in baza de date in blob
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
 
         }
 
+    }
+
+    public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 50, outputStream);
+        return outputStream.toByteArray();
     }
 
     // Rescriere back pt parasire aplicatie
