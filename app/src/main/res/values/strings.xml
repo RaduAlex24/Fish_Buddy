@@ -233,6 +233,10 @@
     <string name="modificare_buton_editare_cont">Modifica</string>
     <string name="modificare_cont_title_signUpActivity">Modificare Cont</string>
     <string name="log_maiMultDeUnUserModificat">Mai mult de un utilizator a fost modificat</string>
+    <string name="toast_modificare_cont_succes">Modificarea contului a fost realizata cu succes!</string>
+    <string name="log_eroarePoza">Schimbarea de poza a afectat mai mult de un utiliator!</string>
+    <string name="toast_poza_actualizata_succes">Poza a fost actualizata cu succes!</string>
+    <string name="toast_dimensiuneImaginePreaMare">Dimensiunea imaginii este prea mare</string>
 
 
 </resources>

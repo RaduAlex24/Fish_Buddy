@@ -284,9 +284,9 @@ View view;
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(),
-                        "Click pe forum postul " + forumPostList.get(position).getId(),
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(),
+//                        "Click pe forum postul " + forumPostList.get(position).getId(),
+//                        Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(getContext(), ForumPostDetailedActivity.class);
                 intent.putExtra(FORUM_POST_KEY, forumPostList.get(position));

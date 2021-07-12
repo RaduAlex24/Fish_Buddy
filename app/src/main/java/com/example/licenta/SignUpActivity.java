@@ -161,6 +161,12 @@ public class SignUpActivity extends AppCompatActivity {
                             // Schimbare bd
                             commentForumService.updateCreatorUsernameById(currentUser.getId(), username,
                                     callbackUpdateUsernameComments(username, password, email, surname, name));
+                        } else {
+                            // Modificare currentuser
+                            CurrentUser.changeCurrentUserDetails(username, password, email, surname, name);
+
+                            // Update cont existent
+                            userService.updateUserByCurrentuser(CurrentUser.getInstance(), callbackUpdateUser());
                         }
                     }
 
@@ -224,6 +230,8 @@ public class SignUpActivity extends AppCompatActivity {
             public void runResultOnUiThread(Integer result) {
                 if (result == 1) {
                     setResult(RESULT_OK, intent);
+                    Toast.makeText(getApplicationContext(), getString(R.string.toast_modificare_cont_succes),
+                            Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
                     Log.e(tagLog, getString(R.string.log_maiMultDeUnUserModificat));
