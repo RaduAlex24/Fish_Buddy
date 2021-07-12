@@ -5,7 +5,10 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +68,7 @@ public class ForumFragment extends Fragment {
     private FloatingActionButton fabAddPost;
     private ListView lvForum;
     private TextView tvSearchResults;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private static final String tagLog = "FragmentForum";
     private CurrentUser currentUser = CurrentUser.getInstance();
@@ -94,7 +98,8 @@ public class ForumFragment extends Fragment {
         return fragment;
     }
 
-View view;
+    View view;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -134,7 +139,60 @@ View view;
         // Adaugare eveniment click pe spinner sortare
         spinnerSortPosts.setOnItemSelectedListener(onItemSelectedSortPostsSpinner());
 
+        // Adaugare eveniment pe referesh
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+
+
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 500);
+
+            }
+        });
+
         return view;
+    }
+
+
+    private void initializareTotala(View view) {
+        // Preluare like forum posts
+        initLikForumMap(0);
+
+        // Preluare favourite forum posts
+        initFavouritePostsList();
+
+        // Initializare componente
+        initComponents(view);
+
+        // Initializare adapter spinner category
+        initSpinnerCategory();
+
+        // Initializare spinner sortare posturi
+        initSortPostsSpinner();
+
+        // Preluare initiala de posturi
+        //initialGetAllForumPosts();
+
+        // Initializare comparator
+        initForumPostNrCommentsComparator();
+
+        // Evenimentru pentru schimbarea categoriei
+        spinnerCategory.setOnItemSelectedListener(onItemSelectedListenerSpinner());
+
+        // Eveniment pt click pe butonul de creare interventie forum
+        fabAddPost.setOnClickListener(onClickCreateForumPost());
+
+        // Adaugare eveniment click pe obiectele din listview
+        lvForum.setOnItemClickListener(onClickListViewItem());
+
+        // Adaugare eveniment click pe spinner sortare
+        spinnerSortPosts.setOnItemSelectedListener(onItemSelectedSortPostsSpinner());
     }
 
 
@@ -147,6 +205,7 @@ View view;
         fabAddPost = view.findViewById(R.id.fab_createPost_forumFragment);
         lvForum = view.findViewById(R.id.lv_forumFragment);
         tvSearchResults = view.findViewById(R.id.tv_searchResults_forumFragment);
+        swipeRefreshLayout = view.findViewById(R.id.refreshLayout);
     }
 
 
@@ -239,7 +298,7 @@ View view;
                 .get(CHEIE_LISTA_POSTARI_DUPA_CAUTARE_CUVINTE);
 
         // Verificare daca exista deja o lista de postari in urma cautarii
-        if(forumPostListPrimit == null) {
+        if (forumPostListPrimit == null) {
             forumPostService.getAllForumPosts(postsOrder, callbackGetAllForumPostInitialy());
         } else {
             forumPostList.clear();
@@ -520,7 +579,7 @@ View view;
             ForumPost forumPostSters = (ForumPost) data.getSerializableExtra(ForumPostDetailedActivity.STERGERE_FORUM_POST_KEY);
 
             for (ForumPost forumPost : forumPostList) {
-                if(forumPost.getId() == forumPostSters.getId()){
+                if (forumPost.getId() == forumPostSters.getId()) {
                     favouritePostsIdList.remove((Integer) forumPost.getId());
                     likeForumMap.remove(forumPost.getId());
                     forumPostList.remove(forumPost);

@@ -10,36 +10,36 @@
         android:id="@+id/costraintLayout_forumFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/lv_forumFragment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/container_background2"
-        android:paddingEnd="5sp"
+        android:elevation="2sp"
         android:paddingStart="5sp"
-        android:elevation="2sp">
-
-    <Spinner
-        android:id="@+id/spinner_category_forumFragment"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/costraintLayout_forumFragment"
-        app:layout_constraintEnd_toStartOf="@+id/spinner_sortingPosts_forumFragment"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:divider="#EFEFEF"/>
-
-    <Spinner
-        android:id="@+id/spinner_sortingPosts_forumFragment"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/costraintLayout_forumFragment"
+        android:paddingEnd="5sp"
+        app:layout_constraintBottom_toTopOf="@id/refreshLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/spinner_category_forumFragment"
-        app:layout_constraintTop_toTopOf="parent"
-        android:divider="#EFEFEF"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Spinner
+            android:id="@+id/spinner_category_forumFragment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:divider="#EFEFEF"
+            app:layout_constraintBottom_toBottomOf="@+id/costraintLayout_forumFragment"
+            app:layout_constraintEnd_toStartOf="@+id/spinner_sortingPosts_forumFragment"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Spinner
+            android:id="@+id/spinner_sortingPosts_forumFragment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:divider="#EFEFEF"
+            app:layout_constraintBottom_toBottomOf="@+id/costraintLayout_forumFragment"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/spinner_category_forumFragment"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -49,14 +49,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:elevation="10sp"
         android:text="@string/rezultatul_cautarii_forumFragment"
         android:textSize="25dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/costraintLayout_forumFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:elevation="10sp"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_createPost_forumFragment"
@@ -76,14 +76,25 @@
         app:layout_constraintVertical_bias="1.0" />
 
 
-    <ListView
-        android:id="@+id/lv_forumFragment"
-        android:layout_width="match_parent"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/costraintLayout_forumFragment"
-        android:divider="@null"/>
+        app:layout_constraintTop_toBottomOf="@+id/costraintLayout_forumFragment">
+
+        <ListView
+            android:id="@+id/lv_forumFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:divider="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/costraintLayout_forumFragment" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
