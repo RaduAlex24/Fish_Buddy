@@ -243,8 +243,10 @@ public class MainActivity extends AppCompatActivity {
         return new Callback<byte[]>() {
             @Override
             public void runResultOnUiThread(byte[] result) {
-                Bitmap userPhoto = BitmapFactory.decodeByteArray(result, 0, result.length);
-                imagineUtilizator.setImageBitmap(userPhoto);
+                if(result != null) {
+                    Bitmap userPhoto = BitmapFactory.decodeByteArray(result, 0, result.length);
+                    imagineUtilizator.setImageBitmap(userPhoto);
+                }
             }
         };
     }

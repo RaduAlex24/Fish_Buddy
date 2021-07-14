@@ -352,7 +352,7 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
                 notifyInternalAdapter();
 
                 // Modificare nr comms forum post
-                forumPostService.updateNrCommentsByForumPostAndNrComments(forumPost, -1,
+                forumPostService.updateNrCommentsByForumPostAndNrComments(forumPost.getId(), -1,
                         callbackModificareNegativaNrDeCommForumPost());
             }
         };
@@ -511,7 +511,7 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
                     notifyInternalAdapter();
 
                     // Modificare bd
-                    forumPostService.updateNrCommentsByForumPostAndNrComments(forumPost, 1,
+                    forumPostService.updateNrCommentsByForumPostAndNrComments(forumPost.getId(), 1,
                             callbackUpdateNrComments());
 
                     finalizareOperatieCuTIETaddComment();

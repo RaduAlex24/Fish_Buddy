@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,11 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.licenta.asyncTask.Callback;
-import com.example.licenta.clase.forum.CommentForum;
 import com.example.licenta.clase.peste.Peste;
 import com.example.licenta.clase.peste.PestiAdaptor;
 import com.example.licenta.clase.user.CurrentUser;
-import com.example.licenta.clase.user.FishingTitleEnum;
 import com.example.licenta.database.service.CommentForumService;
 import com.example.licenta.database.service.FavouriteForumPostService;
 import com.example.licenta.database.service.FishService;
@@ -39,11 +36,11 @@ import org.jetbrains.annotations.NotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.licenta.LogInActivity.PASSWORD_SP;
+import static com.example.licenta.LogInActivity.REMEMBER_CHECKED;
 import static com.example.licenta.LogInActivity.SHARED_PREF_FILE_NAME;
 import static com.example.licenta.LogInActivity.USERNAME_SP;
 import static com.example.licenta.VizualizatiPesti.FISH_ID_SP;
@@ -83,6 +80,8 @@ public class ProfileActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private List<Peste> pesteList = new ArrayList<>();
     private byte[] imagineByte;
+    private List<Integer> listaIdComentarii;
+    private List<Integer> listaIdPostariForum;
 
 
     // On create
@@ -415,8 +414,10 @@ public class ProfileActivity extends AppCompatActivity {
         return new Callback<byte[]>() {
             @Override
             public void runResultOnUiThread(byte[] result) {
-                Bitmap userPhoto = BitmapFactory.decodeByteArray(result, 0, result.length);
-                imageViewProfilePicture.setImageBitmap(userPhoto);
+                if (result != null) {
+                    Bitmap userPhoto = BitmapFactory.decodeByteArray(result, 0, result.length);
+                    imageViewProfilePicture.setImageBitmap(userPhoto);
+                }
             }
         };
     }
@@ -504,39 +505,125 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
+    // Contoare folosite pentru stergere
+    int contorComentarii = 0;
+    int contorPostari = 0;
+
     // Callback stergere likeuri forum
     @NotNull
     private Callback<Integer> callbackStergereLikeForum() {
         return new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
-                commentForumService.deleteCommentByUserId(currentUser.getId(), callbackStergereComentarii());
+
+                // Stergere comentarii
+                commentForumService.getAllCommentsIdByUserId(currentUser.getId(), new Callback<List<Integer>>() {
+                    @Override
+                    public void runResultOnUiThread(List<Integer> result) {
+                        listaIdComentarii = result;
+
+                        if (result.size() == 0) {
+                            // Stergere postari
+                            forumPostService.getAllForumPostsIdByUserId(currentUser.getId(), new Callback<List<Integer>>() {
+                                @Override
+                                public void runResultOnUiThread(List<Integer> result) {
+                                    listaIdPostariForum = result;
+
+                                    if (result.size() == 0) {
+                                        fishService.deleteFishByUserId(currentUser.getId(), callbackStergerePesti());
+                                    }
+
+                                    for (int idForum : listaIdPostariForum) {
+                                        stergereTotalaPostari(idForum);
+                                    }
+                                }
+                            });
+                        }
+
+                        for (int idComentariu : listaIdComentarii) {
+                            stergereTotalaComentariu(idComentariu);
+                        }
+
+
+                    }
+                });
+
             }
         };
     }
 
 
-    // Callback stergere comentarii
-    @NotNull
-    private Callback<Integer> callbackStergereComentarii() {
-        return new Callback<Integer>() {
+    // Stergere totala comentarii
+    private void stergereTotalaComentariu(int idComentariu) {
+        likeCommentService.deleteLikeCommentByCommentId(idComentariu, new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
-                forumPostService.deleteForumPostByUserId(currentUser.getId(), callbackStergerePostari());
+                commentForumService.getForumPostIdByCommentId(idComentariu, new Callback<Integer>() {
+                    @Override
+                    public void runResultOnUiThread(Integer result) {
+                        forumPostService.updateNrCommentsByForumPostAndNrComments(result, -1, new Callback<Integer>() {
+                            @Override
+                            public void runResultOnUiThread(Integer result) {
+                                commentForumService.deleteCommentByCommentId(idComentariu, new Callback<Integer>() {
+                                    @Override
+                                    public void runResultOnUiThread(Integer result) {
+                                        contorComentarii++;
+
+                                        // Verificare incepere stergere postari
+                                        if (contorComentarii == listaIdComentarii.size()) {
+                                            // Stergere postari
+                                            forumPostService.getAllForumPostsIdByUserId(currentUser.getId(), new Callback<List<Integer>>() {
+                                                @Override
+                                                public void runResultOnUiThread(List<Integer> result) {
+                                                    listaIdPostariForum = result;
+
+                                                    if (result.size() == 0) {
+                                                        fishService.deleteFishByUserId(currentUser.getId(), callbackStergerePesti());
+                                                    }
+
+                                                    for (int idForum : listaIdPostariForum) {
+                                                        stergereTotalaPostari(idForum);
+                                                    }
+                                                }
+                                            });
+                                        }
+
+
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
             }
-        };
+        });
     }
 
 
-    // Callback stergere postari
-    @NotNull
-    private Callback<Integer> callbackStergerePostari() {
-        return new Callback<Integer>() {
+    // Stegere totala postari
+    private void stergereTotalaPostari(int idPostare) {
+        likeForumService.deleteLikesForumByForumPostId(idPostare, new Callback<Integer>() {
             @Override
             public void runResultOnUiThread(Integer result) {
-                fishService.deleteFishByUserId(currentUser.getId(), callbackStergerePesti());
+                favouriteForumPostService.deleteFavouriteForumsByForumPostId(idPostare, new Callback<Integer>() {
+                    @Override
+                    public void runResultOnUiThread(Integer result) {
+                        forumPostService.deleteForumPostByForumPostId(idPostare, new Callback<Integer>() {
+                            @Override
+                            public void runResultOnUiThread(Integer result) {
+                                contorPostari++;
+
+                                // Verificare continuare cu stergere
+                                if (contorPostari == listaIdPostariForum.size()) {
+                                    fishService.deleteFishByUserId(currentUser.getId(), callbackStergerePesti());
+                                }
+
+                            }
+                        });
+                    }
+                });
             }
-        };
+        });
     }
 
 
@@ -562,9 +649,20 @@ public class ProfileActivity extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 CurrentUser.delelteInstance();
+                stergereUtilizatorDinSharedPreferences();
                 finish();
             }
         };
+    }
+
+
+    // Stergere date utilizator din shared preferences
+    private void stergereUtilizatorDinSharedPreferences() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(USERNAME_SP, "");
+        editor.putString(PASSWORD_SP, "");
+        editor.putBoolean(REMEMBER_CHECKED, false);
+        editor.apply();
     }
 
 }

@@ -97,6 +97,32 @@ public class CommentForumService {
     }
 
 
+    // Get forum post id by comment id
+    public void getForumPostIdByCommentId(int commentId, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int id = -1;
+
+                String sql = "SELECT forumPostId FROM " + numeBDcommentsForum + " WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, commentId);
+                ResultSet resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    id = resultSet.getInt(1);
+                }
+
+                statement.close();
+                resultSet.close();
+                return id;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
     // Insert new forum comment
     public void insertNewCommentForum(CommentForum commentForum, Callback<Integer> callback) {
         Callable<Integer> callable = new Callable<Integer>() {
@@ -216,6 +242,33 @@ public class CommentForumService {
 
                 statement.close();
                 return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Select all comment id by user id
+    public void getAllCommentsIdByUserId(int userId, Callback<List<Integer>> callback) {
+        Callable<List<Integer>> callable = new Callable<List<Integer>>() {
+            @Override
+            public List<Integer> call() throws Exception {
+                List<Integer> listaIduriComentarii = new ArrayList<>();
+
+                String sql = "SELECT id FROM " + numeBDcommentsForum + " WHERE userId = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                ResultSet resultSet = statement.executeQuery();
+
+                while (resultSet.next()) {
+                    int id = resultSet.getInt(1);
+                    listaIduriComentarii.add(id);
+                }
+
+                statement.close();
+                resultSet.close();
+                return listaIduriComentarii;
             }
         };
 

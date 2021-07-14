@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import static com.example.licenta.database.service.CommentForumService.numeBDcommentsForum;
+
 public class ForumPostService {
     private ConexiuneBD conexiuneBD;
     private AsyncTaskRunner asyncTaskRunner;
@@ -390,7 +392,7 @@ public class ForumPostService {
 
 
     // Update numar comments by Forum Post
-    public void updateNrCommentsByForumPostAndNrComments(ForumPost forumPost, int nrComments, Callback<Integer> callback) {
+    public void updateNrCommentsByForumPostAndNrComments(int forumPostId, int nrComments, Callback<Integer> callback) {
         Callable<Integer> callable = new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -400,12 +402,39 @@ public class ForumPostService {
                         "WHERE id = ?";
                 PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
                 statement.setInt(1, nrComments);
-                statement.setInt(2, forumPost.getId());
+                statement.setInt(2, forumPostId);
                 nrRanduriAfectate = statement.executeUpdate();
 
 
                 statement.close();
                 return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // Select all posts id by user id
+    public void getAllForumPostsIdByUserId(int userId, Callback<List<Integer>> callback) {
+        Callable<List<Integer>> callable = new Callable<List<Integer>>() {
+            @Override
+            public List<Integer> call() throws Exception {
+                List<Integer> listaIduriPostari = new ArrayList<>();
+
+                String sql = "SELECT id FROM " + numeBDforum + " WHERE userId = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, userId);
+                ResultSet resultSet = statement.executeQuery();
+
+                while (resultSet.next()) {
+                    int id = resultSet.getInt(1);
+                    listaIduriPostari.add(id);
+                }
+
+                statement.close();
+                resultSet.close();
+                return listaIduriPostari;
             }
         };
 
