@@ -40,6 +40,7 @@ public class LogInActivity extends AppCompatActivity {
 
     // Utile
     private SharedPreferences preferences;
+    private SharedPreferences preferencesNightMode;
     public static final String SHARED_PREF_FILE_NAME = "LicentaPesteSharedPreferences";
 
     private UserService userService = new UserService();
@@ -84,8 +85,8 @@ public class LogInActivity extends AppCompatActivity {
 
         // Initializare shared preferences
         preferences = getSharedPreferences(SHARED_PREF_FILE_NAME, MODE_PRIVATE);
-        preferences = getSharedPreferences("night", 0);
-        boolean booleanValue = preferences.getBoolean("night_mode", true);
+        preferencesNightMode = getSharedPreferences("night", 0);
+        boolean booleanValue = preferencesNightMode.getBoolean("night_mode", true);
         if (booleanValue) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
@@ -209,10 +210,10 @@ public class LogInActivity extends AppCompatActivity {
         String password = preferences.getString(PASSWORD_SP, "");
         boolean rememberChecked = preferences.getBoolean(REMEMBER_CHECKED, false);
 
-        tietUsername.setText(username);
-        tietPassword.setText(password);
         if (rememberChecked) {
             checkBoxRemember.setChecked(true);
+            tietUsername.setText(username);
+            tietPassword.setText(password);
         }
     }
 

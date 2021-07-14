@@ -140,59 +140,9 @@ public class ForumFragment extends Fragment {
         spinnerSortPosts.setOnItemSelectedListener(onItemSelectedSortPostsSpinner());
 
         // Adaugare eveniment pe referesh
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-
-
-
-                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 500);
-
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(refreshListener());
 
         return view;
-    }
-
-
-    private void initializareTotala(View view) {
-        // Preluare like forum posts
-        initLikForumMap(0);
-
-        // Preluare favourite forum posts
-        initFavouritePostsList();
-
-        // Initializare componente
-        initComponents(view);
-
-        // Initializare adapter spinner category
-        initSpinnerCategory();
-
-        // Initializare spinner sortare posturi
-        initSortPostsSpinner();
-
-        // Preluare initiala de posturi
-        //initialGetAllForumPosts();
-
-        // Initializare comparator
-        initForumPostNrCommentsComparator();
-
-        // Evenimentru pentru schimbarea categoriei
-        spinnerCategory.setOnItemSelectedListener(onItemSelectedListenerSpinner());
-
-        // Eveniment pt click pe butonul de creare interventie forum
-        fabAddPost.setOnClickListener(onClickCreateForumPost());
-
-        // Adaugare eveniment click pe obiectele din listview
-        lvForum.setOnItemClickListener(onClickListViewItem());
-
-        // Adaugare eveniment click pe spinner sortare
-        spinnerSortPosts.setOnItemSelectedListener(onItemSelectedSortPostsSpinner());
     }
 
 
@@ -206,6 +156,22 @@ public class ForumFragment extends Fragment {
         lvForum = view.findViewById(R.id.lv_forumFragment);
         tvSearchResults = view.findViewById(R.id.tv_searchResults_forumFragment);
         swipeRefreshLayout = view.findViewById(R.id.refreshLayout);
+    }
+
+
+    // Metode refresh pentru postari forum
+    @NotNull
+    private SwipeRefreshLayout.OnRefreshListener refreshListener() {
+        return new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Reinitializare spinner sortare posturi
+                initSortPostsSpinner();
+
+                // Anulare refresh
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        };
     }
 
 
@@ -552,6 +518,9 @@ public class ForumFragment extends Fragment {
                     forumPost.setContent(forumPostNou.getContent());
                     forumPost.setCategory(forumPostNou.getCategory());
                     notFound = false;
+
+                    // In caz de crestere in titlu
+                    forumPost.setCreatorUsername(forumPostNou.getCreatorUsername());
                 }
             }
 

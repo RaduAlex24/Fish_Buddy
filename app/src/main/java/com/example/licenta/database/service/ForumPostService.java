@@ -286,6 +286,49 @@ public class ForumPostService {
     }
 
 
+    // Get forum post by id
+    public void getForumPostById(int forumPostId, Callback<ForumPost> callback) {
+        Callable<ForumPost> callable = new Callable<ForumPost>() {
+            @Override
+            public ForumPost call() throws Exception {
+                ForumPost forumPost = null;
+
+                String sql = "SELECT * FROM " + numeBDforum + " WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, forumPostId);
+                ResultSet resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    int id = resultSet.getInt(1);
+                    int userId = resultSet.getInt(2);
+                    String creatorUsername = resultSet.getString(3);
+                    String title = resultSet.getString(4);
+                    String content = resultSet.getString(5);
+                    boolean isEdited = Boolean.parseBoolean(resultSet.getString(6));
+                    int nrLikes = resultSet.getInt(7);
+                    int nrDislikes = resultSet.getInt(8);
+                    int nrComments = resultSet.getInt(9);
+
+                    String category = resultSet.getString(10);
+                    CategoryForum categoryForum = CategoryForum.valueOf(category);
+
+                    String postDate = resultSet.getString(11);
+                    Date date = DateConverter.toDate(postDate);
+
+                    forumPost = new ForumPost(id, userId, creatorUsername, title, content,
+                            isEdited, nrLikes, nrDislikes, nrComments, categoryForum, date);
+                }
+
+                statement.close();
+                resultSet.close();
+                return forumPost;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
     // Insert new forum post
     public void insertNewForumPost(ForumPost forumPost, int id, Callback<ForumPost> callback) {
         Callable<ForumPost> callable = new Callable<ForumPost>() {

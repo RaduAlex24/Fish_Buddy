@@ -43,7 +43,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.licenta.LogInActivity.PASSWORD_SP;
 import static com.example.licenta.LogInActivity.SHARED_PREF_FILE_NAME;
+import static com.example.licenta.LogInActivity.USERNAME_SP;
 import static com.example.licenta.VizualizatiPesti.FISH_ID_SP;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -315,11 +317,14 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // Modificare cont
         if (requestCode == REQUEST_CODE_MODIFY_ACCOUNT && resultCode == RESULT_OK) {
             currentUser = CurrentUser.getInstance();
             replaceFields();
         }
 
+
+        // Modificare poza
         if (requestCode == REQUEST_CODE_ADD_PROFILE_IMAGE && resultCode == RESULT_OK) {
             try {
                 final Uri imageUri = data.getData();

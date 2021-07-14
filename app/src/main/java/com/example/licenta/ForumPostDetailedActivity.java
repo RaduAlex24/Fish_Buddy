@@ -4,10 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -55,6 +58,7 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
     public static final String EDIT_FORUM_POST_KEY = "EDIT_FORUM_POST_KEY";
     public static final int RESULT_CODE_DELETE_FORUMPOST = 5;
     public static final String STERGERE_FORUM_POST_KEY = "STERGERE_FORUM_POST_KEY";
+
     // Componente vizuale
     private ListView lvForumPostDetalied;
     private Spinner spinnerSortComments;
@@ -62,6 +66,7 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
     private TextInputLayout tilAddComment;
     private TextInputEditText tietAddComment;
     private ImageButton imgBtnAddComment;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     // Utile forum post
     private Intent intentPrimit;
@@ -120,6 +125,9 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
 
         // Adaugare functie lv comments on long click pt editare
         lvComments.setOnItemLongClickListener(onLongClickEditComment());
+
+        // Adaugare functie refresh pe comentarii
+        swipeRefreshLayout.setOnRefreshListener(onRefreshListener());
     }
 
 
@@ -132,6 +140,7 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
         tilAddComment = findViewById(R.id.til_addComment_forumPostDetailed);
         tietAddComment = findViewById(R.id.tiet_addComment_forumPostDetailed);
         imgBtnAddComment = findViewById(R.id.imgBtn_addComment_forumPostDetailed);
+        swipeRefreshLayout = findViewById(R.id.refreshLayout_forumPostDetalied);
     }
 
 
@@ -142,6 +151,33 @@ public class ForumPostDetailedActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_dropdown_item);
 
         spinnerSortComments.setAdapter(adapter);
+    }
+
+
+    // Eveniment pe refresh comentarii
+    @NotNull
+    private SwipeRefreshLayout.OnRefreshListener onRefreshListener() {
+        return new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Reinitializare spinner
+                initSortCommentsSpinner();
+
+                // Initializare postare
+                forumPostService.getForumPostById(forumPost.getId(), new Callback<ForumPost>() {
+                    @Override
+                    public void runResultOnUiThread(ForumPost result) {
+                        forumPost = result;
+                        forumPostListSingular.clear();
+                        forumPostListSingular.add(result);
+                        notifyInternalForumPostAdapter();
+                    }
+                });
+
+                // Anulare refresh
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        };
     }
 
 

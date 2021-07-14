@@ -180,7 +180,6 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    // nu merge???? TO DO
     // Actualiare shared preferences
     private void actualizareSharedPReferences(String username, String password) {
         preferences = getSharedPreferences(SHARED_PREF_FILE_NAME, MODE_PRIVATE);
