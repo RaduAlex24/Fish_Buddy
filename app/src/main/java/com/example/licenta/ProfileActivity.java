@@ -61,6 +61,7 @@ public class ProfileActivity extends AppCompatActivity {
     private ListView lvBestFish;
     private TextView tvUsername;
     private TextView tvEmail;
+    private TextView tvBestFish;
     private Button btnModificareCont;
     private Button btnStergereCont;
 
@@ -126,6 +127,7 @@ public class ProfileActivity extends AppCompatActivity {
         tvNumberPoints = findViewById(R.id.tv_numberPoints_profile);
         tvUsername = findViewById(R.id.tv_username_profile);
         tvEmail = findViewById(R.id.tv_email_profile);
+        tvBestFish = findViewById(R.id.tv_bestFish_profile);
 
         // Image view
         imageViewProfilePicture = findViewById(R.id.imageView_profile);
@@ -175,6 +177,9 @@ public class ProfileActivity extends AppCompatActivity {
         if (fishId != -1) {
             fishService.getFavouriteFishByIdAndUserId(fishId, currentUser.getId(),
                     callbackGetFavouriteFish());
+        } else {
+            tvBestFish.setVisibility(View.GONE);
+            lvBestFish.setVisibility(View.GONE);
         }
     }
 
@@ -185,8 +190,13 @@ public class ProfileActivity extends AppCompatActivity {
         return new Callback<Peste>() {
             @Override
             public void runResultOnUiThread(Peste result) {
-                pesteList.add(result);
-                notifyAdapter();
+                if (result != null) {
+                    pesteList.add(result);
+                    notifyAdapter();
+                } else {
+                    tvBestFish.setVisibility(View.GONE);
+                    lvBestFish.setVisibility(View.GONE);
+                }
             }
         };
     }

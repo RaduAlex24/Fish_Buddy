@@ -84,8 +84,8 @@ public class LogInActivity extends AppCompatActivity {
 
         // Initializare shared preferences
         preferences = getSharedPreferences(SHARED_PREF_FILE_NAME, MODE_PRIVATE);
-        preferences = getSharedPreferences("night", 0);
-        boolean booleanValue = preferences.getBoolean("night_mode", false);
+        SharedPreferences nightSharedPReferences = getSharedPreferences("night", 0);
+        boolean booleanValue = nightSharedPReferences.getBoolean("night_mode", false);
         if (booleanValue) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {

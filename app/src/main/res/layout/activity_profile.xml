@@ -108,17 +108,18 @@
             app:layout_constraintBottom_toTopOf="@+id/lv_bestFish_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView_profile" />
+            app:layout_constraintTop_toBottomOf="@id/imageView_profile"
+            app:layout_constraintVertical_bias="0.18" />
 
         <ListView
             android:id="@+id/lv_bestFish_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
             app:layout_constraintBottom_toTopOf="@+id/tv_infoCont_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_bestFish_profile" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_bestFish_profile"
+            android:listSelector="@android:color/transparent"/>
 
         <TextView
             android:id="@+id/tv_infoCont_profile"
@@ -126,13 +127,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
+            android:layout_marginTop="32dp"
             android:text="Informatii cont:"
             android:textSize="18dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tv_email_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.45"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lv_bestFish_profile"
             app:layout_constraintVertical_bias="0.65" />
 
         <TextView
@@ -140,21 +142,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
             android:text="Nume utilizator: Blexer254"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_actiuniCont_profile"
             app:layout_constraintEnd_toStartOf="@+id/tv_email_profile"
-            app:layout_constraintHorizontal_bias="0.54"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_infoCont_profile"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_infoCont_profile" />
 
         <TextView
             android:id="@+id/tv_email_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
             android:text="Email: alex.rad24@gmaiul.com"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_actiuniCont_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_username_profile"
             app:layout_constraintTop_toBottomOf="@+id/tv_infoCont_profile"
@@ -164,10 +166,9 @@
             android:id="@+id/tv_actiuniCont_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
             android:text="Actiuni cont:"
             android:textSize="18dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btn_modificareCont_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_email_profile"
@@ -179,7 +180,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Modificare cont"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_stergereCont_profile"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_actiuniCont_profile"
@@ -191,11 +191,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Stergere cont"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_modificareCont_profile"
-            app:layout_constraintTop_toBottomOf="@+id/tv_actiuniCont_profile"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_actiuniCont_profile" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
