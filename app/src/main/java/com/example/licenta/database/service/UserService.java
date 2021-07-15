@@ -298,4 +298,59 @@ public class UserService {
         asyncTaskRunner.executeAsync(callable, callback);
     }
 
+
+    // Update poza utilizator dupa id
+    public void updateUSerPhotoById(int id, byte[] bytePhoto, Callback<Integer> callback) {
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int nrRanduriAfectate = -1;
+
+                String sql = "UPDATE " + numeBDuser + " SET user_photo = ? " +
+                        "WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setBytes(1, bytePhoto);
+                statement.setInt(2, id);
+                nrRanduriAfectate = statement.executeUpdate();
+
+
+                statement.close();
+                return nrRanduriAfectate;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
+
+    // byte[] bytePhoto
+    // Preluare poza utiliator din baza de date dupa id
+    public void getUserPhotoById(int id, Callback<byte[]> callback) {
+        Callable<byte[]> callable = new Callable<byte[]>() {
+            @Override
+            public byte[] call() throws Exception {
+                byte[] photoByte;
+
+                String sql = "SELECT user_photo FROM " + numeBDuser + " WHERE id = ?";
+                PreparedStatement statement = conexiuneBD.getConexiune().prepareStatement(sql);
+                statement.setInt(1, id);
+                ResultSet resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    photoByte = resultSet.getBytes(1);
+                } else {
+                    statement.close();
+                    resultSet.close();
+                    return null;
+                }
+
+                statement.close();
+                resultSet.close();
+                return photoByte;
+            }
+        };
+
+        asyncTaskRunner.executeAsync(callable, callback);
+    }
+
 }

@@ -5,7 +5,10 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +68,7 @@ public class ForumFragment extends Fragment {
     private FloatingActionButton fabAddPost;
     private ListView lvForum;
     private TextView tvSearchResults;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private static final String tagLog = "FragmentForum";
     private CurrentUser currentUser = CurrentUser.getInstance();
@@ -94,7 +98,8 @@ public class ForumFragment extends Fragment {
         return fragment;
     }
 
-View view;
+    View view;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -134,6 +139,9 @@ View view;
         // Adaugare eveniment click pe spinner sortare
         spinnerSortPosts.setOnItemSelectedListener(onItemSelectedSortPostsSpinner());
 
+        // Adaugare eveniment pe referesh
+        swipeRefreshLayout.setOnRefreshListener(refreshListener());
+
         return view;
     }
 
@@ -147,6 +155,23 @@ View view;
         fabAddPost = view.findViewById(R.id.fab_createPost_forumFragment);
         lvForum = view.findViewById(R.id.lv_forumFragment);
         tvSearchResults = view.findViewById(R.id.tv_searchResults_forumFragment);
+        swipeRefreshLayout = view.findViewById(R.id.refreshLayout);
+    }
+
+
+    // Metode refresh pentru postari forum
+    @NotNull
+    private SwipeRefreshLayout.OnRefreshListener refreshListener() {
+        return new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Reinitializare spinner sortare posturi
+                initSortPostsSpinner();
+
+                // Anulare refresh
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        };
     }
 
 
@@ -239,7 +264,7 @@ View view;
                 .get(CHEIE_LISTA_POSTARI_DUPA_CAUTARE_CUVINTE);
 
         // Verificare daca exista deja o lista de postari in urma cautarii
-        if(forumPostListPrimit == null) {
+        if (forumPostListPrimit == null) {
             forumPostService.getAllForumPosts(postsOrder, callbackGetAllForumPostInitialy());
         } else {
             forumPostList.clear();
@@ -284,9 +309,9 @@ View view;
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(),
-                        "Click pe forum postul " + forumPostList.get(position).getId(),
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(),
+//                        "Click pe forum postul " + forumPostList.get(position).getId(),
+//                        Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(getContext(), ForumPostDetailedActivity.class);
                 intent.putExtra(FORUM_POST_KEY, forumPostList.get(position));
@@ -493,6 +518,9 @@ View view;
                     forumPost.setContent(forumPostNou.getContent());
                     forumPost.setCategory(forumPostNou.getCategory());
                     notFound = false;
+
+                    // In caz de crestere in titlu
+                    forumPost.setCreatorUsername(forumPostNou.getCreatorUsername());
                 }
             }
 
@@ -520,7 +548,7 @@ View view;
             ForumPost forumPostSters = (ForumPost) data.getSerializableExtra(ForumPostDetailedActivity.STERGERE_FORUM_POST_KEY);
 
             for (ForumPost forumPost : forumPostList) {
-                if(forumPost.getId() == forumPostSters.getId()){
+                if (forumPost.getId() == forumPostSters.getId()) {
                     favouritePostsIdList.remove((Integer) forumPost.getId());
                     likeForumMap.remove(forumPost.getId());
                     forumPostList.remove(forumPost);

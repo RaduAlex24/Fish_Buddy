@@ -156,18 +156,15 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
             Log.d(TagLog, "projectId : " + projectId);
         } catch (Exception e) {
             Log.d(TagLog, "setUpBot: " + e.getMessage());
-        } finally {
-            //sessionsClient.close();
         }
     }
 
-
-//    @Override
-//    public void onDestroy() {
-//        Toast.makeText(getContext(), "ssss", Toast.LENGTH_SHORT).show();
-//        sessionsClient.close();
-//        super.onDestroy();
-//    }
+    // Suprascriere pentru inchiderea conexiunii
+    @Override
+    public void onDestroy() {
+        sessionsClient.close();
+        super.onDestroy();
+    }
 
     // Trimitere de mesaj
     private void sendMessageToBot(String message) {

@@ -151,7 +151,9 @@ public class MainActivity extends AppCompatActivity {
         TextView tvEmail = headerView.findViewById(R.id.tv_main_email);
         TextView tvPoints = headerView.findViewById(R.id.tv_points_mainNavHeader);
         tvEmail.setText(currentUser.getEmail());
-        tvUsername.setText(currentUser.getUsername().split(":")[0]);
+
+        FishingTitleEnum fishingTitleEnum = FishingTitleEnum.preluareTitluInFunctieDeUsername(currentUser.getUsername());
+        tvUsername.setText(currentUser.getUsername().split(":")[0] + " - " + fishingTitleEnum.getLabel());
 
         // Preluare puncte
         userService.getPointsForCurrentUser(currentUser.getId(), callbackPreluarePuncteUtiliatorCurent(tvPoints));
@@ -180,40 +182,44 @@ public class MainActivity extends AppCompatActivity {
                 R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
+        imagineUtilizator = findViewById(R.id.imagineUtilizator);
+
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+                imagineUtilizator = findViewById(R.id.imagineUtilizator);
                 setareCredintentiale();
+                getUserPhotoFromDatabase(currentUser.getId());
             }
 
             @Override
             public void onDrawerOpened(@NonNull View drawerView) {
 
                 // Actualiare titlu pescar
-                FishingTitleEnum.verificaSiActualieazaTitlu(currentUser.getId(), currentUser.getUsername());
-
+                FishingTitleEnum.verificaSiActualieazaTitlu(currentUser.getId(), currentUser.getUsername());;
                 imagineUtilizator = findViewById(R.id.imagineUtilizator);
-                imagineUtilizator.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                        getIntent.setType("image/*");
 
-                        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        pickIntent.setType("image/*");
-
-                        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-                        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
-                        startActivityForResult(chooserIntent, PICK_IMAGE);
-                    }
-                });
+//                imagineUtilizator.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+//                        getIntent.setType("image/*");
+//
+//                        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                        pickIntent.setType("image/*");
+//
+//                        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+//                        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+//                        startActivityForResult(chooserIntent, PICK_IMAGE);
+//                    }
+//                });
             }
 
             @Override
             public void onDrawerClosed(@NonNull View drawerView) {
-                if(wasImgApasata){
+                if (wasImgApasata) {
                     Toast.makeText(getApplicationContext(), "ASDSDSDSDSDS", Toast.LENGTH_LONG).show();
-                    wasImgApasata=false;
+                    wasImgApasata = false;
                 }
             }
 
@@ -224,13 +230,35 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    // Preluare poza din baza de date
+    private void getUserPhotoFromDatabase(int userId) {
+        userService.getUserPhotoById(userId, callbackPreluarePozaDinBazaDeDate());
+    }
+
+
+    // Callback preluare poza din baza de date
+    @NotNull
+    private Callback<byte[]> callbackPreluarePozaDinBazaDeDate() {
+        return new Callback<byte[]>() {
+            @Override
+            public void runResultOnUiThread(byte[] result) {
+                if(result != null) {
+                    Bitmap userPhoto = BitmapFactory.decodeByteArray(result, 0, result.length);
+                    imagineUtilizator.setImageBitmap(userPhoto);
+                }
+            }
+        };
+    }
+
+
     // AM COMENTAT AICI CA CRAPA LA STERGERE POSTARE FORUM SI NU INTELEG DC
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
             try {
-                wasImgApasata=true;
+                wasImgApasata = true;
                 final Uri imageUri = data.getData();
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
@@ -243,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Bitmap newbitMap = Bitmap.createScaledBitmap(selectedImage, ivWidth, newHeight, true);
                 imagineUtilizator.setImageBitmap(newbitMap);
-                byte[] asd=getBitmapAsByteArray(newbitMap);
+                byte[] asd = getBitmapAsByteArray(newbitMap);
                 long lengthbmp = asd.length;
                 if (lengthbmp / 1024.0 / 1024.0 >= 2) {
                     Toast.makeText(getApplicationContext(), "Dimensiunea imaginii este prea mare", Toast.LENGTH_LONG).show();
@@ -286,13 +314,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Functie de aplicare tutorial daca este prima data cand se intra in aplicatie
-    private void aplicareTutorial(){
+    private void aplicareTutorial() {
         // Preluare shared preferences
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_FILE_NAME, MODE_PRIVATE);
         boolean firstTimeInApplication = sharedPreferences.getBoolean(FIRST_TIME_IN_APP_SP, true);
 
         // Verificare aplicare tutorial
-        if(firstTimeInApplication){
+        if (firstTimeInApplication) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(FIRST_TIME_IN_APP_SP, false);
             editor.apply();

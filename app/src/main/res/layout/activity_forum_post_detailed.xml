@@ -22,52 +22,62 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@id/lv_comments_forumPostDetailed"
+        app:layout_constraintBottom_toTopOf="@id/refreshLayout_forumPostDetalied"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lv_forumPost_forumPostDetailed" />
 
-    <ListView
-        android:id="@+id/lv_comments_forumPostDetailed"
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLayout_forumPostDetalied"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinner_sortComments_forumPostDetailed"
         app:layout_constraintBottom_toTopOf="@+id/til_addComment_forumPostDetailed"
-        android:listSelector="@android:color/transparent"
-        android:divider="@null" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinner_sortComments_forumPostDetailed" >
+
+        <ListView
+            android:id="@+id/lv_comments_forumPostDetailed"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:divider="@null"
+            android:listSelector="@android:color/transparent" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_addComment_forumPostDetailed"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/imgBtn_addComment_forumPostDetailed"
-        app:layout_constraintTop_toBottomOf="@id/lv_comments_forumPostDetailed"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/refreshLayout_forumPostDetalied">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tiet_addComment_forumPostDetailed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/tiet_hint_addComment_forumPostDetalied"
             android:inputType="textNoSuggestions|textVisiblePassword"
-            android:maxLength="200"
-            android:hint="@string/tiet_hint_addComment_forumPostDetalied" />
+            android:maxLength="200" />
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <ImageButton
         android:id="@+id/imgBtn_addComment_forumPostDetailed"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        app:srcCompat="@drawable/ic_baseline_arrow_upward_24"
         android:background="@null"
-        tools:ignore="VectorDrawableCompat"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lv_comments_forumPostDetailed"
-        app:layout_constraintStart_toEndOf="@+id/til_addComment_forumPostDetailed"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/til_addComment_forumPostDetailed"
+        app:layout_constraintTop_toBottomOf="@+id/refreshLayout_forumPostDetalied"
+        app:srcCompat="@drawable/ic_baseline_send_24"
+        tools:ignore="VectorDrawableCompat" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

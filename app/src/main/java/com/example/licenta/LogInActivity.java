@@ -37,6 +37,7 @@ public class LogInActivity extends AppCompatActivity {
     private TextView tvSignup;
     private CheckBox checkBoxRemember;
 
+
     // Utile
     private SharedPreferences preferences;
     public static final String SHARED_PREF_FILE_NAME = "LicentaPesteSharedPreferences";
@@ -212,6 +213,8 @@ public class LogInActivity extends AppCompatActivity {
         tietPassword.setText(password);
         if (rememberChecked) {
             checkBoxRemember.setChecked(true);
+            tietUsername.setText(username);
+            tietPassword.setText(password);
         }
     }
 
