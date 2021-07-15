@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Licenta">
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity" />
         <activity android:name=".PlanificareCalatorieActivity" />
         <activity android:name=".InfoWindowActivity" />
         <activity android:name=".ForumPostDetailedActivity" />
@@ -35,8 +35,7 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.Licenta.NoActionBar" />
-        <activity android:name=".LogInActivity"
-            android:theme="@style/Theme.AppCompat.DayNight">
+        <activity android:name=".LogInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
