@@ -12,7 +12,8 @@ public enum KeyWordsChatBot {
     TUTORIAL("VIZUALIZARE TUTORIAL"),
 
     // Inlocuiri
-    INLOCCUIESTE_NUME("INLOCUIESTE_NUME");
+    INLOCCUIESTE_NUME("INLOCUIESTE_NUME"),
+    INLOCUIESTE_DATA("INLOCUIESTE_DATA");
 
     private String label;
 

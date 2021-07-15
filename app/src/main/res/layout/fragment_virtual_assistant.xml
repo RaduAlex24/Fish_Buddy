@@ -7,31 +7,18 @@
     tools:context=".homeFragments.VirtualAssistantFragment">
 
 
-    <TextView
-        android:id="@+id/tv_title_asistentVirtual"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/fragment_asisitnet_virtual_titlu_AsistentVirtual"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-
     <ListView
         android:id="@+id/lv_chat_asistentVirtual"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:divider="@null"
         android:listSelector="@android:color/transparent"
         android:stackFromBottom="false"
         app:layout_constraintBottom_toTopOf="@+id/til_addMessage_asistentVirtual"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title_asistentVirtual" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <com.google.android.material.textfield.TextInputLayout

@@ -28,6 +28,7 @@ import com.example.licenta.clase.forum.ForumPost;
 import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.database.service.ForumPostService;
 import com.example.licenta.introTutorialSlider.IntroTutorialSlider;
+import com.example.licenta.util.dateUtils.DateConverter;
 import com.example.licenta.virtualAssistant.clase.KeyWordsChatBot;
 import com.example.licenta.virtualAssistant.clase.MessageLvAdapter;
 import com.example.licenta.virtualAssistant.dialogFlow.BotReply;
@@ -250,6 +251,12 @@ public class VirtualAssistantFragment extends Fragment implements BotReply {
         // Inlocuire nume
         if (botReply.toUpperCase().contains(KeyWordsChatBot.INLOCCUIESTE_NUME.getLabel())) {
             botReply = botReply.replace(KeyWordsChatBot.INLOCCUIESTE_NUME.getLabel(), currentUser.getName());
+        }
+
+        // Inlocuire data
+        if(botReply.toUpperCase().contains(KeyWordsChatBot.INLOCUIESTE_DATA.getLabel())){
+            botReply = botReply.replace(KeyWordsChatBot.INLOCUIESTE_DATA.getLabel(),
+                    DateConverter.toString(DateConverter.toDateFromLong(System.currentTimeMillis())));
         }
 
 
