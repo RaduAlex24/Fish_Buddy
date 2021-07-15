@@ -4,13 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private NavigationView navigationView;
     private ImageView imagineUtilizator;
+    private ConstraintLayout constraintLayoutLateral;
     private static int RESULT_LOAD_IMAGE = 1;
     private Bitmap poza_scalata;
     private boolean wasImgApasata;
@@ -144,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
+    @SuppressLint("ResourceAsColor")
     private void setareCredintentiale() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
@@ -157,6 +162,30 @@ public class MainActivity extends AppCompatActivity {
 
         // Preluare puncte
         userService.getPointsForCurrentUser(currentUser.getId(), callbackPreluarePuncteUtiliatorCurent(tvPoints));
+
+        // Schimbare fundal
+        constraintLayoutLateral = findViewById(R.id.nav_header_main_schimbareCulroi);
+        FishingTitleEnum fishingTitle = FishingTitleEnum.preluareTitluInFunctieDeUsername(currentUser.getUsername());
+
+        // Schimbare fundal
+        switch (fishingTitle){
+            case UNU:
+                constraintLayoutLateral.setBackgroundColor(Color.GRAY);
+                break;
+            case DOI:
+                constraintLayoutLateral.setBackgroundColor(Color.parseColor("#A7C957"));
+                break;
+            case TREI:
+                constraintLayoutLateral.setBackgroundColor(Color.parseColor("#0FA3B1"));
+                break;
+            case PATRU:
+                constraintLayoutLateral.setBackgroundColor(Color.parseColor("#BC4B51"));
+                break;
+            case CINCI:
+                constraintLayoutLateral.setBackgroundColor(Color.parseColor("#F4A259"));
+                break;
+        }
+
     }
 
     @NotNull

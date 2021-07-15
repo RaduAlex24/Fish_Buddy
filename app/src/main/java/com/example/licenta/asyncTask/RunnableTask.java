@@ -22,7 +22,7 @@ public class RunnableTask<R> implements Runnable {
             final R result = asyncOperation.call();
             handler.post(new HandlerMessage<>(mainThreadOperation, result));
         } catch (Exception e) {
-            Log.i("RunnableTask", "failed call runnable " + e.getMessage());
+            Log.e("RunnableTask", "failed call runnable " + e.getMessage());
         }
     }
 }

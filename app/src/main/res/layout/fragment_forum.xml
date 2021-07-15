@@ -32,7 +32,7 @@
 
         <Spinner
             android:id="@+id/spinner_sortingPosts_forumFragment"
-            android:layout_width="0dp"
+            android:layout_width="244dp"
             android:layout_height="wrap_content"
             android:divider="#EFEFEF"
             app:layout_constraintBottom_toBottomOf="@+id/costraintLayout_forumFragment"
