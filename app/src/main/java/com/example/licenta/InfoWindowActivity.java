@@ -59,6 +59,7 @@ public class InfoWindowActivity extends AppCompatActivity {
     private AsyncTaskRunner asyncTaskRunner=new AsyncTaskRunner();
     private TextView tvRatingFloat;
     private LatLng latLngLocatie;
+    private String title;
     private final String TAG = "InfoWindowActivity";
 
     @Override
@@ -72,7 +73,7 @@ public class InfoWindowActivity extends AppCompatActivity {
         latLng = getIntent().getExtras().getParcelable("markerLatLng");
         placeId = getIntent().getExtras().getString("placeID");
 
-        String title = (intent.getExtras().getString("markerTitle"));
+        title = (intent.getExtras().getString("markerTitle"));
         goToMapsLocatie.setOnClickListener(pornesteCalatoria());
         planificareCalatorie.setOnClickListener(pornestePlanificare());
         if (!title.equals("")) {
@@ -133,6 +134,8 @@ public class InfoWindowActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(),PlanificareCalatorieActivity.class);
                 intent.putExtra("latLng",latLng);
+                String[] cutText = title.split(":");
+                intent.putExtra("numeLocatie",cutText[0]);
                 startActivity(intent);
             }
         };

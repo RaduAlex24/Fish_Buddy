@@ -35,7 +35,8 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.Licenta.NoActionBar" />
-        <activity android:name=".LogInActivity">
+        <activity android:name=".LogInActivity"
+            android:theme="@style/Theme.AppCompat.DayNight">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

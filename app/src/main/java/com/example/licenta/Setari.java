@@ -19,11 +19,15 @@ public class Setari extends AppCompatActivity {
         setContentView(R.layout.activity_setari);
         initcomponents();
         preferences = getSharedPreferences("night", 0);
-        boolean booleanValue = preferences.getBoolean("night_mode", true);
+        boolean booleanValue = preferences.getBoolean("night_mode", false);
         if (booleanValue) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             switchCompat.setChecked(true);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            switchCompat.setChecked(false);
         }
+
         switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

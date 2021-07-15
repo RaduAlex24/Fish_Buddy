@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.licenta.asyncTask.Callback;
 import com.example.licenta.clase.user.CurrentUser;
 import com.example.licenta.clase.user.FishingTitleEnum;
 import com.example.licenta.database.service.UserService;

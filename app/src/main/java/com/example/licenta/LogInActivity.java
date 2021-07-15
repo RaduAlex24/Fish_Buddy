@@ -37,7 +37,6 @@ public class LogInActivity extends AppCompatActivity {
     private TextView tvSignup;
     private CheckBox checkBoxRemember;
 
-
     // Utile
     private SharedPreferences preferences;
     public static final String SHARED_PREF_FILE_NAME = "LicentaPesteSharedPreferences";
@@ -85,7 +84,7 @@ public class LogInActivity extends AppCompatActivity {
         // Initializare shared preferences
         preferences = getSharedPreferences(SHARED_PREF_FILE_NAME, MODE_PRIVATE);
         preferences = getSharedPreferences("night", 0);
-        boolean booleanValue = preferences.getBoolean("night_mode", true);
+        boolean booleanValue = preferences.getBoolean("night_mode", false);
         if (booleanValue) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
