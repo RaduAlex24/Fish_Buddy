@@ -103,13 +103,30 @@ public class MapsFragment extends Fragment {
             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(@NotNull Marker marker) {
-                    Intent intent = new Intent(getContext(), InfoWindowActivity.class);
-                    intent.putExtra("markerTitle", marker.getTitle());
-                    intent.putExtra("markerLatLng", marker.getPosition());
-                    String[] cutText = Objects.requireNonNull(marker.getTitle()).split("//");
-                    String placeId = cutText[1];
-                    intent.putExtra("placeID", placeId);
-                    startActivity(intent);
+                    if(markerAncora!=null) {
+                        LatLng pozitieMarker = marker.getPosition();
+                        LatLng pozitieAncora = markerAncora.getPosition();
+                        if (pozitieMarker.latitude == pozitieAncora.latitude && pozitieMarker.longitude == pozitieAncora.longitude) {
+                            Toast.makeText(requireContext(), "Nu puteti prima detalii despre ancora", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Intent intent = new Intent(getContext(), InfoWindowActivity.class);
+                            intent.putExtra("markerTitle", marker.getTitle());
+                            intent.putExtra("markerLatLng", marker.getPosition());
+                            String[] cutText = Objects.requireNonNull(marker.getTitle()).split("//");
+                            String placeId = cutText[1];
+                            intent.putExtra("placeID", placeId);
+                            startActivity(intent);
+                        }
+                    }
+                    else{
+                        Intent intent = new Intent(getContext(), InfoWindowActivity.class);
+                        intent.putExtra("markerTitle", marker.getTitle());
+                        intent.putExtra("markerLatLng", marker.getPosition());
+                        String[] cutText = Objects.requireNonNull(marker.getTitle()).split("//");
+                        String placeId = cutText[1];
+                        intent.putExtra("placeID", placeId);
+                        startActivity(intent);
+                    }
                 }
             });
             LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
@@ -356,8 +373,8 @@ public class MapsFragment extends Fragment {
                         @Override
                         public void onNewLocationAvailable(SingleShotLocationProvider.GPSCoordinates location) {
                             float[] results = new float[3];
-                            latitude=location.latitude;
-                            longitude=location.longitude;
+                            latitude = location.latitude;
+                            longitude = location.longitude;
                             Location.distanceBetween(latLng.latitude, latLng.longitude,
                                     location.latitude, location.longitude, results);
                             if (Math.round(results[0] / 1000) > 1) {
