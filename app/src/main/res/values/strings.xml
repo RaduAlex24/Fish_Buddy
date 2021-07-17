@@ -133,7 +133,6 @@
     <string name="log_updateComment_ForumPostDetalied">Updatul de comentariu a modificat mai mult de un rand</string>
     <string name="editeaza_postarea_forum_oldMenu">Editeaza postarea forum</string>
     <string name="distanta_dintre_dvs_si_punctul_ales_este_de">Distanta dintre dvs si punctul ales este de:</string>
-    <string name="distanta">distanta</string>
     <string name="km">km</string>
     <string name="apasati_aici_pentru_detalii">Apasati aici pentru detalii</string>
     <string name="titlu">Titlu</string>
@@ -237,6 +236,7 @@
     <string name="log_eroarePoza">Schimbarea de poza a afectat mai mult de un utiliator!</string>
     <string name="toast_poza_actualizata_succes">Poza a fost actualizata cu succes!</string>
     <string name="toast_dimensiuneImaginePreaMare">Dimensiunea imaginii este prea mare</string>
+    <string name="distanta">distanta</string>
 
 
 </resources>
